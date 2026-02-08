@@ -1,7 +1,7 @@
 # 🌍 Neural Focus AI - Mass Utility Beta
 
 <p align="center">
-  <a href="https://lucas12981.github.io/Turca-y-Beta/">
+  <a href="https://lucas12981.github.io/NeuralFocus-Turkey-Beta/">
     <img src="https://img.shields.io/badge/ENTER_APP-Neural_Focus_AI-blue?style=for-the-badge&logo=rocket&logoColor=white" alt="Enter App" height="50">
   </a>
 </p>
@@ -25,7 +25,7 @@ We are committed to implementing your best ideas to make this app a global stand
 ---
 
 ## 🚀 Get Involved
-👉 **Try the Beta:** [https://lucas12981.github.io/Turca-y-Beta/](https://lucas12981.github.io/Turca-y-Beta/)
+👉 **Try the Beta:** [https://lucas12981.github.io/NeuralFocus-Turkey-Beta/](https://lucas12981.github.io/NeuralFocus-Turkey-Beta/)
 
 👉 **Have a suggestion?** Open an **Issue** here on GitHub or join our community groups!
 
