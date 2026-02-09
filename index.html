@@ -36,13 +36,12 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* SPLASH SCREEN FIX */
+        /* FIX SPLASH SCREEN */
         #splash-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #000; display: flex; flex-direction: column;
-            justify-content: center; align-items: center; z-index: 99999;
+            justify-content: center; align-items: center; z-index: 10000;
             transition: opacity 0.8s ease-out;
-            pointer-events: none; /* Esto permite que si algo falla, puedas tocar lo de atrás */
         }
         .splash-circle {
             width: 180px; height: 180px; border: 3px solid var(--cyan); 
@@ -94,16 +93,22 @@
             padding: 20px; margin: 15px 0; width: 100%; box-sizing: border-box;
         }
 
-        .lira-box {
-            background: rgba(0, 255, 255, 0.05); border: 1px solid var(--cyan);
-            border-radius: 12px; padding: 10px; margin: 10px 0; width: 100%;
-        }
-
         .sector-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; margin-top: 15px; }
         .sector-btn { 
             background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1);
             color: #fff; padding: 15px; border-radius: 12px; text-decoration: none; font-weight: 700; font-size: 0.7rem;
             display: flex; align-items: center; justify-content: center;
+        }
+
+        .lira-box {
+            background: rgba(0, 255, 255, 0.05); border: 1px solid var(--cyan);
+            border-radius: 12px; padding: 10px; margin: 10px 0; width: 100%;
+        }
+        
+        .neural-input {
+            background: rgba(255,255,255,0.1); border: 1px solid var(--cyan);
+            color: #fff; padding: 10px; border-radius: 8px; width: 100%;
+            margin-bottom: 10px; text-align: center; outline: none;
         }
 
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -115,7 +120,6 @@
         <div class="splash-circle">
             <span id="greeting-display" style="font-size: 0.9rem; color: #fff; margin-bottom: 8px; text-transform: uppercase; font-weight: bold;"></span>
             <span style="color: var(--cyan); font-size: 1.3rem; letter-spacing: 1px; line-height: 1;">NEURAL<br>FOCUS AI</span>
-            <span style="font-size: 0.5rem; color: #555; margin-top: 10px;">SİSTEM YÜKLENİYOR...</span>
         </div>
     </div>
 
@@ -136,7 +140,7 @@
             <h3 style="color: var(--gold); font-size: 0.9rem; margin: 0 0 10px 0;">📈 PİYASA NABZI (REAL-TIME)</h3>
             <div id="market-report" style="font-size: 0.7rem; text-align: left; line-height: 1.4;">
                 <p>USD/TRY: <span id="real-usd">Yükleniyor...</span> 🟢</p>
-                <p>📊 Sanayi ve İnşaat için AI Analizi hazır.</p>
+                <p>📊 Sektörel AI Analizi Hazır.</p>
             </div>
             <button onclick="getAiMarketReport()" class="btn-premium bg-gold" style="padding: 10px; font-size: 0.7rem;">🧠 STRATEJİK ANALİZ AL</button>
         </div>
@@ -155,7 +159,9 @@
         </div>
 
         <a href="https://maps.google.com" target="_blank" class="btn-premium bg-maps">📍 GLOBAL OFFICE (MAPS)</a>
-        
+        <a href="https://translate.google.com/?sl=tr&tl=es" target="_blank" class="btn-premium bg-purple">🌍 AKILLI ÇEVİRMEN (TR-ES)</a>
+        <a href="https://www.turkiye.gov.tr/" target="_blank" class="btn-premium bg-gold">🏛️ E-DEVLET & BİLGİ REHBERİ</a>
+
         <div class="sector-grid">
             <a href="https://chat.whatsapp.com/FPplgqnE2NiHmahVJXCic2" target="_blank" class="sector-btn">🏥 Sağlık</a>
             <a href="https://chat.whatsapp.com/KQBkGZhDnJt2vxk7x5VdRI" target="_blank" class="sector-btn">🍲 Gastronomi</a>
@@ -166,27 +172,56 @@
 
     <div id="academy" class="tab-content">
         <h2 style="color: var(--cyan);">ACADEMY</h2>
-        <a href="https://www.coursera.org/" target="_blank" class="btn-premium bg-cyan">🤖 YAPAY ZEKA KURSLARI</a>
+        <div class="glass-card">
+            <a href="https://www.coursera.org/courses?query=artificial%20intelligence" target="_blank" class="btn-premium bg-cyan">🤖 YAPAY ZEKA KURSLARI</a>
+            <div class="sector-grid" style="margin-top: 10px;">
+                <a href="https://www.saylor.org/course/span101/" target="_blank" class="sector-btn" style="border:1px solid var(--cyan);">🇪🇸 İspanyolca</a>
+                <a href="https://www.saylor.org/course/engl000/" target="_blank" class="sector-btn" style="border:1px solid var(--cyan);">🇬🇧 İngilizce</a>
+            </div>
+        </div>
     </div>
 
     <div id="lifestyle" class="tab-content">
         <h2 style="color: #bc13fe;">LIFESTYLE 🔥</h2>
+
+        <div class="glass-card" style="border: 1px solid var(--cyan);">
+            <h3 style="color: var(--cyan); font-size: 0.8rem; margin: 0 0 10px 0;">📸 GASTRO-SAĞLIK VİZYONU</h3>
+            <input type="text" id="foodName" class="neural-input" placeholder="Hangi yemeği analiz edelim?">
+            <button onclick="startGastroAI()" class="btn-premium bg-gastro">FOTOĞRAFI TARA</button>
+            <input type="file" id="gastroInput" accept="image/*" capture="environment" style="display: none;" onchange="processGastroImage(this)">
+            <div id="gastro-result" style="display:none; font-size: 0.75rem; text-align: left; margin-top: 10px; padding: 10px; background: rgba(0,255,255,0.05); border-radius: 10px;"></div>
+        </div>
+
+        <a href="https://fizy.com/" target="_blank" class="btn-premium bg-fizy">🎧 GÜNÜN PLAYLIST'İ (FIZY)</a>
+        
         <button onclick="startAiFal()" class="btn-premium bg-fal">🔮 YAPAY ZEKA KAHVE FALI</button>
         <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;" onchange="processFal()">
         <div id="fal-display" style="display:none;" class="glass-card">
-            <p id="fal-text" style="font-size: 0.8rem;"></p>
+            <h3 style="color: var(--gold); font-size: 0.9rem;">🔮 FALINIZ:</h3>
+            <p id="fal-text" style="font-size: 0.8rem; line-height: 1.4;"></p>
         </div>
-        <a href="https://wa.me/5492246496971" target="_blank" class="btn-premium bg-cay">☕ BİR ÇAY ISMARLA</a>
+        
+        <button onclick="shareApp()" class="btn-premium bg-whatsapp">📲 UYGULAMAYI PAYLAŞ</button>
+        <a href="https://wa.me/5492246496971?text=Merhaba%20Lucas!" target="_blank" class="btn-premium bg-cay">☕ BİR ÇAY ISMARLA (İLETİŞİM)</a>
     </div>
 
-    <footer style="font-size: 0.6rem; color: #555; padding: 20px;">
+    <footer style="font-size: 0.6rem; color: #555; padding: 20px; line-height: 1.5;">
         © 2026 LUCAS GUZMÁN | NEURAL FOCUS AI<br>
-        Voz Inteligente & Agente de Vida 24/7
+        <b>Servisler:</b> Voz Inteligente (Yazılı 24/7) & Agente de Vida (Live 24/7)<br>
+        Sağlık, Gastronomi, Sanayi ve İnşaat Sektörleri.
     </footer>
 
     <script>
-        // 1. GESTIÓN DEL SALUDO Y ENTRADA
-        function initGreeting() {
+        // CONFIGURACIÓN VOZ TURCA
+        function speak(text) {
+            const synth = window.speechSynthesis;
+            const utter = new SpeechSynthesisUtterance(text);
+            utter.lang = 'tr-TR'; 
+            synth.speak(utter);
+        }
+
+        // SALUDO Y SPLASH
+        function initApp() {
             const hours = new Date().getHours();
             let greet = "Merhaba";
             if (hours >= 5 && hours < 12) greet = "Günaydın";
@@ -194,21 +229,29 @@
             else greet = "İyi Akşamlar";
             
             document.getElementById('greeting-display').innerText = greet;
-            return greet;
-        }
 
-        // 2. DESAPARECER SPLASH SCREEN
-        function hideSplash() {
-            const splash = document.getElementById('splash-screen');
-            if(splash) {
+            setTimeout(() => {
+                const splash = document.getElementById('splash-screen');
                 splash.style.opacity = '0';
-                setTimeout(() => {
-                    splash.style.display = 'none';
-                }, 800);
-            }
+                setTimeout(() => splash.style.display = 'none', 800);
+            }, 2000);
         }
 
-        // 3. MOTOR DE IA MERCADO
+        let userName = localStorage.getItem('neuralName') || "";
+        if(userName) document.getElementById('userName').value = userName;
+        function saveName() {
+            userName = document.getElementById('userName').value;
+            localStorage.setItem('neuralName', userName);
+        }
+
+        function openTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-item').forEach(i => i.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            document.getElementById('btn-' + tabName).classList.add('active');
+        }
+
+        // MOTOR DE IA DINÁMICO
         let liveRate = 30.25;
         async function updateMarket() {
             try {
@@ -217,48 +260,38 @@
                 liveRate = data.rates.TRY;
                 document.getElementById('real-usd').innerText = "₺" + liveRate.toFixed(2);
                 document.getElementById('dynamic-usd').innerText = liveRate.toFixed(2);
-            } catch(e) { console.log("Offline mode"); }
+            } catch(e) { console.log("Market Offline"); }
         }
 
         function getAiMarketReport() {
             const reportDiv = document.getElementById('market-report');
-            speak("Veri madenciliği başlatıldı.");
-            reportDiv.innerHTML = `<div style="text-align:center;"><div style="border:2px solid var(--cyan); border-top:2px solid transparent; width:15px; height:15px; border-radius:50%; animation:spin 1s linear infinite; margin:auto;"></div></div>`;
+            speak("Veri madenciliği başlatıldı. Neural Focus analiz ediyor.");
+            reportDiv.innerHTML = `<div style="text-align:center; padding:10px;"><div style="border: 2px solid var(--cyan); border-top: 2px solid transparent; width:20px; height:20px; border-radius:50%; animation: spin 1s linear infinite; margin:auto;"></div></div>`;
 
             setTimeout(() => {
                 const nameTag = userName || "Girişimci";
-                const sectors = ["SANAYİ", "İNŞAAT", "GASTRONOMİ", "SAĞLIK"];
-                const sector = sectors[Math.floor(Math.random() * sectors.length)];
-                const msg = `Sayın ${nameTag}, ${sector} sektörü için AI analizi tamamlandı. Kur dalgalanmasına karşı stok yönetimi önerilir.`;
+                const sectors = [
+                    { name: "SANAYİ", advice: "Hammadde maliyetleri kur nedeniyle %5 artış gösterebilir." },
+                    { name: "İNŞAAT", advice: "Proje planlaması için stabil kur aralığı bekleniyor." },
+                    { name: "GASTRONOMİ", advice: "Menü maliyet optimizasyonu için AI desteği aktif." },
+                    { name: "SAĞLIK", advice: "Tıbbi cihaz ithalatında kur sabitleme önerilir." }
+                ];
+                const selected = sectors[Math.floor(Math.random() * sectors.length)];
+                const msg = `Sayın ${nameTag}, ${selected.name} sektörü için analiz: ${selected.advice}`;
                 
+                alert(msg);
                 reportDiv.innerHTML = `
-                    <div style="background:rgba(0,255,255,0.05); padding:10px; border-radius:8px; border:1px solid var(--cyan);">
-                        <p style="margin:0; font-size:0.75rem;">${msg}</p>
+                    <div style="background: rgba(0, 255, 255, 0.05); border: 1px solid var(--cyan); border-radius: 10px; padding: 12px;">
+                        <p style="font-size: 0.75rem; margin:0;">${msg}</p>
+                        <button onclick="shareMarketReport('${selected.name}')" class="btn-premium bg-whatsapp" style="padding: 6px; font-size: 0.6rem; margin-top:10px;">RAPORU PAYLAŞ</button>
                     </div>
                 `;
                 speak(msg);
-            }, 1500);
+            }, 2000);
         }
 
-        // --- SISTEMA DE AUDIO ---
-        function speak(text) {
-            const synth = window.speechSynthesis;
-            const utter = new SpeechSynthesisUtterance(text);
-            utter.lang = 'tr-TR'; 
-            synth.speak(utter);
-        }
-
-        // --- NAVEGACIÓN Y CARGA ---
-        function openTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-item').forEach(i => i.classList.remove('active'));
-            document.getElementById(tabName).classList.add('active');
-            document.getElementById('btn-' + tabName).classList.add('active');
-        }
-
-        function saveName() {
-            userName = document.getElementById('userName').value;
-            localStorage.setItem('neuralName', userName);
+        function shareMarketReport(sec) {
+            window.open('https://wa.me/?text=' + encodeURIComponent(`Neural Focus AI ${sec} Analizi hazır!`));
         }
 
         function convertTRY() {
@@ -266,17 +299,36 @@
             document.getElementById('tryOutput').innerText = "₺ " + (usd * liveRate).toFixed(2);
         }
 
-        // EJECUCIÓN AL CARGAR
+        // LIFESTYLE FUNCTIONS
+        function startGastroAI() {
+            document.getElementById('gastroInput').click();
+        }
+        function processGastroImage(input) {
+            const food = document.getElementById('foodName').value || "Yemek";
+            speak("Nöral link bağlandı.");
+            window.open(`https://www.google.com/search?q=${encodeURIComponent(food)}+kalori`);
+        }
+        function startAiFal() {
+            speak("Kahve fincanınızı tarıyorum.");
+            document.getElementById('cameraInput').click();
+        }
+        function processFal() {
+            const display = document.getElementById('fal-display');
+            display.style.display = 'block';
+            const msg = "Yeni bir girişim kapıda, şansın parlıyor.";
+            document.getElementById('fal-text').innerText = msg;
+            speak(msg);
+        }
+
+        function shareApp() {
+            window.open('https://wa.me/?text=' + encodeURIComponent("Neural Focus AI Turkey Beta'yı deneyin!"));
+        }
+
         window.onload = () => {
-            initGreeting(); // Genera el saludo turco
-            updateMarket(); // Actualiza el dólar real
-            
-            // Forzar entrada a la app tras 1.8 segundos
-            setTimeout(() => {
-                hideSplash();
-            }, 1800);
+            initApp();
+            updateMarket();
         };
     </script>
 </body>
-        </html>
-    
+                                                                                                                </html>
+                                                                                                                      
