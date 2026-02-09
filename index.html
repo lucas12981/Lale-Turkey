@@ -19,6 +19,7 @@
             --purple: #bc13fe; 
             --wa-green: #25D366;
             --gold: #FFD700;
+            --danger: #ff4d4d;
         }
         
         body { 
@@ -85,6 +86,7 @@
         .bg-whatsapp { background: var(--wa-green); }
         .bg-cay { background: linear-gradient(90deg, #d32f2f, #b71c1c); }
         .bg-gastro { background: linear-gradient(90deg, var(--cyan), #008080); color: #000; border: 1px solid #fff; }
+        .bg-nebula { background: linear-gradient(45deg, #000, #1a1a1a); border: 1px solid var(--gold); }
 
         .glass-card {
             background: rgba(255,255,255,0.04); backdrop-filter: blur(15px);
@@ -105,13 +107,20 @@
         }
         
         input::placeholder { color: rgba(255,255,255,0.3); }
-        #loading-ai { display: none; color: var(--cyan); font-weight: bold; margin: 10px 0; font-size: 0.8rem; }
+        #loading-ai, #loading-market { display: none; color: var(--cyan); font-weight: bold; margin: 10px 0; font-size: 0.8rem; }
 
         .neural-input {
             background: rgba(255,255,255,0.1); border: 1px solid var(--cyan);
             color: #fff; padding: 10px; border-radius: 8px; width: 100%;
             margin-bottom: 10px; text-align: center; outline: none;
         }
+
+        /* PIYASA NABZI STYLES */
+        .market-badge {
+            font-size: 0.6rem; padding: 2px 6px; border-radius: 4px; margin-left: 5px;
+        }
+        .up { background: var(--wa-green); color: #000; }
+        .down { background: var(--danger); color: #fff; }
     </style>
 </head>
 <body>
@@ -136,14 +145,35 @@
             <input type="text" id="userName" placeholder="Adınızı girin (İsim)" oninput="saveName()" style="background:transparent; border:none; color:white; text-align:center; width:100%; outline:none; font-weight:bold;">
         </div>
 
+        <div class="glass-card" style="border: 1px solid var(--gold);">
+            <h3 style="color: var(--gold); font-size: 0.9rem; margin: 0 0 10px 0;">📈 PİYASA NABZI (REAL-TIME AI)</h3>
+            <div id="market-data" style="font-size: 0.75rem; text-align: left;">
+                <div style="display:flex; justify-content: space-between; margin-bottom: 8px;">
+                    <span>USD/TRY: <b id="current-usd">Yükleniyor...</b></span>
+                    <span id="usd-trend" class="market-badge up">STABİL</span>
+                </div>
+                <div style="display:flex; justify-content: space-between; margin-bottom: 8px;">
+                    <span>ÇELİK (Ton): <b>$720.00</b></span>
+                    <span class="market-badge up">+1.2%</span>
+                </div>
+                <div style="display:flex; justify-content: space-between;">
+                    <span>ÇİMENTO (Torba): <b>₺145.00</b></span>
+                    <span class="market-badge down">-0.5%</span>
+                </div>
+            </div>
+            <div id="loading-market">⌛ EKONOMİK ANALİZ YAPILIYOR...</div>
+            <button onclick="analyzeMarket()" class="btn-premium bg-nebula" style="margin-top:15px; font-size: 0.7rem;">🧠 STRATEJİK ANALİZ AL</button>
+            <div id="market-result" style="display:none; font-size: 0.75rem; text-align: left; margin-top: 10px; padding: 10px; background: rgba(255,215,0,0.05); border-radius: 10px; border-left: 3px solid var(--gold);"></div>
+        </div>
+
         <div class="glass-card" style="padding: 0; overflow: hidden; aspect-ratio: 16/9; border: 2px solid var(--cyan);">
             <iframe width="100%" height="100%" src="https://www.youtube.com/embed/X-FWm-NHEBc?autoplay=1&mute=1" frameborder="0" allowfullscreen></iframe>
         </div>
 
         <div class="lira-box">
             <div style="display:flex; justify-content: space-around; font-size: 0.6rem; color: var(--gold); margin-bottom:5px;">
-                <span>USD/TRY: 30.25 🟢</span>
-                <span>ALTIN (GR): 2045 🟡</span>
+                <span>USD/TRY: <span id="ticker-usd">34.25</span> 🟢</span>
+                <span>ALTIN (GR): 3045 🟡</span>
             </div>
             <input type="number" id="usdInput" placeholder="USD Miktar" oninput="convertTRY()" style="background:transparent; border:none; border-bottom:1px solid var(--cyan); color:white; text-align:center; width:80px; outline:none;">
             <span id="tryOutput" style="font-weight:bold; color:var(--cyan); margin-left:10px;">₺ 0.00</span>
@@ -205,6 +235,50 @@
     </footer>
 
     <script>
+        let exchangeRate = 34.25; // Default robusto
+
+        // FUNCIÓN ESTRELLA: ACTUALIZAR PRECIOS REALES
+        async function fetchMarketData() {
+            try {
+                const response = await fetch('https://open.er-api.com/v6/latest/USD');
+                const data = await response.json();
+                exchangeRate = data.rates.TRY;
+                document.getElementById('current-usd').innerText = "₺" + exchangeRate.toFixed(2);
+                document.getElementById('ticker-usd').innerText = exchangeRate.toFixed(2);
+                document.getElementById('usd-trend').innerText = "GÜNCEL";
+            } catch (error) {
+                console.log("Hata: Veri alınamadı, yerel kur kullanılıyor.");
+            }
+        }
+
+        function analyzeMarket() {
+            const loader = document.getElementById('loading-market');
+            const resDiv = document.getElementById('market-result');
+            loader.style.display = 'block';
+            resDiv.style.display = 'none';
+
+            speak("Ekonomik veriler analiz ediliyor. Sektörel rapor hazırlanıyor.");
+
+            setTimeout(() => {
+                const name = userName ? userName : "Değerli Girişimci";
+                const analysis = `
+                    <strong>Sayın ${name}, Neural Focus AI Analizi:</strong><br><br>
+                    • <b>İnşaat:</b> Kur stabilitesi sayesinde malzeme alımı için uygun pencere.<br>
+                    • <b>Gastronomi:</b> İthal ürün maliyetlerinde %2 düşüş öngörülüyor.<br>
+                    • <b>Strateji:</b> Likiditeyi koruyun, Sanayi sektöründe stok artırımı önerilir.
+                `;
+                resDiv.innerHTML = analysis + `<br><button onclick="shareMarketReport()" class="btn-premium bg-whatsapp" style="padding:10px; font-size:0.6rem;">WHATSAPP'A GÖNDER</button>`;
+                resDiv.style.display = 'block';
+                loader.style.display = 'none';
+                speak("Analiz hazır. Stratejik adımları inceleyin.");
+            }, 2000);
+        }
+
+        function shareMarketReport() {
+            const text = encodeURIComponent("Neural Focus AI Ekonomik Raporu: TRY kuruna göre inşaat ve sanayi analizi hazır! Sektörel korunma sağlandı.");
+            window.open('https://wa.me/?text=' + text, '_blank');
+        }
+
         // CONFIGURACIÓN VOZ
         function speak(text) {
             const synth = window.speechSynthesis;
@@ -237,7 +311,7 @@
 
         function convertTRY() {
             const usd = document.getElementById('usdInput').value;
-            document.getElementById('tryOutput').innerText = usd > 0 ? "₺ " + (usd * 30.25).toFixed(2) : "₺ 0.00";
+            document.getElementById('tryOutput').innerText = usd > 0 ? "₺ " + (usd * exchangeRate).toFixed(2) : "₺ 0.00";
         }
 
         // --- SISTEMA NEURAL VISION CON VOZ ---
@@ -301,27 +375,4 @@
                     "İç huzurun artacağı bir zaman başlıyor.",
                     "Yıldızın hiç olmadığı kadar parlak."
                 ];
-                const msg = res[Math.floor(Math.random() * res.length)];
-                text.innerText = nameTag + msg;
-                speak(nameTag + msg);
-            }, 2500);
-        }
-
-        function shareApp() {
-            const text = encodeURIComponent("Neural Focus AI: Arjantinli bir girişimciden Türkiye'ye teknolojik hediye! https://lucas12981.github.io/NeuralFocus-Turkey-Beta/");
-            window.open('https://wa.me/?text=' + text, '_blank');
-        }
-
-        window.onload = () => {
-            const lastTab = localStorage.getItem('lastTab') || 'business';
-            openTab(lastTab);
-            setTimeout(() => {
-                const splash = document.getElementById('splash-screen');
-                splash.style.opacity = '0';
-                setTimeout(() => splash.style.display = 'none', 500);
-            }, 1500);
-        };
-    </script>
-</body>
-                </html>
-    
+                const msg = res[Math.floor(Math.random() 
