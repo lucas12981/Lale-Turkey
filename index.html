@@ -3,225 +3,250 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NEURAL FOCUS AI | LUCAS GUZMÁN</title>
+    <title>Neural Focus AI | Lucas Guzmán</title>
     
     <style>
         :root {
-            --bg: #050505;
-            --panel: #111111;
-            --accent: #00f2ff;
-            --text: #ffffff;
+            --cyan: #00ffff;
+            --purple: #bc13fe;
             --gold: #ffcc00;
-            --red: #ff3333;
+            --wa-green: #25D366;
+            --turk-red: #e30a17;
+            --dark: #000000;
         }
 
         body {
-            background-color: var(--bg);
-            color: var(--text);
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            background-color: var(--dark);
+            color: white;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            margin: 0; padding: 0;
+            display: flex; flex-direction: column; align-items: center;
+            overflow-x: hidden;
         }
 
-        /* --- ESTRUCTURA DE PANELES --- */
-        .header-brand {
-            width: 100%;
-            padding: 20px;
-            text-align: center;
-            border-bottom: 1px solid #333;
-            background: #000;
+        /* --- SALUDO INICIAL (SPLASH SCREEN) --- */
+        #splash {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; z-index: 10000;
+            transition: opacity 0.8s ease;
+        }
+        .logo-pulse {
+            width: 150px; height: 150px; border: 3px solid var(--cyan);
+            border-radius: 50%; display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            animation: pulse 1.5s infinite ease-in-out;
+            box-shadow: 0 0 20px var(--cyan);
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 20px var(--cyan); }
+            50% { transform: scale(1.05); box-shadow: 0 0 40px var(--cyan); }
+            100% { transform: scale(1); box-shadow: 0 0 20px var(--cyan); }
         }
 
-        .main-grid {
-            width: 95%;
-            max-width: 500px;
-            padding: 20px 0;
+        /* --- TABS (ESTILO ORIGINAL) --- */
+        .tab-bar {
+            display: flex; width: 100%; background: #000;
+            border-bottom: 2px solid var(--cyan); position: sticky; top: 0; z-index: 1000;
+        }
+        .tab {
+            flex: 1; padding: 15px; text-align: center; font-size: 0.7rem;
+            font-weight: bold; color: #555; cursor: pointer; text-transform: uppercase;
+        }
+        .tab.active { color: var(--cyan); border-bottom: 3px solid var(--cyan); }
+
+        .container { width: 92%; max-width: 400px; padding: 20px 0; }
+        .panel { display: none; flex-direction: column; }
+        .panel.active { display: flex; animation: fadeIn 0.4s; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* --- BOTONES Y CARDS --- */
+        .card {
+            background: rgba(255,255,255,0.05); border-radius: 20px;
+            padding: 15px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1);
         }
 
-        .section-title {
-            font-size: 0.8rem;
-            color: var(--accent);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin: 25px 0 10px 5px;
-            border-left: 3px solid var(--accent);
-            padding-left: 10px;
-        }
-
-        /* --- COMPONENTE: CONVERSOR AUTOMÁTICO --- */
-        .converter-box {
-            background: var(--panel);
-            padding: 20px;
-            border-radius: 12px;
-            border: 1px solid #222;
-            margin-bottom: 20px;
-        }
-
-        .rate-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            font-family: monospace;
-        }
-
-        /* --- BOTONES DE ACCIÓN --- */
         .btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            padding: 15px;
-            margin: 8px 0;
-            border-radius: 10px;
-            border: none;
-            cursor: pointer;
-            font-weight: bold;
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: 0.3s;
+            width: 100%; padding: 15px; border-radius: 12px; border: none;
+            color: white; font-weight: 800; font-size: 0.8rem; margin: 8px 0;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            text-decoration: none; text-transform: uppercase;
         }
 
-        .btn-maps { background: #4285F4; color: white; }
-        .btn-translate { background: #5f6368; color: white; }
-        .btn-fizy { background: #eeff00; color: black; }
-        .btn-coffee { background: #6f4e37; color: white; }
-        .btn-tea { background: #d4a017; color: black; }
-        .btn-agency { background: #222; color: var(--accent); border: 1px solid var(--accent); }
-        .btn-red { background: var(--red); color: white; }
+        .btn-gold { background: linear-gradient(90deg, #ffcc00, #ff9900); color: #000; }
+        .btn-cyan { background: var(--cyan); color: #000; }
+        .btn-purple { background: var(--purple); }
+        .btn-red { background: var(--turk-red); }
+        .btn-maps { background: linear-gradient(90deg, #4285F4, #34A853, #FBBC05, #EA4335); }
+        .btn-wa { background: var(--wa-green); font-size: 0.7rem; }
 
-        /* --- GRID DE SECTORES --- */
-        .sector-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
+        .video-box {
+            border: 2px solid var(--cyan); border-radius: 20px; overflow: hidden;
+            aspect-ratio: 16/9; margin-bottom: 20px;
         }
 
-        /* --- VOZ INTELIGENTE LOG --- */
-        #ai-status {
-            font-size: 0.7rem;
-            background: #000;
-            color: #0f0;
-            padding: 10px;
-            border-radius: 5px;
-            margin-top: 10px;
-            height: 40px;
-            overflow: hidden;
+        input {
+            width: 100%; padding: 12px; background: #111; border: 1px solid var(--purple);
+            border-radius: 8px; color: white; text-align: center; margin-bottom: 15px; box-sizing: border-box;
         }
 
-        footer {
-            padding: 40px;
-            text-align: center;
-            font-size: 0.7rem;
-            color: #555;
-        }
+        .sector-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 10px 0; }
+
+        footer { text-align: center; font-size: 0.6rem; color: #444; padding: 30px; line-height: 1.5; }
     </style>
 </head>
 <body>
 
-    <div class="header-brand">
-        <h2 style="margin:0; font-weight: 900; letter-spacing: -1px;">NEURAL FOCUS <span style="color:var(--accent)">AI</span></h2>
-        <small style="color:#666">LUCAS GUZMÁN AGENCY 2026</small>
+    <div id="splash">
+        <div class="logo-pulse">
+            <span id="greetingText" style="font-size: 0.8rem; margin-bottom: 5px;">YÜKLENİYOR</span>
+            <span style="font-weight: 900; font-size: 1.2rem;">NEURAL</span>
+            <span style="color: var(--cyan); letter-spacing: 3px;">FOCUS AI</span>
+        </div>
     </div>
 
-    <div class="main-grid">
+    <div class="tab-bar">
+        <div class="tab active" onclick="openTab('biz', this)">🏢 BUSINESS</div>
+        <div class="tab" onclick="openTab('acad', this)">🎓 ACADEMY</div>
+        <div class="tab" onclick="openTab('life', this)">🔥 LIFESTYLE</div>
+    </div>
 
-        <div class="section-title">Finansal Veriler (Conversor)</div>
-        <div class="converter-box">
-            <div class="rate-row">
-                <span>100 TRY ➔ USD:</span>
-                <span id="usd-rate" style="color: var(--accent);">$2.29</span>
+    <div class="container">
+        
+        <div id="biz" class="panel active">
+            <h1 style="text-align:center; color: var(--cyan); margin:0 0 15px 0;">NEURAL FOCUS AI</h1>
+            <input type="text" id="userName" placeholder="Adınızı girin (İsim)">
+
+            <div class="card" style="border-color: var(--gold);">
+                <h4 style="color: var(--gold); margin: 0 0 10px 0; text-align:center;">🛡️ DİJİTAL EGEMENLİK ANALİZİ</h4>
+                <p id="sovText" style="font-size: 0.7rem; text-align: center;">Sistem analiz için hazır...</p>
+                <button onclick="runSovereignty()" class="btn btn-gold">PROTOKOLÜ ÇALIŞTIR</button>
             </div>
-            <div class="rate-row">
-                <span>100 TRY ➔ ALTIN (ORO):</span>
-                <span id="gold-rate" style="color: var(--gold);">0.0008 oz</span>
+
+            <div class="video-box">
+                <iframe width="100%" height="100%" src="https://www.youtube.com/embed/X-FWm-NHEBc?autoplay=1&mute=1" frameborder="0" allowfullscreen></iframe>
             </div>
-            <input type="number" id="lira-input" oninput="convertCurrency()" placeholder="Lira (TRY) girin..." 
-                   style="width:100%; padding:10px; border-radius:5px; border:none; background:#222; color:white; margin-top:10px;">
-            <div id="conv-result" style="margin-top:10px; font-weight:bold; text-align:center;"></div>
+
+            <div class="card">
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <input type="number" id="tryInput" oninput="convertCurrency()" placeholder="TRY" style="margin:0;">
+                    <span style="color:var(--cyan); font-weight:bold;">➔</span>
+                    <span id="usdOutput" style="font-weight:bold; color:var(--cyan); min-width:80px;">$ 0.00</span>
+                </div>
+            </div>
+
+            <a href="https://maps.google.com" target="_blank" class="btn btn-maps">📍 GLOBAL OFFICE (MAPS)</a>
+            <a href="https://translate.google.com/?sl=tr&tl=es" target="_blank" class="btn btn-purple">🌐 AKILLI ÇEVİRMEN (TR-ES)</a>
+            <a href="https://www.turkiye.gov.tr/" target="_blank" class="btn btn-gold">🏛️ E-DEVLET KAPISI</a>
+
+            <div class="sector-grid">
+                <a href="https://chat.whatsapp.com/FPplgqnE2NiHmahVJXCic2" target="_blank" class="btn btn-wa">🏥 SAĞLIK</a>
+                <a href="https://chat.whatsapp.com/KQBkGZhDnJt2vxk7x5VdRI" target="_blank" class="btn btn-wa">🍲 GASTRO</a>
+                <a href="https://chat.whatsapp.com/IsvihivL7Bb0uwEV4ALIb5" target="_blank" class="btn btn-wa">🏭 SANAYİ</a>
+                <a href="https://chat.whatsapp.com/CPddy8AAILL2uSaTcRpHj1" target="_blank" class="btn btn-wa">🏗️ İNŞAAT</a>
+            </div>
         </div>
 
-        <div class="section-title">Global Araçlar</div>
-        <a href="https://www.google.com/maps" target="_blank" class="btn btn-maps">📍 GOOGLE MAPS PORTALI</a>
-        <a href="https://translate.google.com/?sl=tr&tl=es" target="_blank" class="btn btn-translate">🌐 TRADUCTOR (TURCO - ESPAÑOL)</a>
-
-        <div class="section-title">Medya & Eğlence</div>
-        <a href="https://fizy.com" target="_blank" class="btn btn-fizy">🎵 FIZY MÜZİK SİSTEMİ</a>
-
-        <div class="section-title">Yapay Zeka Servisleri</div>
-        <div class="converter-box">
-            <h4 style="margin:0 0 10px 0;">🔮 KAHVE FALI IA</h4>
-            <p style="font-size:0.7rem; color:#888;">Fincan resmini analiz etmek için Voice Agent'ı başlatın.</p>
-            <button onclick="startCoffeeIA()" class="btn btn-coffee">FALI SESLİ YORUMLA</button>
+        <div id="acad" class="panel">
+            <h2 style="color:var(--cyan); text-align:center;">ACADEMY 🎓</h2>
+            <div class="card">
+                <a href="https://www.coursera.org" target="_blank" class="btn btn-cyan">🤖 YAPAY ZEKA KURSLARI</a>
+                <a href="https://www.saylor.org/course/engl101/" target="_blank" class="btn btn-purple">🇬🇧 İNGİLİZCE EĞİTİMİ</a>
+                <a href="https://www.udemy.com" target="_blank" class="btn btn-gold">💻 TEKNOLOJİ KURSLARI</a>
+            </div>
         </div>
 
-        <div class="section-title">Ajans Fonksiyonları</div>
-        <div class="sector-grid">
-            <a href="https://chat.whatsapp.com/KQBkGZhDnJt2vxk7x5VdRI" class="btn btn-agency">🍲 GASTRO</a>
-            <a href="https://chat.whatsapp.com/FPplgqnE2NiHmahVJXCic2" class="btn btn-agency">🏥 SAĞLIK</a>
-            <a href="https://chat.whatsapp.com/IsvihivL7Bb0uwEV4ALIb5" class="btn btn-agency">🏭 SANAYİ</a>
-            <a href="https://chat.whatsapp.com/CPddy8AAILL2uSaTcRpHj1" class="btn btn-agency">🏗️ İNŞAAT</a>
+        <div id="life" class="panel">
+            <h2 style="color:var(--purple); text-align:center;">LIFESTYLE 🔥</h2>
+            
+            <div class="card" style="border-color: var(--cyan);">
+                <h4 style="color:var(--cyan); margin:0 0 10px 0; text-align:center;">📸 GASTRO & SAĞLIK VİZYONU</h4>
+                <input type="file" id="gastroImg" accept="image/*" capture="environment" style="display:none;" onchange="gastroAnalysis()">
+                <button onclick="document.getElementById('gastroImg').click()" class="btn btn-cyan">FOTOĞRAF YÜKLE / ANALİZ</button>
+                <p id="gastroResult" style="font-size:0.7rem; text-align:center; color:var(--wa-green);"></p>
+            </div>
+
+            <button onclick="runCoffeeFal()" class="btn btn-purple">🔮 KAHVE FALI (IA OKUMA)</button>
+            <a href="https://wa.me/5492246496971" target="_blank" class="btn btn-red">☕ BİR ÇAY ISMARLA (COLABORAR)</a>
         </div>
-
-        <div class="section-title">Eğitim & Academy</div>
-        <a href="https://www.coursera.org" target="_blank" class="btn btn-agency">🤖 AI & TECH CURSOS</a>
-        <a href="https://www.duolingo.com" target="_blank" class="btn btn-agency">📚 DİL EĞİTİMİ (IDOMAS)</a>
-
-        <div class="section-title">İletişim & İş Birliği</div>
-        <a href="https://wa.me/5492246496971?text=Merhaba%20Lucas,%20bir%20çay%20ısmarlamak%20ve%20çalışmaya%20başlamak%20istiyorum." 
-           class="btn btn-tea">☕ BİR ÇAY ISMARLA & COLABORAR</a>
-
-        <div id="ai-status">Sistem hazır. Agente de Vida Online.</div>
 
     </div>
 
     <footer>
-        <p><b>Lucas Guzmán Agency 2026</b></p>
-        <p>Voz Inteligente 24/7 | Agente de Vida 24/7</p>
-        <p>Todos los servicios brevemente nombrados: Salud, Gastronomía, Industria, Construcción, Educación y Soberanía Digital.</p>
+        © 2026 LUCAS GUZMÁN | NEURAL FOCUS AI<br>
+        Voz Inteligente 24/7 & Agente de Vida Live 24/7<br>
+        Sectores: Salud, Gastronomía, Industria y Construcción.
     </footer>
 
     <script>
-        // --- FUNCIÓN: CONVERSOR AUTOMÁTICO ---
-        const USD_RATE = 0.023; // Ejemplo: 1 Lira = 0.023 USD
-        const GOLD_RATE = 0.000008; // Ejemplo: 1 Lira = 0.000008 oz Oro
-
-        function convertCurrency() {
-            const val = document.getElementById('lira-input').value;
-            const resBox = document.getElementById('conv-result');
-            const status = document.getElementById('ai-status');
-
-            if (val > 0) {
-                const usd = (val * USD_RATE).toFixed(2);
-                const gold = (val * GOLD_RATE).toFixed(6);
-                resBox.innerHTML = `<span style="color:var(--accent)">$${usd} USD</span> | <span style="color:var(--gold)">${gold} ORO (OZ)</span>`;
-                status.innerText = "IA: Finansal dönüşüm tamamlandı.";
-            } else {
-                resBox.innerHTML = "";
-            }
-        }
-
-        // --- FUNCIÓN: CAFÉ FALI IA ---
-        function startCoffeeIA() {
-            const status = document.getElementById('ai-status');
-            status.innerText = "IA: Kahve fincanı taranıyor... Gelecek okunuyor.";
+        // --- LÓGICA DE SALUDO Y SPLASH ---
+        window.onload = function() {
+            const hour = new Date().getHours();
+            let greet = "GÜNAYDIN"; // Mañana
+            if (hour >= 12 && hour < 18) greet = "İYİ GÜNLER"; // Tarde
+            if (hour >= 18 || hour < 5) greet = "İYİ AKŞAMLAR"; // Noche
             
-            const msg = new SpeechSynthesisUtterance("Kahve falınız analiz ediliyor. Çok yakında büyük bir iş birliği görünüyor.");
+            document.getElementById('greetingText').innerText = greet;
+            
+            // Hablar saludo
+            const msg = new SpeechSynthesisUtterance(greet + " Neural Focus AI'ye hoş geldiniz");
             msg.lang = 'tr-TR';
             window.speechSynthesis.speak(msg);
-            
+
             setTimeout(() => {
-                alert("🔮 IA Kahve Falı: Lucas Guzmán Agency ile yeni bir ticari yolculuk başlıyor!");
+                document.getElementById('splash').style.opacity = '0';
+                setTimeout(() => { document.getElementById('splash').style.display = 'none'; }, 800);
+            }, 3000);
+        };
+
+        // --- NAVEGACIÓN ---
+        function openTab(id, el) {
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            el.classList.add('active');
+        }
+
+        // --- CONVERSOR ---
+        function convertCurrency() {
+            const tryVal = document.getElementById('tryInput').value;
+            const rate = 43.64; // Ejemplo de tasa
+            document.getElementById('usdOutput').innerText = "$ " + (tryVal / rate).toFixed(2);
+        }
+
+        // --- SOBERANÍA DIGITAL ---
+        function runSovereignty() {
+            const name = document.getElementById('userName').value || "Sayın İş Ortağı";
+            document.getElementById('sovText').innerText = "Analiz ediliyor...";
+            setTimeout(() => {
+                const res = `Soberanía Digital onaylandı. ${name}, verileriniz milli sunucularda güvende.`;
+                document.getElementById('sovText').innerText = res;
+                const msg = new SpeechSynthesisUtterance(res);
+                msg.lang = 'tr-TR';
+                window.speechSynthesis.speak(msg);
             }, 2000);
         }
 
-        // --- VOZ INTELIGENTE INICIAL ---
-        window.onload = () => {
-            console.log("Neural Focus AI Cargado");
+        // --- CAFÉ FALI ---
+        function runCoffeeFal() {
+            const fali = ["Kısmetin açılıyor, büyük bir iş birliği yolda.", "Yolun aydınlık, başarı seni bekliyor.", "Hane içine huzur ve kazanç girecek."];
+            const result = fali[Math.floor(Math.random() * fali.length)];
+            const msg = new SpeechSynthesisUtterance("Kahve falınız yorumlanıyor: " + result);
+            msg.lang = 'tr-TR';
+            window.speechSynthesis.speak(msg);
+            alert("🔮 IA Kahve Falı: " + result);
+        }
+
+        // --- GASTRO ANALİZ ---
+        function gastroAnalysis() {
+            const res = "Gastro-Sağlık Analizi: Bu öğün dengeli bir enerji kaynağıdır. Lucas Guzmán Agency sağlığınızı önemsiyor.";
+            document.getElementById('gastroResult').innerText = res;
+            const msg = new SpeechSynthesisUtterance(res);
+            msg.lang = 'tr-TR';
+            window.speechSynthesis.speak(msg);
         }
     </script>
 </body>
     </html>
-    
+                    
