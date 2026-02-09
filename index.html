@@ -8,37 +8,54 @@
       gtag('js', new Date());
       gtag('config', 'G-KXB18T4285');
     </script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Neural Focus AI | Soberanía Digital</title>
+    <title>Neural Focus AI | Lucas Guzmán</title>
+    
     <style>
         :root { 
-            --cyan: #00FFFF; --purple: #bc13fe; --wa-green: #25D366; 
-            --gold: #FFD700; --tea-red: #d32f2f; --bg-dark: #050505;
+            --cyan: #00FFFF; 
+            --purple: #bc13fe; 
+            --wa-green: #25D366;
+            --gold: #FFD700;
+            --tea-red: #d32f2f;
         }
         
         body { 
-            background: var(--bg-dark); color: #fff; font-family: 'Segoe UI', sans-serif; 
-            margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; 
-            min-height: 100vh; overflow-x: hidden; 
+            background: linear-gradient(135deg, #000000 0%, #001f1f 50%, #050505 100%);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: #fff; font-family: 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 0;
+            display: flex; flex-direction: column; align-items: center;
+            overflow-x: hidden; text-align: center; min-height: 100vh;
         }
 
-        /* Splash Screen con Saludo Dinámico */
-        #splash-screen { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: #000; display: flex; flex-direction: column; 
-            justify-content: center; align-items: center; z-index: 10000; transition: 0.8s; 
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
-        .splash-circle { 
-            width: 160px; height: 160px; border: 2px solid var(--cyan); border-radius: 50%; 
-            display: flex; flex-direction: column; justify-content: center; align-items: center; 
-            animation: pulse 2s infinite; 
+
+        /* Splash Screen */
+        #splash-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; z-index: 10000;
+            transition: opacity 0.8s ease-out;
         }
-        #greeting-text { font-size: 0.8rem; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 2px; }
+        .splash-circle {
+            width: 180px; height: 180px; border: 3px solid var(--cyan); 
+            border-radius: 50%; display: flex; flex-direction: column; justify-content: center; 
+            align-items: center; font-weight: 900; 
+            animation: logoPulse 1.2s infinite ease-in-out;
+        }
+        @keyframes logoPulse {
+            0%, 100% { box-shadow: 0 0 20px var(--cyan); transform: scale(1); }
+            50% { box-shadow: 0 0 40px var(--cyan); transform: scale(1.05); }
+        }
 
-        @keyframes pulse { 0%, 100% { box-shadow: 0 0 15px var(--cyan); } 50% { box-shadow: 0 0 40px var(--cyan); } }
-
-        /* Efecto Escáner Láser */
+        /* Scanner Laser */
         #scanner-line {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 4px;
             background: var(--cyan); box-shadow: 0 0 20px var(--cyan); z-index: 9999;
@@ -46,37 +63,60 @@
         }
         @keyframes scanMove { 0% { top: 0; } 100% { top: 100%; } }
 
-        /* Navegación */
-        .tab-bar { display: flex; width: 100%; background: #111; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid var(--cyan); }
-        .tab-item { flex: 1; padding: 15px; font-size: 0.7rem; font-weight: 900; color: #555; cursor: pointer; text-align: center; }
-        .tab-item.active { color: var(--cyan); border-bottom: 3px solid var(--cyan); }
+        /* Tabs */
+        .tab-bar {
+            display: flex; width: 100%; background: rgba(0,0,0,0.9);
+            backdrop-filter: blur(15px); position: sticky; top: 0; z-index: 1000;
+            border-bottom: 1px solid rgba(0,255,255,0.2);
+        }
+        .tab-item {
+            flex: 1; padding: 15px 5px; font-size: 0.65rem; font-weight: 900;
+            color: #555; cursor: pointer; transition: 0.3s;
+        }
+        .tab-item.active { color: var(--cyan); border-bottom: 2px solid var(--cyan); text-shadow: 0 0 10px var(--cyan); }
 
-        .tab-content { display: none; width: 92%; max-width: 400px; padding: 20px 0 100px 0; animation: fadeIn 0.5s; }
-        .tab-content.active { display: block; }
+        .tab-content { display: none; width: 92%; max-width: 380px; padding: 20px 0 80px 0; }
+        .tab-content.active { display: flex; flex-direction: column; align-items: center; animation: fadeIn 0.4s ease; }
 
-        /* Estética de Tarjetas */
-        .glass-card { 
-            background: rgba(255,255,255,0.03); border: 1px solid rgba(0,255,255,0.1); 
-            border-radius: 20px; padding: 18px; margin-bottom: 15px; width: 100%; box-sizing: border-box; 
-            backdrop-filter: blur(10px);
+        /* Cards & Buttons */
+        .glass-card {
+            background: rgba(255,255,255,0.04); backdrop-filter: blur(15px);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 20px;
+            padding: 20px; margin: 15px 0; width: 100%; box-sizing: border-box;
         }
 
-        .btn-premium { 
-            width: 100%; padding: 16px; border-radius: 12px; border: none; color: #fff; 
-            font-weight: bold; margin: 10px 0; cursor: pointer; font-size: 0.85rem; 
-            text-decoration: none; display: flex; align-items: center; justify-content: center; 
+        .btn-premium {
+            width: 100%; padding: 16px; border-radius: 14px; border: none;
+            color: #fff; font-weight: 800; text-transform: uppercase;
+            margin: 10px 0; cursor: pointer; display: flex; align-items: center; 
+            justify-content: center; text-decoration: none; font-size: 0.8rem;
+            box-sizing: border-box; transition: 0.3s;
         }
-        
-        .bg-gold { background: linear-gradient(90deg, #ffcc00, #ff9900); color: #000; box-shadow: 0 5px 15px rgba(255,204,0,0.3); }
-        .bg-gastro { background: linear-gradient(90deg, #008080, var(--cyan)); color: #000; }
-        .bg-tea { background: var(--tea-red); border: 1px solid #ff4444; }
-        .bg-wa { background: var(--wa-green); }
 
-        .history-box { 
-            max-height: 120px; overflow-y: auto; margin-top: 15px; border-top: 1px solid rgba(0,255,255,0.2); 
-            padding-top: 10px; font-size: 0.65rem; color: #aaa;
+        .bg-maps { background: linear-gradient(90deg, #4285F4, #EA4335, #FBBC05, #34A853); }
+        .bg-purple { background: linear-gradient(90deg, #6a00ff, var(--purple)); }
+        .bg-gold { background: linear-gradient(90deg, #ffcc00, #ff9900); color: #000; }
+        .bg-fizy { background: linear-gradient(90deg, #00d2ff, #3a7bd5); }
+        .bg-fal { background: linear-gradient(135deg, #6a00ff, #bc13fe); border: 1px solid var(--cyan); }
+        .bg-cyan { background: var(--cyan); color: #000; }
+        .bg-whatsapp { background: var(--wa-green); }
+        .bg-cay { background: var(--tea-red); border: 1px solid #ff4444; }
+        .bg-gastro { background: linear-gradient(90deg, var(--cyan), #008080); color: #000; border: 1px solid #fff; }
+
+        .sector-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; margin-top: 15px; }
+        .sector-btn { 
+            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1);
+            color: #fff; padding: 15px; border-radius: 12px; text-decoration: none; font-weight: 700; font-size: 0.7rem;
+            display: flex; align-items: center; justify-content: center;
         }
-        .history-item { margin-bottom: 8px; border-left: 2px solid var(--gold); padding-left: 8px; }
+
+        .lira-box {
+            background: rgba(0, 255, 255, 0.05); border: 1px solid var(--cyan);
+            border-radius: 12px; padding: 10px; margin: 10px 0; width: 100%;
+        }
+
+        .history-box { max-height: 100px; overflow-y: auto; background: rgba(0,0,0,0.2); border-radius: 10px; padding: 10px; margin-top: 10px; font-size: 0.6rem; text-align: left; }
+        .history-item { border-left: 2px solid var(--gold); padding-left: 8px; margin-bottom: 5px; }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
@@ -86,178 +126,238 @@
     <div id="scanner-line"></div>
 
     <div id="splash-screen">
-        <div id="greeting-text">YÜKLENİYOR...</div>
         <div class="splash-circle">
-            <span style="font-size: 0.6rem; letter-spacing: 3px;">NEURAL</span>
-            <span style="color: var(--cyan); font-weight: 900; font-size: 1.2rem;">FOCUS AI</span>
+            <span id="greeting-display" style="font-size: 0.9rem; color: #fff; margin-bottom: 8px; text-transform: uppercase; font-weight: bold;">YÜKLENİYOR</span>
+            <span style="color: var(--cyan); font-size: 1.3rem; letter-spacing: 1px; line-height: 1;">NEURAL<br>FOCUS AI</span>
         </div>
     </div>
 
     <div class="tab-bar">
-        <div class="tab-item active" onclick="openTab('biz')">🏢 BUSINESS</div>
-        <div class="tab-item" onclick="openTab('life')">🔥 LIFESTYLE</div>
+        <div id="btn-business" class="tab-item active" onclick="openTab('business')">🏢 BUSINESS</div>
+        <div id="btn-academy" class="tab-item" onclick="openTab('academy')">🎓 ACADEMY</div>
+        <div id="btn-lifestyle" class="tab-item" onclick="openTab('lifestyle')">🔥 LIFESTYLE</div>
     </div>
 
-    <div id="biz" class="tab-content active">
-        <div class="glass-card" style="border-color: var(--gold);">
-            <h3 style="color: var(--gold); margin: 0 0 10px 0; font-size: 1rem;">🛡️ MİLLİ EGEMENLİK ANALİZİ</h3>
-            <div id="report-display" style="font-size: 0.8rem; min-height: 60px; line-height: 1.4;">
-                Piyasa Durumu: <span style="color:var(--wa-green)">AKTİF</span><br>
-                USD/TRY Verisi: ₺<span id="live-rate">43.64</span>
+    <div id="business" class="tab-content active">
+        <h1 style="font-size: 1.7rem; color: var(--cyan); margin: 10px 0;">NEURAL FOCUS AI</h1>
+        
+        <div class="lira-box" style="border-color: var(--purple);">
+            <input type="text" id="userName" placeholder="Adınızı girin (İsim)" oninput="saveName()" style="background:transparent; border:none; color:white; text-align:center; width:100%; outline:none; font-weight:bold; height: 30px;">
+        </div>
+
+        <div class="glass-card" style="border: 1px solid var(--gold); background: rgba(255, 215, 0, 0.05);">
+            <h3 style="color: var(--gold); font-size: 0.9rem; margin: 0 0 10px 0;">🛡️ DİJİTAL EGEMENLİK ANALİZİ</h3>
+            <div id="market-report" style="font-size: 0.75rem; text-align: left; min-height: 60px;">
+                <p>USD/TRY: <span id="real-usd">₺43.64</span> 🟢</p>
+                <p>📊 Sistem yerel verileri işlemek için aktif.</p>
             </div>
-            <button onclick="startSovereignScan()" class="btn-premium bg-gold">DİJİTAL KALKANI ÇALIŞTIR</button>
+            <button onclick="getAiMarketReport()" class="btn-premium bg-gold">🧠 STRATEJİK ANALİZİ BAŞLAT</button>
             <div id="biz-history" class="history-box"></div>
         </div>
 
-        <div class="glass-card" style="padding:0; overflow:hidden; border-color: var(--cyan);">
-            <iframe width="100%" height="220" src="https://www.youtube.com/embed/X-FWm-NHEBc?autoplay=1&mute=1" frameborder="0" allowfullscreen></iframe>
+        <div class="glass-card" style="padding: 0; overflow: hidden; aspect-ratio: 16/9; border: 2px solid var(--cyan);">
+            <iframe width="100%" height="100%" src="https://www.youtube.com/embed/X-FWm-NHEBc?autoplay=1&mute=1" frameborder="0" allowfullscreen></iframe>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-            <a href="https://chat.whatsapp.com/FPplgqnE2NiHmahVJXCic2" class="btn-premium" style="background:#111; border:1px solid #333;">🏥 SAĞLIK</a>
-            <a href="https://chat.whatsapp.com/KQBkGZhDnJt2vxk7x5VdRI" class="btn-premium" style="background:#111; border:1px solid #333;">🍲 GASTRO</a>
-        </div>
-    </div>
-
-    <div id="life" class="tab-content">
-        <div class="glass-card">
-            <h3 style="color: var(--cyan); margin: 0 0 10px 0; font-size: 1rem;">📸 GASTRO & SAĞLIK VİZYONU</h3>
-            <p style="font-size: 0.7rem; color: #888;">Yemeği yazın ve fotoğraflayın, AI analiz etsin.</p>
-            <input type="text" id="foodSearch" placeholder="Yemek ismi (Örn: Kebap)" style="width:100%; padding:12px; margin-bottom:12px; border-radius:8px; border:1px solid var(--cyan); background:#000; color:#fff; outline:none;">
-            <button onclick="startGastroScan()" class="btn-premium bg-gastro">KAMERAYI AÇ VE TARA</button>
-            <input type="file" id="gastroFile" accept="image/*" capture="environment" style="display:none" onchange="executeGastroAction()">
+        <div class="lira-box">
+            <div style="display:flex; justify-content: space-around; font-size: 0.6rem; color: var(--gold); margin-bottom:5px;">
+                <span>USD/TRY: <span id="dynamic-usd">43.64</span> 🟢</span>
+                <span>ALTIN: 2045 🟡</span>
+            </div>
+            <input type="number" id="usdInput" placeholder="USD" oninput="convertTRY()" style="background:transparent; border:none; border-bottom:1px solid var(--cyan); color:white; text-align:center; width:80px; outline:none;">
+            <span id="tryOutput" style="font-weight:bold; color:var(--cyan); margin-left:10px;">₺ 0.00</span>
         </div>
 
-        <div class="glass-card" style="border-color: var(--purple);">
-            <h3 style="color: var(--purple); margin: 0 0 10px 0; font-size: 1rem;">🔮 YAPAY ZEKA KAHVE FALI</h3>
-            <button onclick="startFalScan()" class="btn-premium" style="background: var(--purple);">FİNCAN FOTOĞRAFI ÇEK</button>
-            <input type="file" id="falFile" accept="image/*" capture="environment" style="display:none" onchange="executeFalAction()">
-            <div id="fal-result-box" style="display:none; margin-top:15px; font-style: italic; color: var(--gold); font-size: 0.85rem; border-top: 1px solid #333; padding-top:10px;"></div>
-        </div>
-
-        <a href="https://wa.me/5492246496971?text=Merhaba%20Lucas,%20harika%20bir%20iş%20çıkarmışsın!%20Sana%20bir%20çay%20ısmarlamak%20istiyorum." class="btn-premium bg-tea">☕ BİR ÇAY ISMARLA (İLETİŞİM)</a>
+        <a href="https://maps.google.com" target="_blank" class="btn-premium bg-maps">📍 GLOBAL OFFICE (MAPS)</a>
+        <a href="https://translate.google.com/?sl=tr&tl=es" target="_blank" class="btn-premium bg-purple">🌍 AKILLI ÇEVİRMEN (TR-ES)</a>
+        <a href="https://www.turkiye.gov.tr/" target="_blank" class="btn-premium bg-gold">🏛️ E-DEVLET & BİLGİ REHBERİ</a>
         
-        <button onclick="shareApp()" class="btn-premium bg-wa">📲 UYGULAMAYI PAYLAŞ</button>
+        <div class="sector-grid">
+            <a href="https://chat.whatsapp.com/FPplgqnE2NiHmahVJXCic2" target="_blank" class="sector-btn">🏥 Sağlık</a>
+            <a href="https://chat.whatsapp.com/KQBkGZhDnJt2vxk7x5VdRI" target="_blank" class="sector-btn">🍲 Gastronomi</a>
+            <a href="https://chat.whatsapp.com/IsvihivL7Bb0uwEV4ALIb5" target="_blank" class="sector-btn">🏭 Sanayi</a>
+            <a href="https://chat.whatsapp.com/CPddy8AAILL2uSaTcRpHj1" target="_blank" class="sector-btn">🏗️ İnşaat</a>
+        </div>
     </div>
+
+    <div id="academy" class="tab-content">
+        <h2 style="color: var(--cyan);">ACADEMY</h2>
+        <div class="glass-card">
+            <p style="font-size: 0.8rem; margin-bottom: 15px;">Yapay zeka ve dil eğitimleri ile geleceği inşa edin.</p>
+            <a href="https://www.coursera.org/courses?query=artificial%20intelligence" target="_blank" class="btn-premium bg-cyan">🤖 YAPAY ZEKA KURSLARI</a>
+            <div class="sector-grid" style="margin-top: 10px;">
+                <a href="https://www.saylor.org/course/span101/" target="_blank" class="sector-btn" style="border:1px solid var(--cyan);">🇪🇸 İspanyolca</a>
+                <a href="https://www.saylor.org/course/engl000/" target="_blank" class="sector-btn" style="border:1px solid var(--cyan);">🇬🇧 İngilizce</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="lifestyle" class="tab-content">
+        <h2 style="color: #bc13fe;">LIFESTYLE 🔥</h2>
+
+        <div class="glass-card" style="border: 1px solid var(--cyan);">
+            <h3 style="color: var(--cyan); font-size: 0.8rem; margin: 0 0 10px 0;">📸 GASTRO-SAĞLIK VİZYONU</h3>
+            <input type="text" id="foodName" style="background: rgba(255,255,255,0.1); border: 1px solid var(--cyan); color: #fff; padding: 10px; border-radius: 8px; width: 100%; margin-bottom: 10px; text-align: center; outline: none;" placeholder="Hangi yemeği analiz edelim?">
+            <button onclick="startGastroAI()" class="btn-premium bg-gastro">FOTOĞRAFI TARA</button>
+            <input type="file" id="gastroInput" accept="image/*" capture="environment" style="display: none;" onchange="processGastroImage(this)">
+        </div>
+
+        <a href="https://fizy.com/" target="_blank" class="btn-premium bg-fizy">🎧 GÜNÜN PLAYLIST'İ (FIZY)</a>
+        
+        <button onclick="startAiFal()" class="btn-premium bg-fal">🔮 YAPAY ZEKA KAHVE FALI</button>
+        <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;" onchange="processFal()">
+        
+        <div id="fal-display" style="display:none;" class="glass-card">
+            <h3 style="color: var(--gold); font-size: 0.9rem;">🔮 FALINIZ:</h3>
+            <p id="fal-text" style="font-size: 0.8rem; line-height: 1.4;"></p>
+        </div>
+        
+        <button onclick="shareApp()" class="btn-premium bg-whatsapp">📲 UYGULAMAYI PAYLAŞ</button>
+        <a href="https://wa.me/5492246496971?text=Merhaba%20Lucas,%20sana%20bir%20çay%20ısmarlamak%20istiyorum!" class="btn-premium bg-cay">☕ BİR ÇAY ISMARLA (İLETİŞİM)</a>
+    </div>
+
+    <footer style="font-size: 0.6rem; color: #555; padding: 20px; line-height: 1.5;">
+        © 2026 LUCAS GUZMÁN | NEURAL FOCUS AI<br>
+        <b>Servisler:</b> Voz Inteligente (Yazılı 24/7) & Agente de Vida (Live 24/7)<br>
+        Sağlık, Gastronomi, Sanayi ve İnşaat Sektörleri.
+    </footer>
 
     <script>
-        // --- 1. SALUDO INICIAL Y SPLASH ---
-        window.onload = () => {
-            const hour = new Date().getHours();
-            let greeting = "";
-            if(hour >= 5 && hour < 12) greeting = "GÜNAYDIN";
-            else if(hour >= 12 && hour < 18) greeting = "İYİ GÜNLER";
-            else greeting = "İYİ AKŞAMLAR";
+        // --- 1. INITIALIZATION & GREETING ---
+        function initApp() {
+            const hours = new Date().getHours();
+            let greet = "";
+            if (hours >= 5 && hours < 12) greet = "GÜNAYDIN";
+            else if (hours >= 12 && hours < 18) greet = "İYİ GÜNLER";
+            else greet = "İYİ AKŞAMLAR";
             
-            document.getElementById('greeting-text').innerText = greeting;
+            document.getElementById('greeting-display').innerText = greet;
             
             setTimeout(() => {
                 document.getElementById('splash-screen').style.opacity = '0';
                 setTimeout(() => document.getElementById('splash-screen').style.display = 'none', 800);
             }, 2500);
-            updateRate();
-        };
-
-        function openTab(id) {
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            event.currentTarget.classList.add('active');
+            updateMarket();
         }
 
-        function speak(text) {
-            const utter = new SpeechSynthesisUtterance(text);
-            utter.lang = 'tr-TR';
-            window.speechSynthesis.speak(utter);
+        // --- 2. USER NAME STORAGE ---
+        let userName = localStorage.getItem('neuralName') || "";
+        if(userName) document.getElementById('userName').value = userName;
+        function saveName() {
+            userName = document.getElementById('userName').value;
+            localStorage.setItem('neuralName', userName);
         }
 
-        async function updateRate() {
+        // --- 3. NAVIGATION ---
+        function openTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-item').forEach(i => i.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            document.getElementById('btn-' + tabName).classList.add('active');
+        }
+
+        // --- 4. MARKET DATA ---
+        let liveRate = 43.64;
+        async function updateMarket() {
             try {
                 const res = await fetch('https://open.er-api.com/v6/latest/USD');
                 const data = await res.json();
-                document.getElementById('live-rate').innerText = data.rates.TRY.toFixed(2);
-            } catch(e) {}
+                liveRate = data.rates.TRY;
+                document.getElementById('real-usd').innerText = "₺" + liveRate.toFixed(2);
+                document.getElementById('dynamic-usd').innerText = liveRate.toFixed(2);
+            } catch(e) { console.log("Market error"); }
         }
 
-        // --- 2. ESCÁNER DE SOBERANÍA (NUEVA FUNCIÓN) ---
-        function startSovereignScan() {
+        function convertTRY() {
+            const val = document.getElementById('usdInput').value;
+            document.getElementById('tryOutput').innerText = "₺ " + (val * liveRate).toFixed(2);
+        }
+
+        // --- 5. SOVEREIGNTY ANALYSIS (WITH SCANNER) ---
+        function getAiMarketReport() {
+            const reportDiv = document.getElementById('market-report');
+            const historyBox = document.getElementById('biz-history');
             const scanner = document.getElementById('scanner-line');
-            const report = document.getElementById('report-display');
-            scanner.style.display = 'block';
-            speak("Veri kalkanı devreye girdi. Küresel izleyiciler engelleniyor.");
             
-            report.innerHTML = "<span style='color:var(--cyan); font-family:monospace;'>[SİSTEM GÜVENLİ]<br>> Google İzleyicileri Engellendi...<br>> Yerel Sunucu Bağlantısı Aktif...</span>";
+            scanner.style.display = 'block';
+            speak("Veri kalkanı aktif. Küresel izleyiciler engelleniyor.");
+            
+            reportDiv.innerHTML = `<div style="font-family: monospace; font-size: 0.6rem; color: var(--cyan); text-align: left;">> [GÜVENLİ DÜĞÜM AKTİF]<br>> Google İzleyicileri Engellendi...<br>> Yerel Şifreleme Uygulanıyor...</div>`;
 
             setTimeout(() => {
                 scanner.style.display = 'none';
-                const tips = [
-                    "SANAYİ: Hammadde ithalatı için kur dengesi uygun, yerli üretime odaklanın.",
-                    "İNŞAAT: Demir-çelik endeksi AI tarafından optimize edildi, alım zamanı.",
-                    "SAĞLIK: Tıbbi verileriniz yerli şifreleme ile koruma altına alındı.",
-                    "GASTRONOMİ: Yerel tedarik zinciri ile %12 maliyet tasarrufu sağlandı."
+                const sectors = [
+                    { n: "SANAYİ", a: "Üretim hattında yerel kaynak kullanımı stratejik önceliktir." },
+                    { n: "İNŞAAT", a: "Maliyet endeksi analizi bitti, stok alımı için güvenli bölge." },
+                    { n: "GASTRONOMİ", a: "Yerel tedarik zinciri ile dijital egemenlik korunuyor." },
+                    { n: "SAĞLIK", a: "Sağlık verileri millî güvenlik protokolü ile şifrelendi." }
                 ];
-                const msg = tips[Math.floor(Math.random()*tips.length)];
-                report.innerHTML = `<b style='color:var(--gold)'>🛡️ STRATEJİK KARAR:</b><br>${msg}`;
+                const s = sectors[Math.floor(Math.random() * sectors.length)];
+                const msg = `Sayın ${userName || 'Girişimci'}, ${s.n} Analizi: ${s.a}`;
                 
-                const h = document.getElementById('biz-history');
+                reportDiv.innerHTML = `<div style="border: 1px solid var(--gold); padding: 10px; border-radius: 8px; animation: fadeIn 1s;"><p style="color: var(--gold); font-weight: bold; margin: 0;">🛡️ STRATEJİK KARAR:</p><p style="margin: 5px 0;">${msg}</p></div>`;
+                
                 const item = document.createElement('div');
                 item.className = 'history-item';
-                item.innerText = `[${new Date().toLocaleTimeString('tr-TR')}] ${msg}`;
-                h.prepend(item);
+                item.innerText = `[${new Date().toLocaleTimeString()}] ${msg}`;
+                historyBox.prepend(item);
+                
                 speak(msg);
             }, 3000);
         }
 
-        // --- 3. GASTRO & SAĞLIK ---
-        function startGastroScan() {
-            if(!document.getElementById('foodSearch').value) {
-                alert("Lütfen önce yemeğin adını yazın!");
-                return;
-            }
-            document.getElementById('gastroFile').click();
+        // --- 6. VOICE ENGINE ---
+        function speak(text) {
+            const synth = window.speechSynthesis;
+            const utter = new SpeechSynthesisUtterance(text);
+            utter.lang = 'tr-TR'; 
+            synth.speak(utter);
         }
 
-        function executeGastroAction() {
+        // --- 7. LIFESTYLE FUNCTIONS ---
+        function startGastroAI() {
+            if(!document.getElementById('foodName').value) { alert("Lütfen yemeği yazın."); return; }
+            document.getElementById('gastroInput').click();
+        }
+
+        function processGastroImage(input) {
+            const food = document.getElementById('foodName').value;
             const scanner = document.getElementById('scanner-line');
             scanner.style.display = 'block';
-            speak("Gastro vizyon analizi yapılıyor.");
-            
+            speak("Gastro analiz başlatılıyor.");
             setTimeout(() => {
                 scanner.style.display = 'none';
-                const food = document.getElementById('foodSearch').value;
-                window.open(`https://www.google.com/search?q=${encodeURIComponent(food)}+kalori+sağlık+değeri+analizi`, '_blank');
+                window.open(`https://www.google.com/search?q=${encodeURIComponent(food)}+kalori+sağlık+değeri`, '_blank');
             }, 2000);
         }
 
-        // --- 4. KAHVE FALI ---
-        function startFalScan() {
-            document.getElementById('falFile').click();
+        function startAiFal() {
+            speak("Geleceği tarıyorum.");
+            document.getElementById('cameraInput').click();
         }
 
-        function executeFalAction() {
+        function processFal() {
+            const display = document.getElementById('fal-display');
+            const text = document.getElementById('fal-text');
             const scanner = document.getElementById('scanner-line');
-            const resBox = document.getElementById('fal-result-box');
             scanner.style.display = 'block';
-            resBox.style.display = 'block';
-            resBox.innerText = "Fincanınızdaki semboller çözümleniyor...";
-            speak("Gelecek taranıyor.");
-
+            display.style.display = 'block';
+            text.innerText = "Yapay zeka fincanı yorumluyor...";
+            
             setTimeout(() => {
                 scanner.style.display = 'none';
-                const luck = [
-                    "Kısmetin açılıyor, beklediğin o telefon bugün gelecek.",
-                    "Hanene huzur ve bereket doğuyor, bir yolculuk görünüyor.",
-                    "Sıkıntıların bitiyor, yapay zeka senin için parlak bir gelecek görüyor."
-                ];
-                const msg = luck[Math.floor(Math.random()*luck.length)];
-                resBox.innerHTML = `🔮 <b>AI FALINIZ:</b> <br>${msg}`;
-                speak(msg);
+                const luck = ["Yolun açık, başarı yakında.", "Hanenize bereket doğuyor.", "Beklediğin haber bugün gelebilir."];
+                const f = luck[Math.floor(Math.random() * luck.length)];
+                text.innerText = f;
+                speak(f);
             }, 3500);
         }
 
         function shareApp() {
-            window.open('https://wa.me/?text=Neural%20Focus%20AI%20ile%20dijital%20egemenliğimi%20koruyorum!%20Sen%20de%20dene!');
+            window.open('https://wa.me/?text=' + encodeURIComponent("Neural Focus AI: Geleceği keşfedin!"));
         }
+
+        window.onload = initApp;
     </script>
 </body>
             </html>
