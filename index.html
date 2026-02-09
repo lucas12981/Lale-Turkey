@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Neural Focus AI | Lucas Guzmán</title>
+    <title>NeuralFocusIA | Lucas Guzmán</title>
     
     <style>
         :root {
@@ -22,6 +22,45 @@
             margin: 0; padding: 0;
             display: flex; flex-direction: column; align-items: center;
             overflow-x: hidden;
+            perspective: 1000px;
+        }
+
+        /* --- BANNER 3D FUTURISTA --- */
+        .banner-3d {
+            width: 90%;
+            margin: 20px 0;
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(0,255,255,0.1), rgba(188,19,254,0.1));
+            border: 2px solid var(--cyan);
+            border-radius: 15px;
+            text-align: center;
+            transform-style: preserve-3d;
+            animation: float3d 4s infinite ease-in-out;
+            box-shadow: 0 20px 50px rgba(0,255,255,0.2);
+        }
+
+        .banner-title {
+            font-size: 1.8rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            color: var(--cyan);
+            text-shadow: 3px 3px 0px var(--purple), 5px 5px 15px rgba(0,0,0,0.5);
+            margin: 0;
+            transform: translateZ(50px);
+        }
+
+        .banner-sub {
+            font-size: 0.9rem;
+            color: #fff;
+            margin-top: 5px;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            transform: translateZ(30px);
+        }
+
+        @keyframes float3d {
+            0%, 100% { transform: rotateY(-5deg) rotateX(5deg) translateY(0px); }
+            50% { transform: rotateY(5deg) rotateX(-5deg) translateY(-10px); }
         }
 
         /* --- SPLASH SCREEN --- */
@@ -53,7 +92,7 @@
 
         .container { 
             width: 92%; max-width: 400px; 
-            padding: 20px 0 100px 0;
+            padding: 10px 0 100px 0;
             display: flex; flex-direction: column; align-items: center;
         }
         
@@ -67,7 +106,6 @@
             box-sizing: border-box; text-align: center; position: relative;
         }
 
-        /* --- BOTONES Y ENTRADAS --- */
         input {
             width: 100%; max-width: 320px; padding: 14px; border-radius: 12px; 
             border: 1px solid var(--purple); background: #111; color: #fff; 
@@ -82,15 +120,12 @@
             display: flex; align-items: center; justify-content: center;
             text-decoration: none; box-sizing: border-box; transition: 0.2s;
         }
-        .btn:active { transform: scale(0.98); }
-
         .btn-cyan { background: var(--cyan); color: #000; }
         .btn-purple { background: var(--purple); }
         .btn-red { background: var(--turk-red); }
         .btn-gold { background: linear-gradient(90deg, #ffcc00, #ff9900); color: #000; }
         .btn-maps { background: linear-gradient(90deg, #4285F4, #34A853, #FBBC05, #EA4335); }
 
-        /* --- SECTORES WHATSAPP --- */
         .sector-grid { 
             display: grid; grid-template-columns: 1fr 1fr; gap: 10px; 
             width: 100%; max-width: 320px; margin: 15px 0;
@@ -101,14 +136,13 @@
             font-weight: 900; color: #fff; text-decoration: none;
         }
 
-        /* --- LOADINGS --- */
         .loading-ia {
             display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.95); border-radius: 20px;
             flex-direction: column; justify-content: center; align-items: center; z-index: 10;
         }
-        .spinner { border: 3px solid rgba(255,255,255,0.1); border-top: 3px solid var(--cyan); border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .spinner { border: 3px solid var(--cyan); border-top: 3px solid transparent; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
 
         footer {
             text-align: center; font-size: 0.6rem; color: #444;
@@ -122,7 +156,7 @@
         <div class="logo-pulse">
             <span id="txtGreet" style="font-size: 0.55rem; color: #666; margin-bottom: 5px;">YÜKLENİYOR</span>
             <span style="font-weight: 900; font-size: 1.1rem;">NEURAL</span>
-            <span style="color: var(--cyan); letter-spacing: 3px;">FOCUS AI</span>
+            <span style="color: var(--cyan); letter-spacing: 3px;">FOCUS IA</span>
         </div>
     </div>
 
@@ -135,7 +169,11 @@
     <div class="container">
         
         <div id="biz" class="panel active">
-            <h1 style="color: var(--cyan); letter-spacing: 2px; font-size: 1.4rem; margin-bottom: 20px;">LUCAS GUZMÁN AGENCY</h1>
+            <div class="banner-3d">
+                <p class="banner-title">NeuralFocusIA</p>
+                <p class="banner-sub">(HOŞ GELDİNİZ)</p>
+            </div>
+
             <input type="text" id="uName" placeholder="İsminiz (Nombre)">
 
             <div class="card" style="border-top: 3px solid var(--gold);">
@@ -149,7 +187,7 @@
             <a href="https://www.turkiye.gov.tr/" target="_blank" class="btn btn-gold">🏛️ E-DEVLET (GOBIERNO)</a>
 
             <div class="sector-grid">
-                <a href="https://chat.whatsapp.com/FPplgqnE2NiHmahVJXCic2" class="sector-item">🏥 SAĞLIK (SALUD)</a>
+                <a href="https://chat.whatsapp.com/FPplgqnE2NiHmahVJXCic2" class="sector-item">🏥 SAĞLIK</a>
                 <a href="https://chat.whatsapp.com/KQBkGZhDnJt2vxk7x5VdRI" class="sector-item">🍲 GASTRO</a>
                 <a href="https://chat.whatsapp.com/IsvihivL7Bb0uwEV4ALIb5" class="sector-item">🏭 SANAYİ</a>
                 <a href="https://chat.whatsapp.com/CPddy8AAILL2uSaTcRpHj1" class="sector-item">🏗️ İNŞAAT</a>
@@ -158,7 +196,7 @@
 
         <div id="acad" class="panel">
             <h2 style="color:var(--cyan); margin-bottom:20px;">NEURAL ACADEMY</h2>
-            <a href="https://www.coursera.org" target="_blank" class="btn btn-cyan">🤖 YAPAY ZEKA (IA) MASTER</a>
+            <a href="https://www.coursera.org" target="_blank" class="btn btn-cyan">🤖 YAPAY ZEKA MASTER</a>
             <a href="https://www.saylor.org" target="_blank" class="btn btn-purple">🇬🇧 PROFESYONEL İNGİLİZCE</a>
             <a href="https://www.udemy.com" target="_blank" class="btn btn-gold">💻 TEKNOLOJİ KURSLARI</a>
         </div>
@@ -167,53 +205,39 @@
             <h2 style="color:var(--purple); margin-bottom:20px;">LIFESTYLE AI</h2>
             
             <div class="card" id="cardGastro">
-                <div class="loading-ia" id="loadGastro"><div class="spinner"></div><p style="font-size: 0.6rem; margin-top:10px;">IA Yemek Analiz Ediliyor...</p></div>
+                <div class="loading-ia" id="loadGastro"><div class="spinner"></div><p style="font-size: 0.6rem; margin-top:10px;">IA Analiz Ediliyor...</p></div>
                 <h4 style="color:var(--cyan); margin-bottom:10px;">🍲 GASTRO-SAĞLIK ANALİZİ</h4>
-                <input type="text" id="dishInput" placeholder="Yemek adı yazın (Baklava, Pide...)">
+                <input type="text" id="dishInput" placeholder="Yemek adı (Baklava, Pide...)">
                 <button onclick="processGastro()" class="btn btn-cyan" style="margin: 0 auto;">ANALİZ ET</button>
                 <div id="resGastro" style="font-size:0.75rem; margin-top:10px; color:var(--wa-green); padding: 5px;"></div>
             </div>
 
             <div class="card" id="cardCoffee">
-                <div class="loading-ia" id="loadCoffee"><div class="spinner"></div><p style="font-size: 0.6rem; margin-top:10px;">IA Kahve Falına Bakıyor...</p></div>
+                <div class="loading-ia" id="loadCoffee"><div class="spinner"></div><p style="font-size: 0.6rem; margin-top:10px;">IA Fal Bakıyor...</p></div>
                 <h4 style="color:var(--purple); margin-bottom:10px;">🔮 KAHVE FALI (IA)</h4>
                 <input type="file" id="coffeeCam" accept="image/*" capture="environment" style="display:none;" onchange="processCoffee()">
-                <button onclick="document.getElementById('coffeeCam').click()" class="btn btn-purple" style="margin: 0 auto;">FOTOĞRAF ÇEK VE FAL BAK</button>
+                <button onclick="document.getElementById('coffeeCam').click()" class="btn btn-purple" style="margin: 0 auto;">FOTOĞRAF ÇEK</button>
                 <div id="resCoffee" style="font-size:0.8rem; margin-top:10px; color:var(--gold); font-weight: bold; padding: 5px;"></div>
             </div>
 
-            <a href="https://wa.me/5492246496971" target="_blank" class="btn btn-red">☕ BİR ÇAY ISMARLA (INVÍTAME UN TÉ)</a>
+            <a href="https://wa.me/5492246496971" target="_blank" class="btn btn-red">☕ BİR ÇAY ISMARLA (WhatsApp)</a>
         </div>
     </div>
 
     <footer>
-        <b style="color:var(--cyan);">LUCAS GUZMÁN AGENCY © 2026</b><br>
-        Voz Inteligente 24/7 | Agente de Vida Live 24/7<br>
-        Sağlık & Gastronomi | Sanayi & İnşaat
+        <b style="color:var(--cyan);">NEURAL FOCUS IA © 2026</b><br>
+        LUCAS GUZMÁN AGENCY | Voz Inteligente 24/7
     </footer>
 
     <script>
-        // BASE DE DATOS GASTRONÓMICA (SOPORTA 200 PLATOS)
         const turkishDishes = {
-            "baklava": { c: "450 kcal", h: "Yüksek şeker. Porsiyon kontrolü ve yanında su/süt önerilir." },
-            "iskender": { c: "750 kcal", h: "Yüksek protein. Yanındaki yoğurt sindirime yardımcı olur." },
-            "adana kebap": { c: "610 kcal", h: "Protein deposu. Bol yeşillik ve salata ile tüketilmelidir." },
-            "lahmacun": { c: "220 kcal", h: "Dengeli karbonhidrat ve protein. Bol limon ve maydanoz ekleyin." },
-            "mercimek çorbası": { c: "160 kcal", h: "Lif kaynağı. Sindirim sistemi dostudur." },
-            "pide": { c: "520 kcal", h: "Enerji verir. Sebzeli çeşitleri vitamin açısından zengindir." },
-            "mantı": { c: "420 kcal", h: "Karbonhidrat zengini. Sarımsaklı yoğurt bağışıklığı destekler." },
-            "imam bayıldı": { c: "240 kcal", h: "Zeytinyağı ve sebze dengesi kalp dostudur." },
-            "cacık": { c: "90 kcal", h: "Probiyotik deposu. Hafif ve sağlıklı bir yardımcıdır." }
-            // Lógica interna reconoce cualquier plato turco adicional.
+            "baklava": { c: "450 kcal", h: "Yüksek şeker. Porsiyon kontrolü şart." },
+            "iskender": { c: "750 kcal", h: "Protein deposu. Tereyağına dikkat." },
+            "lahmacun": { c: "220 kcal", h: "Besleyici. Bol yeşillikle tüketin." },
+            "mercimek çorbası": { c: "160 kcal", h: "Lif kaynağı. Çok sağlıklı." }
         };
 
-        const fortunes = [
-            "Fincanında bir kuş var; temiz bir haber yolda.",
-            "Kısa bir yolculuk sana büyük şans getirecek.",
-            "Üç vakte kadar büyük bir kapı açılıyor, sabret.",
-            "Yüreğin ferahlıyor, tüm sıkıntılar geride kalıyor.",
-            "İş hayatında büyük bir yükseliş ve başarı seni bekliyor."
-        ];
+        const fortunes = ["Fincanında temiz bir haber var.", "Büyük bir başarı kapısı açılıyor.", "Yolculuk görünüyor.", "Kısmetin açılıyor."];
 
         function speak(t) {
             const m = new SpeechSynthesisUtterance(t);
@@ -222,14 +246,11 @@
         }
 
         window.onload = () => {
-            const h = new Date().getHours();
-            let g = h < 12 ? "GÜNAYDIN" : h < 18 ? "İYİ GÜNLER" : "İYİ AKŞAMLAR";
-            document.getElementById('txtGreet').innerText = g;
-            speak(g + ". Lucas Guzmán Agency'e hoş geldiniz.");
             setTimeout(() => {
                 document.getElementById('splash').style.opacity = '0';
                 setTimeout(() => document.getElementById('splash').style.display = 'none', 800);
-            }, 3000);
+                speak("Neural Focus IA sistemine hoş geldiniz.");
+            }, 2500);
         };
 
         function nav(id, el) {
@@ -258,16 +279,10 @@
             load.style.display = 'flex';
             setTimeout(() => {
                 load.style.display = 'none';
-                let msg = "";
-                if (turkishDishes[input]) {
-                    const dish = turkishDishes[input];
-                    msg = `${input.toUpperCase()} ANALİZİ: ${dish.c}. ${dish.h}`;
-                } else {
-                    msg = `${input.toUpperCase()} TESPİT EDİLDİ: Bu geleneksel yemek yüksek besin değerine sahiptir. Sağlığınız için ölçülü tüketin.`;
-                }
-                res.innerHTML = `<span style="color:var(--cyan)">🥗 RAPOR:</span> ${msg}`;
+                let msg = turkishDishes[input] ? `${input.toUpperCase()}: ${turkishDishes[input].c}. ${turkishDishes[input].h}` : `${input.toUpperCase()} TESPİT EDİLDİ. Sağlıklı bir seçim.`;
+                res.innerHTML = `🥗 RAPOR: ${msg}`;
                 speak(msg);
-            }, 2500);
+            }, 2000);
         }
 
         function processCoffee() {
@@ -277,11 +292,11 @@
             setTimeout(() => {
                 load.style.display = 'none';
                 const msg = fortunes[Math.floor(Math.random() * fortunes.length)];
-                res.innerHTML = `<span style="color:var(--gold)">🔮 IA FALI:</span> ${msg}`;
+                res.innerHTML = `🔮 FAL: ${msg}`;
                 speak(msg);
-            }, 4000);
+            }, 3000);
         }
     </script>
 </body>
-                    </html>
-    
+    </html>
+                    
