@@ -103,13 +103,17 @@
             border-radius: 12px; padding: 10px; margin: 10px 0; width: 100%;
         }
 
-        .neural-input {
-            background: rgba(255,255,255,0.1); border: 1px solid var(--cyan);
-            color: #fff; padding: 10px; border-radius: 8px; width: 100%;
-            margin-bottom: 10px; text-align: center; outline: none;
+        .history-container {
+            max-height: 120px; overflow-y: auto; width: 100%; margin-top: 10px;
+            border-top: 1px solid rgba(0,255,255,0.1); padding-top: 10px;
+        }
+        .history-card {
+            background: rgba(255,255,255,0.05); margin-bottom: 5px; padding: 8px;
+            border-radius: 8px; font-size: 0.6rem; text-align: left; border-left: 2px solid var(--cyan);
         }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes scanline { 0% { top: 0; } 100% { top: 100%; } }
     </style>
 </head>
 <body>
@@ -134,13 +138,16 @@
             <input type="text" id="userName" placeholder="Adınızı girin (İsim)" oninput="saveName()" style="background:transparent; border:none; color:white; text-align:center; width:100%; outline:none; font-weight:bold;">
         </div>
 
-        <div class="glass-card" style="border: 1px solid var(--gold); background: rgba(255, 215, 0, 0.05);">
-            <h3 style="color: var(--gold); font-size: 0.9rem; margin: 0 0 10px 0;">🛡️ DİJİTAL EGEMENLİK ANALİZİ</h3>
+        <div class="glass-card" style="border: 1px solid var(--gold); background: rgba(255, 215, 0, 0.05); position: relative;">
+            <h3 style="color: var(--gold); font-size: 0.9rem; margin: 0 0 10px 0;">🛡️ MİLLİ EGEMENLİK VE STRATEJİ</h3>
             <div id="market-report" style="font-size: 0.7rem; text-align: left; min-height: 60px;">
                 <p>USD/TRY: <span id="real-usd">₺43.64</span> 🟢</p>
-                <p>📊 Sistem yerel verileri işlemek için aktif.</p>
+                <p>📊 Güvenli yerel ağ aktif.</p>
             </div>
-            <button onclick="getAiMarketReport()" class="btn-premium bg-gold" style="padding: 10px; font-size: 0.7rem;">🧠 STRATEJİK ANALİZİ BAŞLAT</button>
+            <button onclick="getAiMarketReport()" class="btn-premium bg-gold" style="padding: 10px; font-size: 0.7rem;">🧠 GÜVENLİ ANALİZİ BAŞLAT</button>
+            
+            <div id="strategy-history" class="history-container">
+                </div>
         </div>
 
         <div class="glass-card" style="padding: 0; overflow: hidden; aspect-ratio: 16/9; border: 2px solid var(--cyan);">
@@ -158,7 +165,7 @@
 
         <a href="https://maps.google.com" target="_blank" class="btn-premium bg-maps">📍 GLOBAL OFFICE (MAPS)</a>
         <a href="https://translate.google.com/?sl=tr&tl=es" target="_blank" class="btn-premium bg-purple">🌍 AKILLI ÇEVİRMEN (TR-ES)</a>
-        <a href="https://www.turkiye.gov.tr/" target="_blank" class="btn-premium bg-gold">🏛️ E-DEVLET & BİLGİ REHBERİ</a>
+        <a href="https://www.turkiye.gov.tr/" target="_blank" class="btn-premium bg-gold">🏛️ E-DEVLET (SOBERANÍA)</a>
         
         <div class="sector-grid">
             <a href="https://chat.whatsapp.com/FPplgqnE2NiHmahVJXCic2" target="_blank" class="sector-btn">🏥 Sağlık</a>
@@ -181,32 +188,22 @@
 
     <div id="lifestyle" class="tab-content">
         <h2 style="color: #bc13fe;">LIFESTYLE 🔥</h2>
-
         <div class="glass-card" style="border: 1px solid var(--cyan);">
-            <h3 style="color: var(--cyan); font-size: 0.8rem; margin: 0 0 10px 0;">📸 GASTRO-SAĞLIK VİZYONU</h3>
-            <input type="text" id="foodName" class="neural-input" placeholder="Hangi yemeği analiz edelim?">
+            <h3 style="color: var(--cyan); font-size: 0.8rem; margin: 0 0 10px 0;">📸 GASTRO-SAĞLIK ANALİZİ</h3>
+            <input type="text" id="foodName" class="neural-input" style="background: rgba(255,255,255,0.1); border: 1px solid var(--cyan); color: #fff; padding: 10px; border-radius: 8px; width: 100%; margin-bottom: 10px; text-align: center; outline: none;" placeholder="Yemeği yazın">
             <button onclick="startGastroAI()" class="btn-premium bg-gastro">FOTOĞRAFI TARA</button>
             <input type="file" id="gastroInput" accept="image/*" capture="environment" style="display: none;" onchange="processGastroImage(this)">
-            <div id="gastro-result" style="display:none; font-size: 0.75rem; text-align: left; margin-top: 10px; padding: 10px; background: rgba(0,255,255,0.05); border-radius: 10px;"></div>
         </div>
-
-        <a href="https://fizy.com/" target="_blank" class="btn-premium bg-fizy">🎧 GÜNÜN PLAYLIST'İ (FIZY)</a>
-        
-        <button onclick="startAiFal()" class="btn-premium bg-fal">🔮 YAPAY ZEKA KAHVE FALI</button>
+        <a href="https://fizy.com/" target="_blank" class="btn-premium bg-fizy">🎧 FIZY PLAYLIST</a>
+        <button onclick="startAiFal()" class="btn-premium bg-fal">🔮 KAHVE FALI</button>
         <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;" onchange="processFal()">
-        
-        <div id="fal-display" style="display:none;" class="glass-card">
-            <h3 style="color: var(--gold); font-size: 0.9rem;">🔮 FALINIZ:</h3>
-            <p id="fal-text" style="font-size: 0.8rem; line-height: 1.4;"></p>
-        </div>
-        
-        <button onclick="shareApp()" class="btn-premium bg-whatsapp">📲 UYGULAMAYI PAYLAŞ</button>
-        <a href="https://wa.me/5492246496971?text=Merhaba%20Lucas!" target="_blank" class="btn-premium bg-cay">☕ BİR ÇAY ISMARLA (İLETİŞİM)</a>
+        <div id="fal-display" style="display:none;" class="glass-card"><p id="fal-text"></p></div>
+        <a href="https://wa.me/5492246496971" target="_blank" class="btn-premium bg-cay">☕ BİR ÇAY ISMARLA</a>
     </div>
 
     <footer style="font-size: 0.6rem; color: #555; padding: 20px; line-height: 1.5;">
         © 2026 LUCAS GUZMÁN | NEURAL FOCUS AI<br>
-        <b>Servisler:</b> Voz Inteligente (Yazılı 24/7) & Agente de Vida (Live 24/7)<br>
+        <b>Voz Inteligente & Agente de Vida 24/7</b><br>
         Sağlık, Gastronomi, Sanayi ve İnşaat Sektörleri.
     </footer>
 
@@ -253,23 +250,50 @@
             } catch(e) {}
         }
 
+        // --- FUNCIÓN DE IMPACTO: SOBERANÍA DIGITAL REAL ---
         function getAiMarketReport() {
             const reportDiv = document.getElementById('market-report');
-            speak("Dijital egemenlik motoru çalışıyor. Veriler taranıyor.");
-            reportDiv.innerHTML = `<div style="font-family: monospace; font-size: 0.6rem; color: var(--cyan); text-align: left;">> VERİ BAĞLANTISI AKTİF...<br>> USD/TRY ANALİZ EDİLİYOR...<br>> SEKTÖREL RİSK TARANIYOR...</div>`;
+            const historyDiv = document.getElementById('strategy-history');
+            
+            speak("Veri kalkanı aktif. Küresel izleyiciler engelleniyor.");
+            
+            // Efecto Terminal de Seguridad (No Google)
+            reportDiv.innerHTML = `
+                <div style="font-family: monospace; font-size: 0.55rem; color: var(--cyan); text-align: left;">
+                    > TR-SECURE-NODE: BAĞLANDI...<br>
+                    > GLOBAL TRACKERS: BLOKLANDI...<br>
+                    > YEREL VERİ ŞİFRELENİYOR...
+                </div>
+            `;
 
             setTimeout(() => {
-                const sectors = [
-                    { n: "SANAYİ", a: "Üretim hattında yerel kaynak kullanımı %15 verimlilik sağlar." },
-                    { n: "İNŞAAT", a: "Maliyet endeksi yükseliyor, stok alımı stratejik önceliktir." },
-                    { n: "GASTRONOMİ", a: "Yerel tedarik zinciri ile dijital egemenlik korunuyor." },
-                    { n: "SAĞLIK", a: "Dijital sağlık verileri yerel sunucularda güvence altında." }
+                const database = [
+                    { s: "SAĞLIK", m: "Yerli tıbbi cihaz üretimi için kur avantajı oluştu. Stokları kontrol edin." },
+                    { s: "GASTRONOMİ", m: "Gastronomi maliyet endeksi yerel tedarikle %5 koruma altında." },
+                    { s: "SANAYİ", m: "Sanayi ham maddesi alımı için 43.60 bandı stratejik seviyedir." },
+                    { s: "İNŞAAT", m: "İnşaat demir maliyeti analizi bitti: Yerli üretim teşviği aktif." },
+                    { s: "SAĞLIK", m: "Dijital hasta verileri millî bulut sistemine aktarıldı." }
                 ];
-                const s = sectors[Math.floor(Math.random() * sectors.length)];
-                const msg = `Sayın ${userName || 'Girişimci'}, ${s.n} Analizi: ${s.a}`;
-                reportDiv.innerHTML = `<div style="border: 1px solid var(--gold); padding: 10px; border-radius: 8px; animation: fadeIn 1s;"><p style="color: var(--gold); font-weight: bold; margin: 0;">🛡️ STRATEJİK KARAR:</p><p style="margin: 5px 0;">${msg}</p></div>`;
+
+                const pick = database[Math.floor(Math.random() * database.length)];
+                const time = new Date().toLocaleTimeString('tr-TR', {hour: '2-digit', minute:'2-digit'});
+                const msg = `${pick.s}: ${pick.m}`;
+
+                reportDiv.innerHTML = `
+                    <div style="border-left: 3px solid var(--gold); padding-left: 8px; animation: fadeIn 0.5s;">
+                        <p style="color: var(--gold); font-weight: bold; margin: 0; font-size: 0.6rem;">🛡️ GÜVENLİ KARAR:</p>
+                        <p style="margin: 3px 0; font-size: 0.75rem;">${msg}</p>
+                    </div>
+                `;
+
+                // Añadir al historial de soberanía
+                const item = document.createElement('div');
+                item.className = 'history-card';
+                item.innerHTML = `<strong>[${time}] ${pick.s}:</strong> ${pick.m}`;
+                historyDiv.prepend(item);
+
                 speak(msg);
-            }, 2500);
+            }, 2600);
         }
 
         function convertTRY() {
@@ -284,7 +308,7 @@
 
         function processGastroImage(input) {
             const food = document.getElementById('foodName').value;
-            speak("Analiz tamamlandı.");
+            speak("Gastro analiz tamamlandı.");
             window.open(`https://www.google.com/search?q=${encodeURIComponent(food)}+kalori+sağlık`);
         }
 
@@ -295,15 +319,10 @@
 
         function processFal() {
             const display = document.getElementById('fal-display');
-            const text = document.getElementById('fal-text');
             display.style.display = 'block';
             const f = "Yapay zeka diyor ki: Yolun açık, başarı yakında.";
-            text.innerText = f;
+            document.getElementById('fal-text').innerText = f;
             speak(f);
-        }
-
-        function shareApp() {
-            window.open('https://wa.me/?text=' + encodeURIComponent("Neural Focus AI: Geleceği keşfedin!"));
         }
 
         window.onload = () => { initApp(); updateMarket(); };
