@@ -3,373 +3,225 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Neural Focus AI | Lucas Guzmán</title>
+    <title>NEURAL FOCUS AI | LUCAS GUZMÁN</title>
     
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-KXB18T4285"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-KXB18T4285');
-    </script>
-
     <style>
-        :root { 
-            --cyan: #00FFFF; 
-            --purple: #bc13fe; 
-            --wa-green: #25D366;
-            --gold: #FFD700; 
-            --turk-red: #e30a17; 
-            --dark-bg: #000000;
-            --glass: rgba(255, 255, 255, 0.05);
-        }
-        
-        body { 
-            background: radial-gradient(circle at center, #001f1f 0%, #000 100%);
-            color: #fff; 
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
-            margin: 0; 
-            padding: 0; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            min-height: 100vh; 
-            overflow-x: hidden;
+        :root {
+            --bg: #050505;
+            --panel: #111111;
+            --accent: #00f2ff;
+            --text: #ffffff;
+            --gold: #ffcc00;
+            --red: #ff3333;
         }
 
-        /* --- UI: SPLASH SCREEN --- */
-        #splash-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; display: flex; flex-direction: column;
-            justify-content: center; align-items: center; z-index: 10000;
-            transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .splash-loader {
-            width: 160px; height: 160px; border: 2px solid var(--cyan);
-            border-radius: 50%; display: flex; flex-direction: column;
-            justify-content: center; align-items: center;
-            animation: pulseGlow 2s infinite ease-in-out;
-        }
-        @keyframes pulseGlow {
-            0% { box-shadow: 0 0 10px var(--cyan); transform: scale(1); }
-            50% { box-shadow: 0 0 40px var(--cyan); transform: scale(1.05); }
-            100% { box-shadow: 0 0 10px var(--cyan); transform: scale(1); }
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        /* --- UI: LASER SCANNER --- */
-        #scanner-laser {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 6px;
-            background: linear-gradient(to bottom, transparent, var(--cyan), transparent);
-            box-shadow: 0 0 25px var(--cyan); z-index: 9999;
-            animation: moveLaser 2.5s linear infinite;
-        }
-        @keyframes moveLaser { 0% { top: -5%; } 100% { top: 105%; } }
-
-        /* --- UI: NAVEGACIÓN (TABS) --- */
-        .navigation-bar {
-            display: flex; width: 100%; background: rgba(0,0,0,0.92);
-            backdrop-filter: blur(20px); position: sticky; top: 0; z-index: 1000;
-            border-bottom: 2px solid var(--cyan);
-        }
-        .nav-item {
-            flex: 1; padding: 20px 5px; font-size: 0.7rem; font-weight: 900;
-            color: #444; text-align: center; cursor: pointer; transition: 0.4s;
-            text-transform: uppercase; letter-spacing: 1px;
-        }
-        .nav-item.active { color: var(--cyan); border-bottom: 3px solid var(--cyan); text-shadow: 0 0 10px var(--cyan); }
-
-        /* --- UI: CONTENEDORES --- */
-        .main-container { width: 92%; max-width: 420px; padding: 25px 0 100px 0; }
-        .tab-panel { display: none; flex-direction: column; animation: slideIn 0.5s ease-out; }
-        .tab-panel.active { display: flex; }
-        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* --- CARDS ESTILO AMAZON --- */
-        .feature-card {
-            background: var(--glass); border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 28px; padding: 25px; margin-bottom: 25px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.7); position: relative; overflow: hidden;
-        }
-        .feature-card::after {
-            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: radial-gradient(circle, rgba(0,255,255,0.05) 0%, transparent 70%);
-            pointer-events: none;
+        /* --- ESTRUCTURA DE PANELES --- */
+        .header-brand {
+            width: 100%;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid #333;
+            background: #000;
         }
 
-        /* --- BOTONES PREMIUM --- */
-        .action-button {
-            width: 100%; padding: 18px; border-radius: 18px; border: none;
-            color: #fff; font-weight: 800; text-transform: uppercase;
-            margin: 12px 0; cursor: pointer; font-size: 0.85rem; letter-spacing: 1.5px;
-            transition: all 0.3s; display: flex; align-items: center; justify-content: center;
+        .main-grid {
+            width: 95%;
+            max-width: 500px;
+            padding: 20px 0;
+        }
+
+        .section-title {
+            font-size: 0.8rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin: 25px 0 10px 5px;
+            border-left: 3px solid var(--accent);
+            padding-left: 10px;
+        }
+
+        /* --- COMPONENTE: CONVERSOR AUTOMÁTICO --- */
+        .converter-box {
+            background: var(--panel);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #222;
+            margin-bottom: 20px;
+        }
+
+        .rate-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-family: monospace;
+        }
+
+        /* --- BOTONES DE ACCIÓN --- */
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 15px;
+            margin: 8px 0;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
             text-decoration: none;
-        }
-        .action-button:active { transform: scale(0.97); }
-
-        .btn-gold { background: linear-gradient(45deg, #FFD700, #b8860b); color: #000; box-shadow: 0 5px 15px rgba(255,215,0,0.3); }
-        .btn-cyan { background: linear-gradient(45deg, #00d2ff, var(--cyan)); color: #000; box-shadow: 0 5px 15px rgba(0,255,255,0.3); }
-        .btn-purple { background: linear-gradient(45deg, #6a00ff, var(--purple)); box-shadow: 0 5px 15px rgba(188,19,254,0.3); }
-        .btn-red { background: linear-gradient(45deg, #ff416c, #ff4b2b); box-shadow: 0 5px 15px rgba(255,75,43,0.3); }
-        .btn-dark { background: #111; border: 1px solid #333; }
-
-        /* --- INPUTS --- */
-        .input-field {
-            width: 100%; padding: 16px; border-radius: 15px; border: 1.5px solid var(--purple);
-            background: #000; color: #fff; margin-bottom: 15px; box-sizing: border-box;
-            text-align: center; font-size: 1rem; outline: none; transition: 0.3s;
-        }
-        .input-field:focus { border-color: var(--cyan); box-shadow: 0 0 10px var(--cyan); }
-
-        /* --- LOGS DE IA --- */
-        .ai-log-box {
-            font-family: 'Consolas', monospace; font-size: 0.7rem; color: var(--wa-green);
-            background: #000; padding: 20px; border-radius: 18px; margin-top: 20px;
-            display: none; border: 1px solid rgba(37, 211, 102, 0.4); text-align: left;
+            font-size: 0.9rem;
+            transition: 0.3s;
         }
 
-        .sector-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
-        
-        .video-wrapper {
-            border: 3px solid var(--cyan); border-radius: 25px; overflow: hidden;
-            aspect-ratio: 16/9; margin-bottom: 25px; box-shadow: 0 0 20px rgba(0,255,255,0.3);
+        .btn-maps { background: #4285F4; color: white; }
+        .btn-translate { background: #5f6368; color: white; }
+        .btn-fizy { background: #eeff00; color: black; }
+        .btn-coffee { background: #6f4e37; color: white; }
+        .btn-tea { background: #d4a017; color: black; }
+        .btn-agency { background: #222; color: var(--accent); border: 1px solid var(--accent); }
+        .btn-red { background: var(--red); color: white; }
+
+        /* --- GRID DE SECTORES --- */
+        .sector-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        /* --- VOZ INTELIGENTE LOG --- */
+        #ai-status {
+            font-size: 0.7rem;
+            background: #000;
+            color: #0f0;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            height: 40px;
+            overflow: hidden;
         }
 
         footer {
-            font-size: 0.65rem; color: #666; text-align: center; padding: 40px;
-            line-height: 2; width: 100%; box-sizing: border-box;
+            padding: 40px;
+            text-align: center;
+            font-size: 0.7rem;
+            color: #555;
         }
     </style>
 </head>
 <body>
 
-    <div id="scanner-laser"></div>
-
-    <div id="splash-screen">
-        <div class="splash-loader">
-            <span style="font-size: 0.7rem; letter-spacing: 3px; margin-bottom: 10px;">LUCAS GUZMAN</span>
-            <span style="color: var(--cyan); font-size: 1.6rem; font-weight: 900;">NEURAL</span>
-            <span style="font-size: 0.8rem; letter-spacing: 5px;">FOCUS AI</span>
-        </div>
-        <div style="margin-top: 30px; font-size: 0.6rem; color: #333; letter-spacing: 2px;">DİJİTAL EGEMENLİK ÜSSÜ</div>
+    <div class="header-brand">
+        <h2 style="margin:0; font-weight: 900; letter-spacing: -1px;">NEURAL FOCUS <span style="color:var(--accent)">AI</span></h2>
+        <small style="color:#666">LUCAS GUZMÁN AGENCY 2026</small>
     </div>
 
-    <div class="navigation-bar">
-        <div id="tab-biz" class="nav-item active" onclick="navigate('biz')">🏢 BUSINESS</div>
-        <div id="tab-acad" class="nav-item" onclick="navigate('acad')">🎓 ACADEMY</div>
-        <div id="tab-life" class="nav-item" onclick="navigate('life')">🔥 LIFESTYLE</div>
-    </div>
+    <div class="main-grid">
 
-    <div class="main-container">
-        
-        <div id="panel-biz" class="tab-panel active">
-            <h1 style="color: var(--cyan); margin: 10px 0; font-size: 1.8rem;">NEURAL FOCUS AI</h1>
-            <input type="text" id="user-name" class="input-field" placeholder="İsminizi Girin (Nombre)">
-
-            <div class="feature-card" style="border-color: var(--gold);">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <h3 style="color: var(--gold); margin: 0; font-size: 0.95rem;">🛡️ EGEMENLİK ANALİZÖRÜ</h3>
-                    <span style="font-size: 0.6rem; color: var(--wa-green);">ON-LINE</span>
-                </div>
-                <div id="market-data" style="font-size: 0.75rem; margin-top: 15px; color: #aaa; text-align: left;">
-                    <p>Mevcut Durum: <span style="color: #fff;">Veri Alınıyor...</span></p>
-                    <p>USD/TRY: <span style="color: var(--wa-green); font-weight: bold;">₺43.64</span></p>
-                </div>
-                <div id="ai-output" class="ai-log-box"></div>
-                <button onclick="runSovereignShield()" class="action-button btn-gold">DİJİTAL KALKANI AKTİF ET</button>
+        <div class="section-title">Finansal Veriler (Conversor)</div>
+        <div class="converter-box">
+            <div class="rate-row">
+                <span>100 TRY ➔ USD:</span>
+                <span id="usd-rate" style="color: var(--accent);">$2.29</span>
             </div>
-
-            <div class="video-wrapper">
-                <iframe width="100%" height="100%" src="https://www.youtube.com/embed/X-FWm-NHEBc?autoplay=1&mute=1" frameborder="0" allowfullscreen></iframe>
+            <div class="rate-row">
+                <span>100 TRY ➔ ALTIN (ORO):</span>
+                <span id="gold-rate" style="color: var(--gold);">0.0008 oz</span>
             </div>
-
-            <div class="sector-grid">
-                <a href="https://chat.whatsapp.com/FPplgqnE2NiHmahVJXCic2" class="action-button btn-dark" style="font-size: 0.7rem;">🏥 SAĞLIK (SALUD)</a>
-                <a href="https://chat.whatsapp.com/KQBkGZhDnJt2vxk7x5VdRI" class="action-button btn-dark" style="font-size: 0.7rem;">🍲 GASTRO (GASTRO)</a>
-                <a href="https://chat.whatsapp.com/IsvihivL7Bb0uwEV4ALIb5" class="action-button btn-dark" style="font-size: 0.7rem;">🏭 SANAYİ (IND)</a>
-                <a href="https://chat.whatsapp.com/CPddy8AAILL2uSaTcRpHj1" class="action-button btn-dark" style="font-size: 0.7rem;">🏗️ İNŞAAT (CONST)</a>
-            </div>
-
-            <a href="https://www.turkiye.gov.tr/" target="_blank" class="action-button btn-cyan" style="margin-top: 25px;">🏛️ E-DEVLET RESMİ PORTAL</a>
+            <input type="number" id="lira-input" oninput="convertCurrency()" placeholder="Lira (TRY) girin..." 
+                   style="width:100%; padding:10px; border-radius:5px; border:none; background:#222; color:white; margin-top:10px;">
+            <div id="conv-result" style="margin-top:10px; font-weight:bold; text-align:center;"></div>
         </div>
 
-        <div id="panel-acad" class="tab-panel">
-            <h2 style="color: var(--cyan); text-align: center;">EĞİTİM MERKEZİ</h2>
-            <div class="feature-card">
-                <p style="font-size: 0.8rem; color: #888; text-align: center; margin-bottom: 20px;">
-                    Neural Focus AI ile geleceğin teknolojilerine ve dillerine hükmedin.
-                </p>
-                <a href="https://www.coursera.org/courses?query=artificial%20intelligence" target="_blank" class="action-button btn-cyan">🤖 YAPAY ZEKA MASTER KURSU</a>
-                
-                <div style="margin: 20px 0; border-top: 1px solid #222; padding-top: 20px;">
-                    <h4 style="color: #555; margin-bottom: 10px;">DİL EĞİTİMLERİ (IDIOMAS)</h4>
-                    <a href="https://www.saylor.org/course/span101/" target="_blank" class="action-button btn-dark">🇪🇸 İSPANYOLCA PORTALI</a>
-                    <a href="https://www.saylor.org/course/engl000/" target="_blank" class="action-button btn-dark">🇬🇧 İNGİLİZCE PORTALI</a>
-                </div>
-            </div>
+        <div class="section-title">Global Araçlar</div>
+        <a href="https://www.google.com/maps" target="_blank" class="btn btn-maps">📍 GOOGLE MAPS PORTALI</a>
+        <a href="https://translate.google.com/?sl=tr&tl=es" target="_blank" class="btn btn-translate">🌐 TRADUCTOR (TURCO - ESPAÑOL)</a>
+
+        <div class="section-title">Medya & Eğlence</div>
+        <a href="https://fizy.com" target="_blank" class="btn btn-fizy">🎵 FIZY MÜZİK SİSTEMİ</a>
+
+        <div class="section-title">Yapay Zeka Servisleri</div>
+        <div class="converter-box">
+            <h4 style="margin:0 0 10px 0;">🔮 KAHVE FALI IA</h4>
+            <p style="font-size:0.7rem; color:#888;">Fincan resmini analiz etmek için Voice Agent'ı başlatın.</p>
+            <button onclick="startCoffeeIA()" class="btn btn-coffee">FALI SESLİ YORUMLA</button>
         </div>
 
-        <div id="panel-life" class="tab-panel">
-            <h2 style="color: var(--purple); text-align: center;">LIFESTYLE AI</h2>
-            
-            <div class="feature-card" style="border-color: var(--purple);">
-                <h3 style="color: var(--purple); font-size: 1rem;">🍲 GASTRO-VİZYON</h3>
-                <input type="text" id="food-search" class="input-field" placeholder="Yemek ismi (Örn: Kebap)" style="border-color: var(--purple);">
-                <button onclick="scanFood()" class="action-button btn-purple">📸 TARA VE ANALİZ ET</button>
-            </div>
-
-            <div class="feature-card" style="border-color: var(--gold); background: rgba(255,215,0,0.02);">
-                <h3 style="color: var(--gold); font-size: 1rem;">🔮 MİLLİ KAHVE FALI</h3>
-                <p style="font-size: 0.7rem; color: #666; margin-bottom: 15px;">Fincanınızdaki sembolleri yerli AI ile yorumlayın.</p>
-                <button onclick="runCoffeeFal()" class="action-button btn-gold">🔮 FALI YORUMLA</button>
-            </div>
-
-            <a href="https://wa.me/5492246496971?text=Merhaba%20Lucas,%20bir%20çay%20ısmarlamak%20ve%20işbirliği%20yapmak%20istiyorum." class="action-button btn-red" style="margin-top: 20px;">☕ BİR ÇAY ISMARLA (LUCAS)</a>
+        <div class="section-title">Ajans Fonksiyonları</div>
+        <div class="sector-grid">
+            <a href="https://chat.whatsapp.com/KQBkGZhDnJt2vxk7x5VdRI" class="btn btn-agency">🍲 GASTRO</a>
+            <a href="https://chat.whatsapp.com/FPplgqnE2NiHmahVJXCic2" class="btn btn-agency">🏥 SAĞLIK</a>
+            <a href="https://chat.whatsapp.com/IsvihivL7Bb0uwEV4ALIb5" class="btn btn-agency">🏭 SANAYİ</a>
+            <a href="https://chat.whatsapp.com/CPddy8AAILL2uSaTcRpHj1" class="btn btn-agency">🏗️ İNŞAAT</a>
         </div>
+
+        <div class="section-title">Eğitim & Academy</div>
+        <a href="https://www.coursera.org" target="_blank" class="btn btn-agency">🤖 AI & TECH CURSOS</a>
+        <a href="https://www.duolingo.com" target="_blank" class="btn btn-agency">📚 DİL EĞİTİMİ (IDOMAS)</a>
+
+        <div class="section-title">İletişim & İş Birliği</div>
+        <a href="https://wa.me/5492246496971?text=Merhaba%20Lucas,%20bir%20çay%20ısmarlamak%20ve%20çalışmaya%20başlamak%20istiyorum." 
+           class="btn btn-tea">☕ BİR ÇAY ISMARLA & COLABORAR</a>
+
+        <div id="ai-status">Sistem hazır. Agente de Vida Online.</div>
 
     </div>
 
     <footer>
-        <div style="color: var(--cyan); font-weight: 900; letter-spacing: 2px; margin-bottom: 10px;">NEURAL FOCUS AI | LUCAS GUZMÁN</div>
-        🛡️ TÜRKİYE SOBERANÍA DIGITAL V4.0<br>
-        <b>Voz Inteligente 24/7:</b> Yazılı tüm süreçlerin otomatik yönetimi.<br>
-        <b>Agente de Vida Live 24/7:</b> Canlı etkileşimli destek ve analiz.<br>
-        Tüm hakları saklıdır © 2026.
+        <p><b>Lucas Guzmán Agency 2026</b></p>
+        <p>Voz Inteligente 24/7 | Agente de Vida 24/7</p>
+        <p>Todos los servicios brevemente nombrados: Salud, Gastronomía, Industria, Construcción, Educación y Soberanía Digital.</p>
     </footer>
 
     <script>
-        // --- GESTIÓN DE PESTAÑAS (NAVEGACIÓN) ---
-        function navigate(tabId) {
-            // Desactivar todos
-            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            
-            // Activar seleccionado
-            document.getElementById('panel-' + tabId).classList.add('active');
-            document.getElementById('tab-' + tabId).classList.add('active');
-            
-            // Feedback táctil/auditivo
-            window.speechSynthesis.cancel();
-            console.log("Navigated to: " + tabId);
-        }
+        // --- FUNCIÓN: CONVERSOR AUTOMÁTICO ---
+        const USD_RATE = 0.023; // Ejemplo: 1 Lira = 0.023 USD
+        const GOLD_RATE = 0.000008; // Ejemplo: 1 Lira = 0.000008 oz Oro
 
-        // --- INICIALIZACIÓN ---
-        window.onload = () => {
-            const time = new Date().getHours();
-            let greeting = time < 12 ? "GÜNAYDIN" : time < 18 ? "İYİ GÜNLER" : "İYİ AKŞAMLAR";
-            console.log("System Initialized. Time: " + time);
+        function convertCurrency() {
+            const val = document.getElementById('lira-input').value;
+            const resBox = document.getElementById('conv-result');
+            const status = document.getElementById('ai-status');
 
-            // Simulación de carga de red neuronal
-            setTimeout(() => {
-                const splash = document.getElementById('splash-screen');
-                splash.style.opacity = '0';
-                setTimeout(() => splash.style.display = 'none', 1000);
-            }, 3000);
-        };
-
-        // --- MOTOR DE VOZ INTELIGENTE (TURCO) ---
-        function neuralSpeak(text) {
-            if ('speechSynthesis' in window) {
-                const msg = new SpeechSynthesisUtterance(text);
-                msg.lang = 'tr-TR';
-                msg.pitch = 1.1;
-                msg.rate = 0.95;
-                window.speechSynthesis.speak(msg);
+            if (val > 0) {
+                const usd = (val * USD_RATE).toFixed(2);
+                const gold = (val * GOLD_RATE).toFixed(6);
+                resBox.innerHTML = `<span style="color:var(--accent)">$${usd} USD</span> | <span style="color:var(--gold)">${gold} ORO (OZ)</span>`;
+                status.innerText = "IA: Finansal dönüşüm tamamlandı.";
+            } else {
+                resBox.innerHTML = "";
             }
         }
 
-        // --- FUNCIÓN ÚNICA: SOBERANÍA DIGITAL + CERTIFICADO ---
-        function runSovereignShield() {
-            const output = document.getElementById('ai-output');
-            const laser = document.getElementById('scanner-laser');
-            const name = document.getElementById('user-name').value || "Sayın İş Ortağı";
+        // --- FUNCIÓN: CAFÉ FALI IA ---
+        function startCoffeeIA() {
+            const status = document.getElementById('ai-status');
+            status.innerText = "IA: Kahve fincanı taranıyor... Gelecek okunuyor.";
             
-            laser.style.display = 'block';
-            output.style.display = 'block';
-            output.innerHTML = "";
-            
-            neuralSpeak("Milli egemenlik protokolü başlatıldı. Dış tehditler taranıyor.");
-
-            const processLogs = [
-                "> IP Veri Sızıntısı Filtreleniyor...",
-                "> Yerli Algoritma Düğümü: AKTİF",
-                "> Onay Kodu: NF-" + Math.floor(10000 + Math.random()*90000),
-                "> Karar Mühürleniyor: " + name.toUpperCase()
-            ];
-
-            let step = 0;
-            const interval = setInterval(() => {
-                output.innerHTML += `<span style="display:block; margin-bottom:5px;">${processLogs[step]}</span>`;
-                step++;
-                if(step >= processLogs.length) {
-                    clearInterval(interval);
-                    finalizeSovereignty(name);
-                }
-            }, 900);
-        }
-
-        function finalizeSovereignty(name) {
-            document.getElementById('scanner-laser').style.display = 'none';
-            const decisions = [
-                "SANAYİ: Üretim hattında yerli yazılım entegrasyonu zorunludur. Verimlilik Artışı: %42.",
-                "GASTRONOMİ: Yerel tedarik zinciri blokzincir ile güvence altına alınmıştır.",
-                "İNŞAAT: Dijital ikiz projeksiyonu milli sunuculara aktarılmıştır."
-            ];
-            const finalRes = decisions[Math.floor(Math.random()*decisions.length)];
-            
-            neuralSpeak(finalRes);
-            
-            // --- GENERADOR DE CERTIFICADO (PDF HTML) ---
-            setTimeout(() => {
-                const cert = window.open('', '_blank');
-                cert.document.write(`
-                    <html>
-                    <body style="background:#000; color:#fff; font-family:sans-serif; text-align:center; padding:50px; border:15px solid var(--turk-red);">
-                        <h1 style="color:var(--turk-red); font-size:3rem;">STRATEJİK BELGE</h1>
-                        <hr style="border:1px solid #333;">
-                        <p style="font-size:1.5rem; margin-top:30px;">Sayın ${name},</p>
-                        <h2 style="background:var(--turk-red); padding:20px; color:#fff;">KARAR: ${finalRes}</h2>
-                        <p style="margin-top:50px;">Tarih: ${new Date().toLocaleString('tr-TR')}</p>
-                        <p style="color:#444;">ID: NF-SOV-${Math.random().toString(36).substr(2, 9).toUpperCase()}</p>
-                        <div style="margin-top:40px; border:1px solid #fff; display:inline-block; padding:20px;">MİLLİ MÜHÜR: ONAYLANDI</div>
-                    </body>
-                    <script>var varTurkRed = '#e30a17';<\/script>
-                    </html>
-                `);
-            }, 2500);
-        }
-
-        // --- GASTRO VİZYON ---
-        function scanFood() {
-            const food = document.getElementById('food-search').value;
-            if(!food) { alert("Lütfen bir yemek ismi girin."); return; }
-            
-            neuralSpeak(food + " taranıyor. Sağlık verileri analiz ediliyor.");
-            document.getElementById('scanner-laser').style.display = 'block';
+            const msg = new SpeechSynthesisUtterance("Kahve falınız analiz ediliyor. Çok yakında büyük bir iş birliği görünüyor.");
+            msg.lang = 'tr-TR';
+            window.speechSynthesis.speak(msg);
             
             setTimeout(() => {
-                document.getElementById('scanner-laser').style.display = 'none';
-                window.open(`https://www.google.com/search?q=${encodeURIComponent(food)}+besin+değerleri+sağlık`, '_blank');
+                alert("🔮 IA Kahve Falı: Lucas Guzmán Agency ile yeni bir ticari yolculuk başlıyor!");
             }, 2000);
         }
 
-        // --- KAHVE FALI ---
-        function runCoffeeFal() {
-            neuralSpeak("Gelecek taranıyor. Semboller yorumlanıyor.");
-            document.getElementById('scanner-laser').style.display = 'block';
-            
-            setTimeout(() => {
-                document.getElementById('scanner-laser').style.display = 'none';
-                const fali = [
-                    "Kısmetin kapıda, büyük bir ticari başarı seni bekliyor.",
-                    "Hane içine ay doğuyor, beklediğin o stratejik haber yolda.",
-                    "Yolların açılıyor, engeller bir bir kalkacak; güvenle ilerle."
-                ];
-                const result = fali[Math.floor(Math.random()*fali.length)];
-                alert("🔮 FALINIZ: " + result);
-                neuralSpeak(result);
-            }, 3000);
+        // --- VOZ INTELIGENTE INICIAL ---
+        window.onload = () => {
+            console.log("Neural Focus AI Cargado");
         }
     </script>
 </body>
-                    </html>
-                    
+    </html>
+    
