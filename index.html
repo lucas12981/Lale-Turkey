@@ -36,7 +36,6 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* FIX SPLASH SCREEN */
         #splash-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #000; display: flex; flex-direction: column;
@@ -67,7 +66,6 @@
 
         .tab-content { display: none; width: 92%; max-width: 380px; padding: 20px 0 80px 0; }
         .tab-content.active { display: flex; flex-direction: column; align-items: center; animation: fadeIn 0.4s ease; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         .btn-premium {
             width: 100%; padding: 16px; border-radius: 14px; border: none;
@@ -104,14 +102,14 @@
             background: rgba(0, 255, 255, 0.05); border: 1px solid var(--cyan);
             border-radius: 12px; padding: 10px; margin: 10px 0; width: 100%;
         }
-        
+
         .neural-input {
             background: rgba(255,255,255,0.1); border: 1px solid var(--cyan);
             color: #fff; padding: 10px; border-radius: 8px; width: 100%;
             margin-bottom: 10px; text-align: center; outline: none;
         }
 
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
@@ -137,12 +135,12 @@
         </div>
 
         <div class="glass-card" style="border: 1px solid var(--gold); background: rgba(255, 215, 0, 0.05);">
-            <h3 style="color: var(--gold); font-size: 0.9rem; margin: 0 0 10px 0;">📈 PİYASA NABZI (REAL-TIME)</h3>
-            <div id="market-report" style="font-size: 0.7rem; text-align: left; line-height: 1.4;">
-                <p>USD/TRY: <span id="real-usd">Yükleniyor...</span> 🟢</p>
-                <p>📊 Sektörel AI Analizi Hazır.</p>
+            <h3 style="color: var(--gold); font-size: 0.9rem; margin: 0 0 10px 0;">🛡️ DİJİTAL EGEMENLİK ANALİZİ</h3>
+            <div id="market-report" style="font-size: 0.7rem; text-align: left; min-height: 60px;">
+                <p>USD/TRY: <span id="real-usd">₺43.64</span> 🟢</p>
+                <p>📊 Sistem yerel verileri işlemek için aktif.</p>
             </div>
-            <button onclick="getAiMarketReport()" class="btn-premium bg-gold" style="padding: 10px; font-size: 0.7rem;">🧠 STRATEJİK ANALİZ AL</button>
+            <button onclick="getAiMarketReport()" class="btn-premium bg-gold" style="padding: 10px; font-size: 0.7rem;">🧠 STRATEJİK ANALİZİ BAŞLAT</button>
         </div>
 
         <div class="glass-card" style="padding: 0; overflow: hidden; aspect-ratio: 16/9; border: 2px solid var(--cyan);">
@@ -151,17 +149,17 @@
 
         <div class="lira-box">
             <div style="display:flex; justify-content: space-around; font-size: 0.6rem; color: var(--gold); margin-bottom:5px;">
-                <span>USD/TRY: <span id="dynamic-usd">30.25</span> 🟢</span>
-                <span>ALTIN (GR): 2045 🟡</span>
+                <span>USD/TRY: <span id="dynamic-usd">43.64</span> 🟢</span>
+                <span>ALTIN: 2045 🟡</span>
             </div>
-            <input type="number" id="usdInput" placeholder="USD Miktar" oninput="convertTRY()" style="background:transparent; border:none; border-bottom:1px solid var(--cyan); color:white; text-align:center; width:80px; outline:none;">
+            <input type="number" id="usdInput" placeholder="USD" oninput="convertTRY()" style="background:transparent; border:none; border-bottom:1px solid var(--cyan); color:white; text-align:center; width:80px; outline:none;">
             <span id="tryOutput" style="font-weight:bold; color:var(--cyan); margin-left:10px;">₺ 0.00</span>
         </div>
 
         <a href="https://maps.google.com" target="_blank" class="btn-premium bg-maps">📍 GLOBAL OFFICE (MAPS)</a>
         <a href="https://translate.google.com/?sl=tr&tl=es" target="_blank" class="btn-premium bg-purple">🌍 AKILLI ÇEVİRMEN (TR-ES)</a>
         <a href="https://www.turkiye.gov.tr/" target="_blank" class="btn-premium bg-gold">🏛️ E-DEVLET & BİLGİ REHBERİ</a>
-
+        
         <div class="sector-grid">
             <a href="https://chat.whatsapp.com/FPplgqnE2NiHmahVJXCic2" target="_blank" class="sector-btn">🏥 Sağlık</a>
             <a href="https://chat.whatsapp.com/KQBkGZhDnJt2vxk7x5VdRI" target="_blank" class="sector-btn">🍲 Gastronomi</a>
@@ -196,6 +194,7 @@
         
         <button onclick="startAiFal()" class="btn-premium bg-fal">🔮 YAPAY ZEKA KAHVE FALI</button>
         <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;" onchange="processFal()">
+        
         <div id="fal-display" style="display:none;" class="glass-card">
             <h3 style="color: var(--gold); font-size: 0.9rem;">🔮 FALINIZ:</h3>
             <p id="fal-text" style="font-size: 0.8rem; line-height: 1.4;"></p>
@@ -212,7 +211,6 @@
     </footer>
 
     <script>
-        // CONFIGURACIÓN VOZ TURCA
         function speak(text) {
             const synth = window.speechSynthesis;
             const utter = new SpeechSynthesisUtterance(text);
@@ -220,20 +218,13 @@
             synth.speak(utter);
         }
 
-        // SALUDO Y SPLASH
         function initApp() {
             const hours = new Date().getHours();
-            let greet = "Merhaba";
-            if (hours >= 5 && hours < 12) greet = "Günaydın";
-            else if (hours >= 12 && hours < 18) greet = "İyi Günler";
-            else greet = "İyi Akşamlar";
-            
+            let greet = hours < 12 ? "Günaydın" : hours < 18 ? "İyi Günler" : "İyi Akşamlar";
             document.getElementById('greeting-display').innerText = greet;
-
             setTimeout(() => {
-                const splash = document.getElementById('splash-screen');
-                splash.style.opacity = '0';
-                setTimeout(() => splash.style.display = 'none', 800);
+                document.getElementById('splash-screen').style.opacity = '0';
+                setTimeout(() => document.getElementById('splash-screen').style.display = 'none', 800);
             }, 2000);
         }
 
@@ -251,8 +242,7 @@
             document.getElementById('btn-' + tabName).classList.add('active');
         }
 
-        // MOTOR DE IA DINÁMICO
-        let liveRate = 30.25;
+        let liveRate = 43.64;
         async function updateMarket() {
             try {
                 const res = await fetch('https://open.er-api.com/v6/latest/USD');
@@ -260,75 +250,64 @@
                 liveRate = data.rates.TRY;
                 document.getElementById('real-usd').innerText = "₺" + liveRate.toFixed(2);
                 document.getElementById('dynamic-usd').innerText = liveRate.toFixed(2);
-            } catch(e) { console.log("Market Offline"); }
+            } catch(e) {}
         }
 
         function getAiMarketReport() {
             const reportDiv = document.getElementById('market-report');
-            speak("Veri madenciliği başlatıldı. Neural Focus analiz ediyor.");
-            reportDiv.innerHTML = `<div style="text-align:center; padding:10px;"><div style="border: 2px solid var(--cyan); border-top: 2px solid transparent; width:20px; height:20px; border-radius:50%; animation: spin 1s linear infinite; margin:auto;"></div></div>`;
+            speak("Dijital egemenlik motoru çalışıyor. Veriler taranıyor.");
+            reportDiv.innerHTML = `<div style="font-family: monospace; font-size: 0.6rem; color: var(--cyan); text-align: left;">> VERİ BAĞLANTISI AKTİF...<br>> USD/TRY ANALİZ EDİLİYOR...<br>> SEKTÖREL RİSK TARANIYOR...</div>`;
 
             setTimeout(() => {
-                const nameTag = userName || "Girişimci";
                 const sectors = [
-                    { name: "SANAYİ", advice: "Hammadde maliyetleri kur nedeniyle %5 artış gösterebilir." },
-                    { name: "İNŞAAT", advice: "Proje planlaması için stabil kur aralığı bekleniyor." },
-                    { name: "GASTRONOMİ", advice: "Menü maliyet optimizasyonu için AI desteği aktif." },
-                    { name: "SAĞLIK", advice: "Tıbbi cihaz ithalatında kur sabitleme önerilir." }
+                    { n: "SANAYİ", a: "Üretim hattında yerel kaynak kullanımı %15 verimlilik sağlar." },
+                    { n: "İNŞAAT", a: "Maliyet endeksi yükseliyor, stok alımı stratejik önceliktir." },
+                    { n: "GASTRONOMİ", a: "Yerel tedarik zinciri ile dijital egemenlik korunuyor." },
+                    { n: "SAĞLIK", a: "Dijital sağlık verileri yerel sunucularda güvence altında." }
                 ];
-                const selected = sectors[Math.floor(Math.random() * sectors.length)];
-                const msg = `Sayın ${nameTag}, ${selected.name} sektörü için analiz: ${selected.advice}`;
-                
-                alert(msg);
-                reportDiv.innerHTML = `
-                    <div style="background: rgba(0, 255, 255, 0.05); border: 1px solid var(--cyan); border-radius: 10px; padding: 12px;">
-                        <p style="font-size: 0.75rem; margin:0;">${msg}</p>
-                        <button onclick="shareMarketReport('${selected.name}')" class="btn-premium bg-whatsapp" style="padding: 6px; font-size: 0.6rem; margin-top:10px;">RAPORU PAYLAŞ</button>
-                    </div>
-                `;
+                const s = sectors[Math.floor(Math.random() * sectors.length)];
+                const msg = `Sayın ${userName || 'Girişimci'}, ${s.n} Analizi: ${s.a}`;
+                reportDiv.innerHTML = `<div style="border: 1px solid var(--gold); padding: 10px; border-radius: 8px; animation: fadeIn 1s;"><p style="color: var(--gold); font-weight: bold; margin: 0;">🛡️ STRATEJİK KARAR:</p><p style="margin: 5px 0;">${msg}</p></div>`;
                 speak(msg);
-            }, 2000);
-        }
-
-        function shareMarketReport(sec) {
-            window.open('https://wa.me/?text=' + encodeURIComponent(`Neural Focus AI ${sec} Analizi hazır!`));
+            }, 2500);
         }
 
         function convertTRY() {
-            const usd = document.getElementById('usdInput').value;
-            document.getElementById('tryOutput').innerText = "₺ " + (usd * liveRate).toFixed(2);
+            const val = document.getElementById('usdInput').value;
+            document.getElementById('tryOutput').innerText = "₺ " + (val * liveRate).toFixed(2);
         }
 
-        // LIFESTYLE FUNCTIONS
         function startGastroAI() {
+            if(!document.getElementById('foodName').value) { alert("Lütfen yemeği yazın."); return; }
             document.getElementById('gastroInput').click();
         }
+
         function processGastroImage(input) {
-            const food = document.getElementById('foodName').value || "Yemek";
-            speak("Nöral link bağlandı.");
-            window.open(`https://www.google.com/search?q=${encodeURIComponent(food)}+kalori`);
+            const food = document.getElementById('foodName').value;
+            speak("Analiz tamamlandı.");
+            window.open(`https://www.google.com/search?q=${encodeURIComponent(food)}+kalori+sağlık`);
         }
+
         function startAiFal() {
-            speak("Kahve fincanınızı tarıyorum.");
+            speak("Geleceği tarıyorum.");
             document.getElementById('cameraInput').click();
         }
+
         function processFal() {
             const display = document.getElementById('fal-display');
+            const text = document.getElementById('fal-text');
             display.style.display = 'block';
-            const msg = "Yeni bir girişim kapıda, şansın parlıyor.";
-            document.getElementById('fal-text').innerText = msg;
-            speak(msg);
+            const f = "Yapay zeka diyor ki: Yolun açık, başarı yakında.";
+            text.innerText = f;
+            speak(f);
         }
 
         function shareApp() {
-            window.open('https://wa.me/?text=' + encodeURIComponent("Neural Focus AI Turkey Beta'yı deneyin!"));
+            window.open('https://wa.me/?text=' + encodeURIComponent("Neural Focus AI: Geleceği keşfedin!"));
         }
 
-        window.onload = () => {
-            initApp();
-            updateMarket();
-        };
+        window.onload = () => { initApp(); updateMarket(); };
     </script>
 </body>
-                                                                                                                </html>
-                                                                                                                      
+    </html>
+    
