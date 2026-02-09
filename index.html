@@ -12,209 +12,147 @@
             --gold: #ffcc00;
             --wa-green: #25D366;
             --turk-red: #e30a17;
-            --bg-dark: #050505;
-            --card-bg: rgba(20, 20, 20, 0.8);
+            --dark: #000000;
         }
 
         body {
-            background-color: var(--bg-dark);
+            background-color: var(--dark);
             color: #ffffff;
-            font-family: 'Segoe UI', Roboto, Helvetica, sans-serif;
+            font-family: 'Segoe UI', Roboto, sans-serif;
             margin: 0; padding: 0;
             display: flex; flex-direction: column; align-items: center;
             overflow-x: hidden;
-            line-height: 1.6;
         }
 
-        /* --- SPLASH SCREEN ELITE --- */
+        /* --- SPLASH SCREEN --- */
         #splash {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #000; display: flex; flex-direction: column;
             justify-content: center; align-items: center; z-index: 10000;
-            transition: opacity 1s ease;
+            transition: opacity 0.8s ease;
         }
-        .pulse-container {
-            width: 180px; height: 180px; border: 2px solid var(--cyan);
+        .logo-pulse {
+            width: 150px; height: 150px; border: 2px solid var(--cyan);
             border-radius: 50%; display: flex; flex-direction: column;
             justify-content: center; align-items: center;
-            animation: pulseHigh 2s infinite cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
+            animation: pulse 1.5s infinite ease-in-out;
+            box-shadow: 0 0 20px var(--cyan);
         }
-        @keyframes pulseHigh {
-            0% { transform: scale(1); box-shadow: 0 0 20px var(--cyan); }
-            50% { transform: scale(1.05); box-shadow: 0 0 50px var(--cyan); }
-            100% { transform: scale(1); box-shadow: 0 0 20px var(--cyan); }
-        }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
 
-        /* --- NAVEGACIÓN PREMIUM --- */
+        /* --- NAVEGACIÓN --- */
         .tab-bar {
-            display: flex; width: 100%; background: rgba(0,0,0,0.9);
-            backdrop-filter: blur(15px); position: sticky; top: 0; z-index: 1000;
-            border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+            display: flex; width: 100%; background: #000;
+            border-bottom: 2px solid var(--cyan); position: sticky; top: 0; z-index: 1000;
         }
         .tab {
-            flex: 1; padding: 20px 0; text-align: center; font-size: 0.75rem;
-            font-weight: 800; color: #666; cursor: pointer; text-transform: uppercase;
-            letter-spacing: 2px; transition: 0.4s;
+            flex: 1; padding: 18px 0; text-align: center; font-size: 0.75rem;
+            font-weight: 900; color: #555; cursor: pointer; text-transform: uppercase;
         }
-        .tab.active { color: var(--cyan); text-shadow: 0 0 15px var(--cyan); }
+        .tab.active { color: var(--cyan); border-bottom: 3px solid var(--cyan); }
 
         .container { 
             width: 90%; max-width: 400px; 
+            padding: 20px 0 100px 0;
             display: flex; flex-direction: column; align-items: center;
-            padding: 30px 0 100px 0;
         }
         
         .panel { display: none; width: 100%; flex-direction: column; align-items: center; }
-        .panel.active { display: flex; animation: fadeIn 0.6s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .panel.active { display: flex; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* --- UI COMPONENTS --- */
         .card {
-            width: 100%; background: var(--card-bg); border-radius: 30px; 
-            padding: 25px; margin-bottom: 25px; border: 1px solid rgba(255,255,255,0.05);
-            box-sizing: border-box; box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-            text-align: center;
+            width: 100%; background: rgba(255,255,255,0.05); border-radius: 20px; 
+            padding: 20px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1);
+            box-sizing: border-box; text-align: center; position: relative;
         }
 
-        .video-box {
-            width: 100%; border-radius: 25px; overflow: hidden;
-            border: 1px solid var(--cyan); aspect-ratio: 16/9; margin-bottom: 25px;
-        }
-
+        /* --- INPUTS Y BOTONES --- */
         input {
-            width: 85%; padding: 18px; border-radius: 20px; border: 1px solid var(--purple);
-            background: #111; color: #fff; margin-bottom: 20px; text-align: center;
-            font-size: 1rem; font-weight: 600; outline: none; transition: 0.3s;
+            width: 100%; max-width: 320px; padding: 15px; border-radius: 12px; 
+            border: 1px solid var(--purple); background: #111; color: #fff; 
+            margin-bottom: 15px; text-align: center; font-size: 1rem;
+            box-sizing: border-box; outline: none;
         }
-        input:focus { border-color: var(--cyan); box-shadow: 0 0 15px var(--cyan); }
-
-        /* --- BOTONES ORDENADOS Y ALINEADOS --- */
-        .btn-group { width: 100%; display: flex; flex-direction: column; align-items: center; }
 
         .btn {
-            width: 90%; max-width: 320px; padding: 18px; border-radius: 20px; 
+            width: 100%; max-width: 320px; padding: 16px; border-radius: 12px; 
             border: none; color: white; font-weight: 800; font-size: 0.85rem; 
-            margin: 8px 0; cursor: pointer; transition: 0.3s;
-            text-transform: uppercase; letter-spacing: 1.5px;
+            margin: 8px 0; cursor: pointer; text-transform: uppercase;
             display: flex; align-items: center; justify-content: center;
-            text-decoration: none; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            text-decoration: none; box-sizing: border-box;
         }
-        .btn:active { transform: scale(0.95); }
 
-        .btn-gold { background: linear-gradient(135deg, #ffcc00, #ff9900); color: #000; }
-        .btn-cyan { background: linear-gradient(135deg, #00f2fe, #4facfe); color: #000; }
-        .btn-purple { background: linear-gradient(135deg, #6a11cb, #2575fc); }
-        .btn-turk { background: linear-gradient(135deg, var(--turk-red), #b91d1d); }
-        .btn-maps { background: #ffffff; color: #000; }
+        .btn-cyan { background: var(--cyan); color: #000; }
+        .btn-purple { background: var(--purple); }
+        .btn-red { background: var(--turk-red); }
+        .btn-gold { background: linear-gradient(90deg, #ffcc00, #ff9900); color: #000; }
 
-        .sector-grid { 
-            display: grid; grid-template-columns: 1fr 1fr; gap: 12px; 
-            width: 90%; margin: 15px 0; 
-        }
-        .sector-item {
-            background: #111; border: 1px solid #222; padding: 15px;
-            border-radius: 18px; text-align: center; font-size: 0.7rem;
-            font-weight: 700; color: #fff; text-decoration: none;
-            transition: 0.3s; border-bottom: 2px solid var(--cyan);
+        /* --- LOADING OVERLAY PARA IA --- */
+        .loading-ia {
+            display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); border-radius: 20px;
+            flex-direction: column; justify-content: center; align-items: center; z-index: 10;
         }
 
         footer {
-            width: 100%; text-align: center; font-size: 0.65rem; color: #444;
-            padding: 40px 0; border-top: 1px solid #111; line-height: 2;
+            text-align: center; font-size: 0.65rem; color: #555;
+            padding: 40px 10px; width: 100%; line-height: 1.5;
         }
     </style>
 </head>
 <body>
 
     <div id="splash">
-        <div class="pulse-container">
-            <span id="welcomeMsg" style="font-size: 0.7rem; color: #888; letter-spacing: 3px; margin-bottom: 5px;">YÜKLENİYOR</span>
-            <span style="font-weight: 900; font-size: 1.6rem; letter-spacing: -1px;">NEURAL</span>
-            <span style="color: var(--cyan); font-weight: 300; letter-spacing: 6px; font-size: 0.9rem;">FOCUS AI</span>
+        <div class="logo-pulse">
+            <span id="txtGreet" style="font-size: 0.6rem; color: #888; margin-bottom: 5px;">YÜKLENİYOR</span>
+            <span style="font-weight: 900; font-size: 1.2rem;">NEURAL</span>
+            <span style="color: var(--cyan); letter-spacing: 4px;">FOCUS AI</span>
         </div>
     </div>
 
     <div class="tab-bar">
         <div class="tab active" onclick="nav('biz', this)">🏢 BUSINESS</div>
-        <div class="tab" onclick="nav('acad', this)">🎓 ACADEMY</div>
         <div class="tab" onclick="nav('life', this)">🔥 LIFESTYLE</div>
     </div>
 
     <div class="container">
         
         <div id="biz" class="panel active">
-            <h2 style="text-align:center; letter-spacing: 4px; font-weight: 300; color: var(--cyan);">NEURAL FOCUS</h2>
-            <input type="text" id="nameIn" placeholder="İsminiz (Su Nombre)">
-
-            <div class="card" style="border-top: 2px solid var(--gold);">
-                <h4 style="color: var(--gold); margin: 0 0 15px 0; letter-spacing: 1px;">🛡️ MİLLİ DİJİTAL EGEMENLİK</h4>
-                <p id="sovText" style="font-size: 0.75rem; color: #777; margin-bottom: 20px;">Güvenli analiz protokolü hazır.</p>
-                <button onclick="activateSov()" class="btn btn-gold" style="width: 100%;">ANALİZİ BAŞLAT</button>
-            </div>
-
-            <div class="video-box">
-                <iframe width="100%" height="100%" src="https://www.youtube.com/embed/X-FWm-NHEBc?autoplay=1&mute=1" frameborder="0" allowfullscreen></iframe>
-            </div>
-
-            <div class="card">
-                <div style="display:flex; align-items:center; justify-content:center; gap:15px;">
-                    <input type="number" id="tryVal" oninput="convertFin()" placeholder="TRY" style="width: 40%; margin:0; padding:12px;">
-                    <span style="font-size: 1.5rem; color: var(--cyan);">➔</span>
-                    <div style="text-align: left; flex:1;">
-                        <div id="usdRes" style="font-weight: 800; color: var(--cyan);">$ 0.00</div>
-                        <div id="goldRes" style="font-size: 0.6rem; color: var(--gold);">ALTIN: 0.0000 gr</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="btn-group">
-                <a href="https://maps.google.com" target="_blank" class="btn btn-maps">📍 GLOBAL OFFICE (MAPS)</a>
-                <a href="https://translate.google.com/?sl=tr&tl=es" target="_blank" class="btn btn-purple">🌐 AKILLI ÇEVİRMEN (TR-ES)</a>
-                <a href="https://www.turkiye.gov.tr/" target="_blank" class="btn btn-gold">🏛️ E-DEVLET KAPISI</a>
-            </div>
-
-            <div class="sector-grid">
-                <a href="https://chat.whatsapp.com/FPplgqnE2NiHmahVJXCic2" class="sector-item">🏥 SAĞLIK</a>
-                <a href="https://chat.whatsapp.com/KQBkGZhDnJt2vxk7x5VdRI" class="sector-item">🍲 GASTRO</a>
-                <a href="https://chat.whatsapp.com/IsvihivL7Bb0uwEV4ALIb5" class="sector-item">🏭 SANAYİ</a>
-                <a href="https://chat.whatsapp.com/CPddy8AAILL2uSaTcRpHj1" class="sector-item">🏗️ İNŞAAT</a>
-            </div>
-        </div>
-
-        <div id="acad" class="panel">
-            <h2 style="color:var(--cyan); letter-spacing: 3px;">ACADEMY</h2>
-            <div class="btn-group">
-                <a href="https://www.coursera.org" target="_blank" class="btn btn-cyan">🤖 YAPAY ZEKA MASTER</a>
-                <a href="https://www.saylor.org/course/engl101/" target="_blank" class="btn btn-purple">🇬🇧 PROFESYONEL İNGİLİZCE</a>
-                <a href="https://www.udemy.com" target="_blank" class="btn btn-gold">💻 TEKNOLOJİ VE YAZILIM</a>
-            </div>
+            <h1 style="color: var(--cyan); letter-spacing: 2px;">NEURAL FOCUS AI</h1>
+            <input type="text" id="uName" placeholder="Adınızı giriniz">
+            <a href="https://wa.me/5492246496971" target="_blank" class="btn btn-red">☕ BİR ÇAY ISMARLA (WhatsApp Personal)</a>
         </div>
 
         <div id="life" class="panel">
-            <h2 style="color:var(--purple); letter-spacing: 3px;">LIFESTYLE AI</h2>
+            <h2 style="color:var(--purple); margin-bottom:20px;">LIFESTYLE AI</h2>
             
-            <div class="card" style="border-bottom: 2px solid var(--cyan);">
-                <h4 style="color:var(--cyan); margin-bottom: 15px;">📸 GASTRO & SAĞLIK VİZYONU</h4>
-                <input type="file" id="fileIn" accept="image/*" capture="environment" style="display:none;" onchange="gastroAI()">
-                <button onclick="document.getElementById('fileIn').click()" class="btn btn-cyan" style="width:100%;">FOTOĞRAF ANALİZİ</button>
-                <div id="gastroLog" style="font-size: 0.7rem; margin-top:10px; color: var(--wa-green);"></div>
+            <div class="card" id="cardCoffee">
+                <div class="loading-ia" id="loadCoffee">
+                    <div style="border: 3px solid var(--purple); border-top: 3px solid #fff; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite;"></div>
+                    <p style="font-size: 0.7rem; margin-top: 10px;">IA Fincanı Analiz Ediyor...</p>
+                </div>
+                <h4 style="color:var(--purple); margin-bottom:10px;">🔮 KAHVE FALI (IA)</h4>
+                <input type="file" id="coffeeCam" accept="image/*" capture="environment" style="display:none;" onchange="processIA('coffee')">
+                <button onclick="document.getElementById('coffeeCam').click()" class="btn btn-purple" style="margin: 0 auto;">FOTOĞRAF ÇEK VE OKU</button>
+                <div id="resCoffee" style="font-size:0.8rem; margin-top:10px; color:var(--gold); font-weight: bold;"></div>
             </div>
 
-            <div class="btn-group">
-                <a href="https://fizy.com" target="_blank" class="btn btn-purple" style="background: linear-gradient(135deg, #00d2ff, #3a7bd5);">🎧 FIZY PLAYLIST</a>
-                <button onclick="coffeeIA()" class="btn btn-purple">🔮 KAHVE FALI (IA OKUMA)</button>
-                <a href="https://wa.me/5492246496971" target="_blank" class="btn btn-turk">☕ BİR ÇAY ISMARLA</a>
+            <div class="card" id="cardGastro">
+                <div class="loading-ia" id="loadGastro">
+                    <div style="border: 3px solid var(--cyan); border-top: 3px solid #fff; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite;"></div>
+                    <p style="font-size: 0.7rem; margin-top: 10px;">Gastro-Sağlık Analizi Yapılıyor...</p>
+                </div>
+                <h4 style="color:var(--cyan); margin-bottom:10px;">🍲 GASTRO-SAĞLIK VİZYONU</h4>
+                <input type="file" id="gastroCam" accept="image/*" capture="environment" style="display:none;" onchange="processIA('gastro')">
+                <button onclick="document.getElementById('gastroCam').click()" class="btn btn-cyan" style="margin: 0 auto;">YEMEĞİ TARA</button>
+                <div id="resGastro" style="font-size:0.75rem; margin-top:10px; color:var(--wa-green);"></div>
             </div>
         </div>
 
     </div>
 
-    <footer>
-        <div style="color: var(--cyan); font-weight: 800; letter-spacing: 2px;">LUCAS GUZMÁN AGENCY</div>
-        Voz Inteligente 24/7 | Agente de Vida Live 24/7<br>
-        Sağlık, Gastronomi, Sanayi ve İnşaat İş Birliği.
-    </footer>
+    <style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>
 
     <script>
         function speak(t) {
@@ -226,13 +164,11 @@
         window.onload = () => {
             const h = new Date().getHours();
             let g = h < 12 ? "GÜNAYDIN" : h < 18 ? "İYİ GÜNLER" : "İYİ AKŞAMLAR";
-            document.getElementById('welcomeMsg').innerText = g;
-            
-            setTimeout(() => speak(g + ". Neural Focus AI sistemine hoş geldiniz."), 500);
+            document.getElementById('txtGreet').innerText = g;
             setTimeout(() => {
                 document.getElementById('splash').style.opacity = '0';
-                setTimeout(() => document.getElementById('splash').style.display='none', 1000);
-            }, 3000);
+                setTimeout(() => document.getElementById('splash').style.display = 'none', 800);
+            }, 2500);
         };
 
         function nav(id, el) {
@@ -240,44 +176,30 @@
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             el.classList.add('active');
-            window.scrollTo(0,0);
         }
 
-        function convertFin() {
-            const v = document.getElementById('tryVal').value;
-            if(v > 0) {
-                document.getElementById('usdRes').innerText = "$ " + (v / 43.64).toFixed(2);
-                document.getElementById('goldRes').innerText = "ALTIN: " + (v * 0.00045).toFixed(4) + " gr";
-            }
-        }
+        function processIA(type) {
+            const load = type === 'coffee' ? document.getElementById('loadCoffee') : document.getElementById('loadGastro');
+            const res = type === 'coffee' ? document.getElementById('resCoffee') : document.getElementById('resGastro');
+            
+            load.style.display = 'flex';
+            res.innerText = "";
 
-        function activateSov() {
-            const n = document.getElementById('nameIn').value || "Sayın İş Ortağı";
-            const l = document.getElementById('sovText');
-            l.innerText = "Analiz ediliyor...";
             setTimeout(() => {
-                const m = `Sistem Onaylandı. ${n}, verileriniz milli egemenlik koruması altındadır.`;
-                l.innerText = m; l.style.color = "var(--gold)";
-                speak(m);
-            }, 2000);
-        }
-
-        function gastroAI() {
-            const l = document.getElementById('gastroLog');
-            l.innerText = "Vizyon taranıyor...";
-            setTimeout(() => {
-                const r = "Analiz: Bu öğün besleyicidir. Sağlıklı bir yaşam için dengeli tüketin.";
-                l.innerText = r; speak(r);
-            }, 2000);
-        }
-
-        function coffeeIA() {
-            const r = ["Geleceğiniz parlak, büyük bir başarı kapıda.", "Beklediğiniz haber yakında size ulaşacak.", "Yeni bir iş birliği size kazanç getirecek."];
-            const f = r[Math.floor(Math.random()*r.length)];
-            speak("Kahve falınız yorumlanıyor. " + f);
-            alert("🔮 FAL: " + f);
+                load.style.display = 'none';
+                let msg = "";
+                if(type === 'coffee') {
+                    const predictions = ["Kısmetin açılıyor, büyük projeler yolda.", "Fincanın çok parlak, yakında bir müjde alacaksın.", "Yolun açık, Lucas Guzmán Agency ile başarı seni bekliyor."];
+                    msg = predictions[Math.floor(Math.random() * predictions.length)];
+                    res.innerText = "🔮 IA Yorumu: " + msg;
+                } else {
+                    msg = "Bu Türk yemeği harika bir enerji kaynağı! Dengeli ve sağlıklı bir öğün. Afiyet olsun.";
+                    res.innerText = "🥗 Sağlık Analizi: " + msg;
+                }
+                speak(msg);
+            }, 3500); // Tiempo de carga simulado para impacto UX
         }
     </script>
 </body>
-                            </html>
-                        
+                    </html>
+                    
