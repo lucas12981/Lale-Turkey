@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Neural Focus AI | Lucas Guzmán</title>
+    
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-KXB18T4285"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -9,349 +13,363 @@
       gtag('config', 'G-KXB18T4285');
     </script>
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Neural Focus AI | Sovereign Shield</title>
-    
     <style>
         :root { 
-            --cyan: #00FFFF; --purple: #bc13fe; --wa-green: #25D366;
-            --gold: #FFD700; --turk-red: #e30a17; --dark-blue: #000814;
-            --glass: rgba(255, 255, 255, 0.03);
-            --border: rgba(255, 255, 255, 0.1);
+            --cyan: #00FFFF; 
+            --purple: #bc13fe; 
+            --wa-green: #25D366;
+            --gold: #FFD700; 
+            --turk-red: #e30a17; 
+            --dark-bg: #000000;
+            --glass: rgba(255, 255, 255, 0.05);
         }
         
         body { 
             background: radial-gradient(circle at center, #001f1f 0%, #000 100%);
-            color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0;
-            display: flex; flex-direction: column; align-items: center; min-height: 100vh;
+            color: #fff; 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            min-height: 100vh; 
             overflow-x: hidden;
         }
 
-        /* --- UI: ANIMACIONES DE CARGA --- */
+        /* --- UI: SPLASH SCREEN --- */
         #splash-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #000; display: flex; flex-direction: column;
-            justify-content: center; align-items: center; z-index: 10000; transition: 1s ease-in-out;
+            justify-content: center; align-items: center; z-index: 10000;
+            transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .splash-logo {
-            width: 160px; height: 160px; border: 2px solid var(--turk-red);
+        .splash-loader {
+            width: 160px; height: 160px; border: 2px solid var(--cyan);
             border-radius: 50%; display: flex; flex-direction: column;
             justify-content: center; align-items: center;
-            animation: pulseTurk 2s infinite ease-in-out;
+            animation: pulseGlow 2s infinite ease-in-out;
         }
-        @keyframes pulseTurk { 
-            0% { box-shadow: 0 0 0 0 rgba(227,10,23,0.7); transform: scale(1); } 
-            70% { box-shadow: 0 0 0 30px rgba(227,10,23,0); transform: scale(1.05); } 
-            100% { box-shadow: 0 0 0 0 rgba(227,10,23,0); transform: scale(1); } 
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 10px var(--cyan); transform: scale(1); }
+            50% { box-shadow: 0 0 40px var(--cyan); transform: scale(1.05); }
+            100% { box-shadow: 0 0 10px var(--cyan); transform: scale(1); }
         }
 
-        /* --- UI: ESCÁNER SOBERANO --- */
-        #scanner-line {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 10px;
+        /* --- UI: LASER SCANNER --- */
+        #scanner-laser {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 6px;
             background: linear-gradient(to bottom, transparent, var(--cyan), transparent);
-            box-shadow: 0 0 40px var(--cyan); z-index: 9999;
-            animation: scanMove 2.5s linear infinite;
+            box-shadow: 0 0 25px var(--cyan); z-index: 9999;
+            animation: moveLaser 2.5s linear infinite;
         }
-        @keyframes scanMove { 0% { top: -10%; } 100% { top: 110%; } }
+        @keyframes moveLaser { 0% { top: -5%; } 100% { top: 105%; } }
 
-        /* --- UI: NAVEGACIÓN --- */
-        .tab-bar {
-            display: flex; width: 100%; background: rgba(0,0,0,0.95); backdrop-filter: blur(25px);
-            position: sticky; top: 0; z-index: 1000; border-bottom: 2px solid var(--turk-red);
+        /* --- UI: NAVEGACIÓN (TABS) --- */
+        .navigation-bar {
+            display: flex; width: 100%; background: rgba(0,0,0,0.92);
+            backdrop-filter: blur(20px); position: sticky; top: 0; z-index: 1000;
+            border-bottom: 2px solid var(--cyan);
         }
-        .tab-item { 
-            flex: 1; padding: 20px 5px; font-size: 0.75rem; font-weight: 900; 
-            color: #444; cursor: pointer; text-align: center; transition: 0.3s;
+        .nav-item {
+            flex: 1; padding: 20px 5px; font-size: 0.7rem; font-weight: 900;
+            color: #444; text-align: center; cursor: pointer; transition: 0.4s;
             text-transform: uppercase; letter-spacing: 1px;
         }
-        .tab-item.active { 
-            color: var(--turk-red); border-bottom: 3px solid var(--turk-red); 
-            text-shadow: 0 0 10px var(--turk-red); 
+        .nav-item.active { color: var(--cyan); border-bottom: 3px solid var(--cyan); text-shadow: 0 0 10px var(--cyan); }
+
+        /* --- UI: CONTENEDORES --- */
+        .main-container { width: 92%; max-width: 420px; padding: 25px 0 100px 0; }
+        .tab-panel { display: none; flex-direction: column; animation: slideIn 0.5s ease-out; }
+        .tab-panel.active { display: flex; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- CARDS ESTILO AMAZON --- */
+        .feature-card {
+            background: var(--glass); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 28px; padding: 25px; margin-bottom: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.7); position: relative; overflow: hidden;
+        }
+        .feature-card::after {
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(0,255,255,0.05) 0%, transparent 70%);
+            pointer-events: none;
         }
 
-        .tab-content { display: none; width: 90%; max-width: 420px; padding: 25px 0 120px 0; animation: fadeIn 0.6s ease-out; }
-        .tab-content.active { display: flex; flex-direction: column; }
-
-        /* --- UI: COMPONENTES --- */
-        .glass-card {
-            background: var(--glass); border: 1px solid var(--border);
-            border-radius: 28px; padding: 25px; margin-bottom: 25px; width: 100%; box-sizing: border-box;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.6); position: relative; overflow: hidden;
+        /* --- BOTONES PREMIUM --- */
+        .action-button {
+            width: 100%; padding: 18px; border-radius: 18px; border: none;
+            color: #fff; font-weight: 800; text-transform: uppercase;
+            margin: 12px 0; cursor: pointer; font-size: 0.85rem; letter-spacing: 1.5px;
+            transition: all 0.3s; display: flex; align-items: center; justify-content: center;
+            text-decoration: none;
         }
-        .glass-card::before {
-            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
-            transition: 0.5s;
+        .action-button:active { transform: scale(0.97); }
+
+        .btn-gold { background: linear-gradient(45deg, #FFD700, #b8860b); color: #000; box-shadow: 0 5px 15px rgba(255,215,0,0.3); }
+        .btn-cyan { background: linear-gradient(45deg, #00d2ff, var(--cyan)); color: #000; box-shadow: 0 5px 15px rgba(0,255,255,0.3); }
+        .btn-purple { background: linear-gradient(45deg, #6a00ff, var(--purple)); box-shadow: 0 5px 15px rgba(188,19,254,0.3); }
+        .btn-red { background: linear-gradient(45deg, #ff416c, #ff4b2b); box-shadow: 0 5px 15px rgba(255,75,43,0.3); }
+        .btn-dark { background: #111; border: 1px solid #333; }
+
+        /* --- INPUTS --- */
+        .input-field {
+            width: 100%; padding: 16px; border-radius: 15px; border: 1.5px solid var(--purple);
+            background: #000; color: #fff; margin-bottom: 15px; box-sizing: border-box;
+            text-align: center; font-size: 1rem; outline: none; transition: 0.3s;
         }
-        .glass-card:hover::before { left: 100%; }
+        .input-field:focus { border-color: var(--cyan); box-shadow: 0 0 10px var(--cyan); }
 
-        .btn-premium {
-            width: 100%; padding: 20px; border-radius: 18px; border: none; color: #fff;
-            font-weight: 800; text-transform: uppercase; margin: 12px 0; cursor: pointer;
-            font-size: 0.9rem; letter-spacing: 1.5px; transition: 0.4s;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .btn-premium:active { transform: scale(0.96); }
-
-        .bg-turk { background: linear-gradient(45deg, #e30a17, #7a0000); border: 1px solid rgba(255,255,255,0.2); }
-        .bg-cyan { background: var(--cyan); color: #000; box-shadow: 0 0 15px rgba(0,255,255,0.3); }
-        .bg-gold { background: linear-gradient(45deg, #FFD700, #b8860b); color: #000; }
-        .bg-purple { background: linear-gradient(45deg, #6a00ff, var(--purple)); }
-        .bg-dark { background: #0a0a0a; border: 1px solid #222; }
-
-        /* --- UI: LOGS DE SEGURIDAD --- */
-        .consenso-box {
-            font-family: 'Consolas', 'Courier New', monospace; font-size: 0.7rem; color: var(--wa-green);
-            background: #000; padding: 18px; border-radius: 15px; margin-top: 20px;
-            display: none; border: 1px solid rgba(37, 211, 102, 0.3); text-align: left;
-            line-height: 1.4;
+        /* --- LOGS DE IA --- */
+        .ai-log-box {
+            font-family: 'Consolas', monospace; font-size: 0.7rem; color: var(--wa-green);
+            background: #000; padding: 20px; border-radius: 18px; margin-top: 20px;
+            display: none; border: 1px solid rgba(37, 211, 102, 0.4); text-align: left;
         }
 
-        .sector-badge {
-            display: inline-block; padding: 5px 12px; border-radius: 20px; font-size: 0.6rem;
-            background: rgba(255,255,255,0.1); margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.2);
+        .sector-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
+        
+        .video-wrapper {
+            border: 3px solid var(--cyan); border-radius: 25px; overflow: hidden;
+            aspect-ratio: 16/9; margin-bottom: 25px; box-shadow: 0 0 20px rgba(0,255,255,0.3);
         }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        footer {
+            font-size: 0.65rem; color: #666; text-align: center; padding: 40px;
+            line-height: 2; width: 100%; box-sizing: border-box;
+        }
     </style>
 </head>
 <body>
 
-    <div id="scanner-line"></div>
+    <div id="scanner-laser"></div>
 
     <div id="splash-screen">
-        <div class="splash-logo">
-            <span id="greet-txt" style="color:#fff; font-size:0.75rem; margin-bottom:12px; letter-spacing:3px; font-weight:300;">BAŞLATILIYOR</span>
-            <span style="color:var(--turk-red); font-size:1.6rem; font-weight:900; letter-spacing:1px;">NEURAL</span>
-            <span style="color:#fff; font-size:0.85rem; letter-spacing:5px; font-weight:100;">FOCUS AI</span>
+        <div class="splash-loader">
+            <span style="font-size: 0.7rem; letter-spacing: 3px; margin-bottom: 10px;">LUCAS GUZMAN</span>
+            <span style="color: var(--cyan); font-size: 1.6rem; font-weight: 900;">NEURAL</span>
+            <span style="font-size: 0.8rem; letter-spacing: 5px;">FOCUS AI</span>
         </div>
-        <div style="margin-top: 30px; font-size: 0.6rem; color: #444; letter-spacing: 2px;">LUCAS GUZMAN AGENCY</div>
+        <div style="margin-top: 30px; font-size: 0.6rem; color: #333; letter-spacing: 2px;">DİJİTAL EGEMENLİK ÜSSÜ</div>
     </div>
 
-    <div class="tab-bar">
-        <div id="btn-biz" class="tab-item active" onclick="openTab('biz')">🏢 STRATEJİ</div>
-        <div id="btn-acad" class="tab-item" onclick="openTab('acad')">🎓 AKADEMİ</div>
-        <div id="btn-life" class="tab-item" onclick="openTab('life')">🔥 YAŞAM</div>
+    <div class="navigation-bar">
+        <div id="tab-biz" class="nav-item active" onclick="navigate('biz')">🏢 BUSINESS</div>
+        <div id="tab-acad" class="nav-item" onclick="navigate('acad')">🎓 ACADEMY</div>
+        <div id="tab-life" class="nav-item" onclick="navigate('life')">🔥 LIFESTYLE</div>
     </div>
 
-    <div id="biz" class="tab-content active">
-        <div class="glass-card" style="border: 2px solid var(--turk-red);">
-            <div class="sector-badge" style="color: var(--turk-red); border-color: var(--turk-red);">DİJİTAL EGEMENLİK ÜSSÜ</div>
-            <h2 style="color: var(--turk-red); margin: 0; font-size: 1.2rem; letter-spacing: 1px;">MİLLİ PROTOKOL</h2>
-            <p style="font-size: 0.75rem; color: #888; margin-top: 8px; line-height: 1.4;">
-                Bu modül, küresel algoritmaların manipülasyonunu engelleyerek yerli veri düğümleri üzerinden karar verir.
-            </p>
-            
-            <div id="biz-display" style="margin: 25px 0; min-height: 120px; font-size: 0.9rem; line-height: 1.6; color: #ddd;">
-                <p style="color: #555; font-style: italic;">Sistem analize hazır. Milli kalkanı devreye sokun...</p>
+    <div class="main-container">
+        
+        <div id="panel-biz" class="tab-panel active">
+            <h1 style="color: var(--cyan); margin: 10px 0; font-size: 1.8rem;">NEURAL FOCUS AI</h1>
+            <input type="text" id="user-name" class="input-field" placeholder="İsminizi Girin (Nombre)">
+
+            <div class="feature-card" style="border-color: var(--gold);">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h3 style="color: var(--gold); margin: 0; font-size: 0.95rem;">🛡️ EGEMENLİK ANALİZÖRÜ</h3>
+                    <span style="font-size: 0.6rem; color: var(--wa-green);">ON-LINE</span>
+                </div>
+                <div id="market-data" style="font-size: 0.75rem; margin-top: 15px; color: #aaa; text-align: left;">
+                    <p>Mevcut Durum: <span style="color: #fff;">Veri Alınıyor...</span></p>
+                    <p>USD/TRY: <span style="color: var(--wa-green); font-weight: bold;">₺43.64</span></p>
+                </div>
+                <div id="ai-output" class="ai-log-box"></div>
+                <button onclick="runSovereignShield()" class="action-button btn-gold">DİJİTAL KALKANI AKTİF ET</button>
             </div>
 
-            <div id="consenso-log" class="consenso-box"></div>
-
-            <button onclick="executeSovereignConsensus()" class="btn-premium bg-turk">🛡️ KALKANI ÇALIŞTIR VE MÜHÜRLE</button>
-        </div>
-
-        <div class="glass-card" style="padding:0; overflow:hidden; border: 1px solid var(--cyan);">
-            <iframe width="100%" height="230" src="https://www.youtube.com/embed/X-FWm-NHEBc?autoplay=1&mute=1" frameborder="0" allowfullscreen></iframe>
-        </div>
-
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
-            <a href="https://chat.whatsapp.com/FPplgqnE2NiHmahVJXCic2" class="btn-premium bg-dark" style="font-size:0.7rem;">🏥 SAĞLIK</a>
-            <a href="https://chat.whatsapp.com/KQBkGZhDnJt2vxk7x5VdRI" class="btn-premium bg-dark" style="font-size:0.7rem;">🍲 GASTRO</a>
-            <a href="https://chat.whatsapp.com/IsvihivL7Bb0uwEV4ALIb5" class="btn-premium bg-dark" style="font-size:0.7rem;">🏭 SANAYİ</a>
-            <a href="https://chat.whatsapp.com/CPddy8AAILL2uSaTcRpHj1" class="btn-premium bg-dark" style="font-size:0.7rem;">🏗️ İNŞAAT</a>
-        </div>
-        
-        <a href="https://www.turkiye.gov.tr/" target="_blank" class="btn-premium bg-gold" style="margin-top: 20px;">🏛️ E-DEVLET RESMİ GİRİŞ</a>
-    </div>
-
-    <div id="acad" class="tab-content">
-        <div class="glass-card">
-            <div class="sector-badge" style="color: var(--cyan); border-color: var(--cyan);">EĞİTİM VE GELECEK</div>
-            <h2 style="color: var(--cyan); margin: 0; font-size: 1.2rem;">AKADEMİ PORTALI</h2>
-            <p style="font-size: 0.75rem; color: #888; margin: 10px 0 20px 0;">Yapay zeka ve küresel dillerde uzmanlaşın.</p>
-            
-            <a href="https://www.coursera.org/courses?query=artificial%20intelligence" target="_blank" class="btn-premium bg-cyan">🤖 AI MASTER KURSLARI</a>
-            <a href="https://www.saylor.org/course/span101/" target="_blank" class="btn-premium bg-dark" style="border: 1px solid var(--cyan);">🇪🇸 İSPANYOLCA (ES)</a>
-            <a href="https://www.saylor.org/course/engl000/" target="_blank" class="btn-premium bg-dark" style="border: 1px solid var(--cyan);">🇬🇧 İNGİLİZCE (EN)</a>
-        </div>
-        
-        <div class="glass-card" style="background: rgba(0,255,255,0.02);">
-            <p style="font-size: 0.7rem; color: var(--cyan);">* Tüm eğitimler Lucas Guzmán Agency tarafından onaylanmıştır.</p>
-        </div>
-    </div>
-
-    <div id="life" class="tab-content">
-        <div class="glass-card" style="border-color: var(--purple);">
-            <div class="sector-badge" style="color: var(--purple); border-color: var(--purple);">LIFESTYLE IA</div>
-            <h2 style="color: var(--purple); margin: 0; font-size: 1.2rem;">YAŞAM ASİSTANI</h2>
-            
-            <div style="margin-top: 20px;">
-                <input type="text" id="foodSearch" placeholder="Analiz edilecek yemek..." style="width:100%; padding:18px; margin-bottom:15px; border-radius:15px; background:#000; border:1px solid var(--purple); color:#fff; outline:none; font-size:0.9rem;">
-                <button onclick="document.getElementById('gIn').click()" class="btn-premium bg-purple">📸 GASTRO-VİZYON TARA</button>
-                <input type="file" id="gIn" accept="image/*" capture="environment" style="display:none" onchange="runGastro()">
+            <div class="video-wrapper">
+                <iframe width="100%" height="100%" src="https://www.youtube.com/embed/X-FWm-NHEBc?autoplay=1&mute=1" frameborder="0" allowfullscreen></iframe>
             </div>
-            
-            <hr style="border: 0.5px solid #222; margin: 25px 0;">
-            
-            <button onclick="startFal()" class="btn-premium bg-gold">🔮 MİLLİ KAHVE FALI AI</button>
-            <input type="file" id="fIn" accept="image/*" capture="environment" style="display:none" onchange="runFal()">
+
+            <div class="sector-grid">
+                <a href="https://chat.whatsapp.com/FPplgqnE2NiHmahVJXCic2" class="action-button btn-dark" style="font-size: 0.7rem;">🏥 SAĞLIK (SALUD)</a>
+                <a href="https://chat.whatsapp.com/KQBkGZhDnJt2vxk7x5VdRI" class="action-button btn-dark" style="font-size: 0.7rem;">🍲 GASTRO (GASTRO)</a>
+                <a href="https://chat.whatsapp.com/IsvihivL7Bb0uwEV4ALIb5" class="action-button btn-dark" style="font-size: 0.7rem;">🏭 SANAYİ (IND)</a>
+                <a href="https://chat.whatsapp.com/CPddy8AAILL2uSaTcRpHj1" class="action-button btn-dark" style="font-size: 0.7rem;">🏗️ İNŞAAT (CONST)</a>
+            </div>
+
+            <a href="https://www.turkiye.gov.tr/" target="_blank" class="action-button btn-cyan" style="margin-top: 25px;">🏛️ E-DEVLET RESMİ PORTAL</a>
         </div>
 
-        <a href="https://wa.me/5492246496971?text=Merhaba%20Lucas,%20bir%20çay%20ısmarlamak%20ve%20işbirliği%20yapmak%20istiyorum." class="btn-premium" style="background:var(--tea-red); box-shadow: 0 0 20px rgba(211, 47, 47, 0.3);">☕ BİR ÇAY ISMARLA (İLETİŞİM)</a>
-        
-        <div style="font-size: 0.65rem; color: #444; margin-top: 15px;">
-            Voz Inteligente 24/7 & Agente de Vida Live her zaman aktif.
+        <div id="panel-acad" class="tab-panel">
+            <h2 style="color: var(--cyan); text-align: center;">EĞİTİM MERKEZİ</h2>
+            <div class="feature-card">
+                <p style="font-size: 0.8rem; color: #888; text-align: center; margin-bottom: 20px;">
+                    Neural Focus AI ile geleceğin teknolojilerine ve dillerine hükmedin.
+                </p>
+                <a href="https://www.coursera.org/courses?query=artificial%20intelligence" target="_blank" class="action-button btn-cyan">🤖 YAPAY ZEKA MASTER KURSU</a>
+                
+                <div style="margin: 20px 0; border-top: 1px solid #222; padding-top: 20px;">
+                    <h4 style="color: #555; margin-bottom: 10px;">DİL EĞİTİMLERİ (IDIOMAS)</h4>
+                    <a href="https://www.saylor.org/course/span101/" target="_blank" class="action-button btn-dark">🇪🇸 İSPANYOLCA PORTALI</a>
+                    <a href="https://www.saylor.org/course/engl000/" target="_blank" class="action-button btn-dark">🇬🇧 İNGİLİZCE PORTALI</a>
+                </div>
+            </div>
         </div>
+
+        <div id="panel-life" class="tab-panel">
+            <h2 style="color: var(--purple); text-align: center;">LIFESTYLE AI</h2>
+            
+            <div class="feature-card" style="border-color: var(--purple);">
+                <h3 style="color: var(--purple); font-size: 1rem;">🍲 GASTRO-VİZYON</h3>
+                <input type="text" id="food-search" class="input-field" placeholder="Yemek ismi (Örn: Kebap)" style="border-color: var(--purple);">
+                <button onclick="scanFood()" class="action-button btn-purple">📸 TARA VE ANALİZ ET</button>
+            </div>
+
+            <div class="feature-card" style="border-color: var(--gold); background: rgba(255,215,0,0.02);">
+                <h3 style="color: var(--gold); font-size: 1rem;">🔮 MİLLİ KAHVE FALI</h3>
+                <p style="font-size: 0.7rem; color: #666; margin-bottom: 15px;">Fincanınızdaki sembolleri yerli AI ile yorumlayın.</p>
+                <button onclick="runCoffeeFal()" class="action-button btn-gold">🔮 FALI YORUMLA</button>
+            </div>
+
+            <a href="https://wa.me/5492246496971?text=Merhaba%20Lucas,%20bir%20çay%20ısmarlamak%20ve%20işbirliği%20yapmak%20istiyorum." class="action-button btn-red" style="margin-top: 20px;">☕ BİR ÇAY ISMARLA (LUCAS)</a>
+        </div>
+
     </div>
 
-    <footer style="font-size: 0.65rem; color: #333; padding: 40px; line-height: 2; text-align: center; width: 100%;">
-        <div style="color: #666; font-weight: 800; letter-spacing: 1px;">NEURAL FOCUS AI | LUCAS GUZMÁN</div>
-        🛡️ TÜRKİYE DİJİTAL EGEMENLİK YAZILIMI v4.0<br>
-        24/7 Akıllı Ses Sistemi ve Canlı Yaşam Ajanı Aktif.<br>
-        Ankara - İstanbul - Global
+    <footer>
+        <div style="color: var(--cyan); font-weight: 900; letter-spacing: 2px; margin-bottom: 10px;">NEURAL FOCUS AI | LUCAS GUZMÁN</div>
+        🛡️ TÜRKİYE SOBERANÍA DIGITAL V4.0<br>
+        <b>Voz Inteligente 24/7:</b> Yazılı tüm süreçlerin otomatik yönetimi.<br>
+        <b>Agente de Vida Live 24/7:</b> Canlı etkileşimli destek ve analiz.<br>
+        Tüm hakları saklıdır © 2026.
     </footer>
 
     <script>
-        // --- NAVEGACIÓN ENTRE PESTAÑAS ---
-        function openTab(t) {
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            document.querySelectorAll('.tab-item').forEach(i => i.classList.remove('active'));
-            document.getElementById(t).classList.add('active');
-            const btnId = t === 'biz' ? 'btn-biz' : t === 'acad' ? 'btn-acad' : 'btn-life';
-            document.getElementById(btnId).classList.add('active');
+        // --- GESTIÓN DE PESTAÑAS (NAVEGACIÓN) ---
+        function navigate(tabId) {
+            // Desactivar todos
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            
+            // Activar seleccionado
+            document.getElementById('panel-' + tabId).classList.add('active');
+            document.getElementById('tab-' + tabId).classList.add('active');
+            
+            // Feedback táctil/auditivo
+            window.speechSynthesis.cancel();
+            console.log("Navigated to: " + tabId);
         }
 
-        // --- INICIALIZACIÓN Y SALUDO ---
+        // --- INICIALIZACIÓN ---
         window.onload = () => {
-            const h = new Date().getHours();
-            let g = h < 12 ? "GÜNAYDIN" : h < 18 ? "İYİ GÜNLER" : "İYİ AKŞAMLAR";
-            document.getElementById('greet-txt').innerText = g;
-            
-            // Simular carga de red neuronal
-            setTimeout(() => { 
-                document.getElementById('splash-screen').style.opacity = '0'; 
-                setTimeout(() => document.getElementById('splash-screen').style.display='none', 1000); 
+            const time = new Date().getHours();
+            let greeting = time < 12 ? "GÜNAYDIN" : time < 18 ? "İYİ GÜNLER" : "İYİ AKŞAMLAR";
+            console.log("System Initialized. Time: " + time);
+
+            // Simulación de carga de red neuronal
+            setTimeout(() => {
+                const splash = document.getElementById('splash-screen');
+                splash.style.opacity = '0';
+                setTimeout(() => splash.style.display = 'none', 1000);
             }, 3000);
         };
 
-        // --- MOTOR DE VOZ (TURCO) ---
-        function speak(t) {
+        // --- MOTOR DE VOZ INTELIGENTE (TURCO) ---
+        function neuralSpeak(text) {
             if ('speechSynthesis' in window) {
-                const u = new SpeechSynthesisUtterance(t);
-                u.lang = 'tr-TR';
-                u.pitch = 1;
-                u.rate = 0.9;
-                window.speechSynthesis.speak(u);
+                const msg = new SpeechSynthesisUtterance(text);
+                msg.lang = 'tr-TR';
+                msg.pitch = 1.1;
+                msg.rate = 0.95;
+                window.speechSynthesis.speak(msg);
             }
         }
 
-        // --- FUNCIÓN ÚNICA: PROTOCOLO DE CONSENSO SOBERANO + CERTIFICADO ---
-        function executeSovereignConsensus() {
-            const disp = document.getElementById('biz-display');
-            const log = document.getElementById('consenso-log');
-            const scan = document.getElementById('scanner-line');
+        // --- FUNCIÓN ÚNICA: SOBERANÍA DIGITAL + CERTIFICADO ---
+        function runSovereignShield() {
+            const output = document.getElementById('ai-output');
+            const laser = document.getElementById('scanner-laser');
+            const name = document.getElementById('user-name').value || "Sayın İş Ortağı";
             
-            // Reiniciar UI
-            scan.style.display = 'block';
-            log.style.display = 'block';
-            log.innerHTML = "";
-            disp.innerHTML = "<p style='color:var(--turk-red);'>SİSTEM KİLİTLENDİ: Milli Veri Kalkanı Aktif...</p>";
+            laser.style.display = 'block';
+            output.style.display = 'block';
+            output.innerHTML = "";
             
-            speak("Milli konsensüs protokolü başlatıldı. Dış ağ bağlantıları filtreleniyor. Karar mühürleniyor.");
+            neuralSpeak("Milli egemenlik protokolü başlatıldı. Dış tehditler taranıyor.");
 
-            const steps = [
-                "> Global IP tracking: [BLOCKED]",
-                "> Veri sızıntısı taraması: [CLEAN]",
-                "> Yerli düğüm senkronizasyonu: [OK]",
-                "> Dijital Egemenlik Onay Kodu: NF-" + Math.floor(10000 + Math.random()*90000),
-                "> Protokol: %100 Yerli Yapay Zeka Onayı."
+            const processLogs = [
+                "> IP Veri Sızıntısı Filtreleniyor...",
+                "> Yerli Algoritma Düğümü: AKTİF",
+                "> Onay Kodu: NF-" + Math.floor(10000 + Math.random()*90000),
+                "> Karar Mühürleniyor: " + name.toUpperCase()
             ];
 
-            let i = 0;
-            const timer = setInterval(() => {
-                log.innerHTML += `<span style="color:${i==4?'var(--gold)':'var(--wa-green)'}">${steps[i]}</span><br>`;
-                i++;
-                if(i >= steps.length) clearInterval(timer);
-            }, 800);
-
-            setTimeout(() => {
-                scan.style.display = 'none';
-                const decisions = [
-                    "SANAYİ ANALİZİ: Dışa bağımlılığı azaltmak için yerli yazılım entegrasyonu onaylandı. Egemenlik Skoru: %98",
-                    "STRATEJİK EKONOMİ: Lira bazlı dijital ticaret hacmi genişletme kararı mühürlendi. Egemenlik Skoru: %96",
-                    "GÜVENLİK PROTOKOLÜ: Kritik verilerin yerli sunucularda şifrelenmesi tamamlandı. Egemenlik Skoru: %100"
-                ];
-                const finalDec = decisions[Math.floor(Math.random()*decisions.length)];
-                disp.innerHTML = `<b style="color:var(--gold); font-size:1.1rem;">[EGEMENLİK ONAYI VERİLDİ]</b><br><br>${finalDec}`;
-                speak(finalDec);
-
-                // --- GENERACIÓN DE CERTIFICADO ÚNICO (PDF SIMULADO) ---
-                setTimeout(() => {
-                    const certWindow = window.open('', '_blank');
-                    if(certWindow) {
-                        certWindow.document.write(`
-                            <html>
-                            <head><title>Egemenlik Sertifikası</title></head>
-                            <body style="background:#000; color:#fff; font-family:sans-serif; text-align:center; padding:60px; border:15px solid #e30a17; min-height:80vh;">
-                                <div style="border:2px solid #fff; padding:40px;">
-                                    <h1 style="color:#e30a17; font-size:3rem; margin-bottom:10px;">STRATEJİK KARAR BELGESİ</h1>
-                                    <p style="letter-spacing:5px;">NEURAL FOCUS AI | SOBERANÍA DIGITAL</p>
-                                    <hr style="border:0.5px solid #444; margin:40px 0;">
-                                    <p style="font-size:1.2rem;">Bu belge, yapay zeka tarafından milli güvenlik parametreleri uyarınca mühürlenmiştir.</p>
-                                    <h2 style="background:#e30a17; padding:20px; color:#fff;">KARAR: ${finalDec}</h2>
-                                    <p style="margin-top:50px;">Tarih: ${new Date().toLocaleString('tr-TR')}</p>
-                                    <p style="font-family:monospace; color:#888;">DOĞRULAMA KODU: NF-SOV-${Math.random().toString(36).substr(2, 9).toUpperCase()}</p>
-                                    <div style="margin-top:60px;">
-                                        <div style="display:inline-block; border:1px solid #fff; padding:20px;">MİLLİ MÜHÜR: ONAYLANDI</div>
-                                    </div>
-                                    <p style="margin-top:40px; font-size:0.8rem; color:#444;">Lucas Guzmán Agency - Ankara Branch</p>
-                                </div>
-                            </body>
-                            </html>
-                        `);
-                    }
-                }, 2500);
-            }, 4500);
+            let step = 0;
+            const interval = setInterval(() => {
+                output.innerHTML += `<span style="display:block; margin-bottom:5px;">${processLogs[step]}</span>`;
+                step++;
+                if(step >= processLogs.length) {
+                    clearInterval(interval);
+                    finalizeSovereignty(name);
+                }
+            }, 900);
         }
 
-        // --- LIFESTYLE: GASTRO ANALİZ ---
-        function runGastro() {
-            const scan = document.getElementById('scanner-line');
-            scan.style.display = 'block';
-            speak("Gastro vizyon taranıyor. Sağlık ve gastronomi verileri karşılaştırılıyor.");
+        function finalizeSovereignty(name) {
+            document.getElementById('scanner-laser').style.display = 'none';
+            const decisions = [
+                "SANAYİ: Üretim hattında yerli yazılım entegrasyonu zorunludur. Verimlilik Artışı: %42.",
+                "GASTRONOMİ: Yerel tedarik zinciri blokzincir ile güvence altına alınmıştır.",
+                "İNŞAAT: Dijital ikiz projeksiyonu milli sunuculara aktarılmıştır."
+            ];
+            const finalRes = decisions[Math.floor(Math.random()*decisions.length)];
+            
+            neuralSpeak(finalRes);
+            
+            // --- GENERADOR DE CERTIFICADO (PDF HTML) ---
+            setTimeout(() => {
+                const cert = window.open('', '_blank');
+                cert.document.write(`
+                    <html>
+                    <body style="background:#000; color:#fff; font-family:sans-serif; text-align:center; padding:50px; border:15px solid var(--turk-red);">
+                        <h1 style="color:var(--turk-red); font-size:3rem;">STRATEJİK BELGE</h1>
+                        <hr style="border:1px solid #333;">
+                        <p style="font-size:1.5rem; margin-top:30px;">Sayın ${name},</p>
+                        <h2 style="background:var(--turk-red); padding:20px; color:#fff;">KARAR: ${finalRes}</h2>
+                        <p style="margin-top:50px;">Tarih: ${new Date().toLocaleString('tr-TR')}</p>
+                        <p style="color:#444;">ID: NF-SOV-${Math.random().toString(36).substr(2, 9).toUpperCase()}</p>
+                        <div style="margin-top:40px; border:1px solid #fff; display:inline-block; padding:20px;">MİLLİ MÜHÜR: ONAYLANDI</div>
+                    </body>
+                    <script>var varTurkRed = '#e30a17';<\/script>
+                    </html>
+                `);
+            }, 2500);
+        }
+
+        // --- GASTRO VİZYON ---
+        function scanFood() {
+            const food = document.getElementById('food-search').value;
+            if(!food) { alert("Lütfen bir yemek ismi girin."); return; }
+            
+            neuralSpeak(food + " taranıyor. Sağlık verileri analiz ediliyor.");
+            document.getElementById('scanner-laser').style.display = 'block';
             
             setTimeout(() => {
-                scan.style.display = 'none';
-                const f = document.getElementById('foodSearch').value || "yemek";
-                window.open(`https://www.google.com/search?q=${encodeURIComponent(f)}+kalori+sağlık+değeri+turkiye`, '_blank');
+                document.getElementById('scanner-laser').style.display = 'none';
+                window.open(`https://www.google.com/search?q=${encodeURIComponent(food)}+besin+değerleri+sağlık`, '_blank');
             }, 2000);
         }
 
-        // --- LIFESTYLE: KAHVE FALI ---
-        function startFal() { 
-            speak("Fincanınızdaki sembolleri milli yapay zeka ile yorumluyorum. Gelecek taranıyor."); 
-            document.getElementById('fIn').click(); 
-        }
-        function runFal() {
-            const scan = document.getElementById('scanner-line');
-            scan.style.display = 'block';
+        // --- KAHVE FALI ---
+        function runCoffeeFal() {
+            neuralSpeak("Gelecek taranıyor. Semboller yorumlanıyor.");
+            document.getElementById('scanner-laser').style.display = 'block';
             
             setTimeout(() => {
-                scan.style.display = 'none';
-                const luck = [
+                document.getElementById('scanner-laser').style.display = 'none';
+                const fali = [
                     "Kısmetin kapıda, büyük bir ticari başarı seni bekliyor.",
                     "Hane içine ay doğuyor, beklediğin o stratejik haber yolda.",
-                    "Yolların açılıyor, engeller bir bir kalkacak; güvenle ilerle.",
-                    "Fincanında bir anahtar var; yeni bir kapı, yeni bir iş birliği başlıyor."
+                    "Yolların açılıyor, engeller bir bir kalkacak; güvenle ilerle."
                 ];
-                const res = luck[Math.floor(Math.random()*luck.length)];
-                alert("🔮 FALINIZ: " + res); 
-                speak(res);
-            }, 3500);
+                const result = fali[Math.floor(Math.random()*fali.length)];
+                alert("🔮 FALINIZ: " + result);
+                neuralSpeak(result);
+            }, 3000);
         }
     </script>
 </body>
-    </html>
-    
+                    </html>
+                    
