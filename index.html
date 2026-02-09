@@ -32,7 +32,7 @@
             transition: opacity 0.8s ease;
         }
         .logo-pulse {
-            width: 150px; height: 150px; border: 2px solid var(--cyan);
+            width: 140px; height: 140px; border: 2px solid var(--cyan);
             border-radius: 50%; display: flex; flex-direction: column;
             justify-content: center; align-items: center;
             animation: pulse 1.5s infinite ease-in-out;
@@ -46,7 +46,7 @@
             border-bottom: 2px solid var(--cyan); position: sticky; top: 0; z-index: 1000;
         }
         .tab {
-            flex: 1; padding: 18px 0; text-align: center; font-size: 0.75rem;
+            flex: 1; padding: 18px 0; text-align: center; font-size: 0.7rem;
             font-weight: 900; color: #555; cursor: pointer; text-transform: uppercase;
         }
         .tab.active { color: var(--cyan); border-bottom: 3px solid var(--cyan); }
@@ -67,7 +67,12 @@
             box-sizing: border-box; text-align: center; position: relative;
         }
 
-        /* --- INPUTS Y BOTONES --- */
+        .video-box {
+            width: 100%; border-radius: 20px; overflow: hidden;
+            border: 1.5px solid var(--cyan); aspect-ratio: 16/9; margin-bottom: 20px;
+        }
+
+        /* --- UI ELEMENTS --- */
         input {
             width: 100%; max-width: 320px; padding: 15px; border-radius: 12px; 
             border: 1px solid var(--purple); background: #111; color: #fff; 
@@ -77,27 +82,42 @@
 
         .btn {
             width: 100%; max-width: 320px; padding: 16px; border-radius: 12px; 
-            border: none; color: white; font-weight: 800; font-size: 0.85rem; 
-            margin: 8px 0; cursor: pointer; text-transform: uppercase;
+            border: none; color: white; font-weight: 800; font-size: 0.8rem; 
+            margin: 6px 0; cursor: pointer; text-transform: uppercase;
             display: flex; align-items: center; justify-content: center;
-            text-decoration: none; box-sizing: border-box;
+            text-decoration: none; box-sizing: border-box; transition: 0.2s;
         }
+        .btn:active { transform: scale(0.98); }
 
         .btn-cyan { background: var(--cyan); color: #000; }
         .btn-purple { background: var(--purple); }
         .btn-red { background: var(--turk-red); }
         .btn-gold { background: linear-gradient(90deg, #ffcc00, #ff9900); color: #000; }
+        .btn-maps { background: linear-gradient(90deg, #4285F4, #34A853, #FBBC05, #EA4335); }
 
-        /* --- LOADING OVERLAY PARA IA --- */
-        .loading-ia {
-            display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); border-radius: 20px;
-            flex-direction: column; justify-content: center; align-items: center; z-index: 10;
+        /* --- GRID SECTORES --- */
+        .sector-grid { 
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px; 
+            width: 100%; max-width: 320px; margin-top: 10px;
+        }
+        .sector-item {
+            background: #111; border: 1px solid #333; padding: 14px;
+            border-radius: 12px; text-align: center; font-size: 0.65rem;
+            font-weight: 900; color: #fff; text-decoration: none;
         }
 
+        /* --- LOADING OVERLAY --- */
+        .loading-ia {
+            display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); border-radius: 20px;
+            flex-direction: column; justify-content: center; align-items: center; z-index: 10;
+        }
+        .spinner { border: 3px solid rgba(255,255,255,0.1); border-top: 3px solid var(--cyan); border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
         footer {
-            text-align: center; font-size: 0.65rem; color: #555;
-            padding: 40px 10px; width: 100%; line-height: 1.5;
+            text-align: center; font-size: 0.6rem; color: #444;
+            padding: 30px 10px; width: 100%; line-height: 1.5;
         }
     </style>
 </head>
@@ -105,54 +125,90 @@
 
     <div id="splash">
         <div class="logo-pulse">
-            <span id="txtGreet" style="font-size: 0.6rem; color: #888; margin-bottom: 5px;">YÜKLENİYOR</span>
-            <span style="font-weight: 900; font-size: 1.2rem;">NEURAL</span>
-            <span style="color: var(--cyan); letter-spacing: 4px;">FOCUS AI</span>
+            <span id="txtGreet" style="font-size: 0.55rem; color: #666; margin-bottom: 5px;">YÜKLENİYOR</span>
+            <span style="font-weight: 900; font-size: 1.1rem;">NEURAL</span>
+            <span style="color: var(--cyan); letter-spacing: 3px;">FOCUS AI</span>
         </div>
     </div>
 
     <div class="tab-bar">
         <div class="tab active" onclick="nav('biz', this)">🏢 BUSINESS</div>
+        <div class="tab" onclick="nav('acad', this)">🎓 ACADEMY</div>
         <div class="tab" onclick="nav('life', this)">🔥 LIFESTYLE</div>
     </div>
 
     <div class="container">
         
         <div id="biz" class="panel active">
-            <h1 style="color: var(--cyan); letter-spacing: 2px;">NEURAL FOCUS AI</h1>
-            <input type="text" id="uName" placeholder="Adınızı giriniz">
-            <a href="https://wa.me/5492246496971" target="_blank" class="btn btn-red">☕ BİR ÇAY ISMARLA (WhatsApp Personal)</a>
+            <h1 style="color: var(--cyan); letter-spacing: 2px; font-size: 1.4rem; margin-bottom: 20px;">NEURAL FOCUS AI</h1>
+            <input type="text" id="uName" placeholder="İsminiz (Su Nombre)">
+
+            <div class="card" style="border-top: 3px solid var(--gold);">
+                <h4 style="color: var(--gold); margin: 0 0 10px 0;">🛡️ MİLLİ DİJİTAL EGEMENLİK</h4>
+                <p id="sovRes" style="font-size: 0.7rem; color: #888;">Analiz protokolü hazır.</p>
+                <button onclick="runSov()" class="btn btn-gold" style="margin: 10px auto; width: 90%;">SİSTEMİ BAŞLAT</button>
+            </div>
+
+            <div class="video-box">
+                <iframe width="100%" height="100%" src="https://www.youtube.com/embed/X-FWm-NHEBc?autoplay=1&mute=1" frameborder="0" allowfullscreen></iframe>
+            </div>
+
+            <div class="card" style="border-color: var(--cyan);">
+                <input type="number" id="tryIn" oninput="conv()" placeholder="TRY (Lira) Miktarı" style="margin-bottom:10px;">
+                <div style="display:flex; justify-content:space-around; width: 100%;">
+                    <div style="text-align: center;"><span style="color:var(--cyan); font-weight: 800;" id="usdOut">$ 0.00</span></div>
+                    <div style="text-align: center;"><span style="color:var(--gold); font-weight: 800;" id="goldOut">0.0000 gr</span></div>
+                </div>
+            </div>
+
+            <a href="https://www.google.com/maps" target="_blank" class="btn btn-maps">📍 GLOBAL OFFICE (MAPS)</a>
+            <a href="https://translate.google.com/?sl=tr&tl=es" target="_blank" class="btn btn-purple">🌐 AKILLI ÇEVİRMEN (TR-ES)</a>
+            <a href="https://www.turkiye.gov.tr/" target="_blank" class="btn btn-gold">🏛️ E-DEVLET KAPISI</a>
+
+            <div class="sector-grid">
+                <a href="https://chat.whatsapp.com/FPplgqnE2NiHmahVJXCic2" class="sector-item">🏥 SAĞLIK</a>
+                <a href="https://chat.whatsapp.com/KQBkGZhDnJt2vxk7x5VdRI" class="sector-item">🍲 GASTRO</a>
+                <a href="https://chat.whatsapp.com/IsvihivL7Bb0uwEV4ALIb5" class="sector-item">🏭 SANAYİ</a>
+                <a href="https://chat.whatsapp.com/CPddy8AAILL2uSaTcRpHj1" class="sector-item">🏗️ İNŞAAT</a>
+            </div>
+        </div>
+
+        <div id="acad" class="panel">
+            <h2 style="color:var(--cyan); margin-bottom:20px;">ACADEMY</h2>
+            <a href="https://www.coursera.org" target="_blank" class="btn btn-cyan">🤖 YAPAY ZEKA MASTER</a>
+            <a href="https://www.saylor.org/course/engl101/" target="_blank" class="btn btn-purple">🇬🇧 PROFESYONEL İNGİLİZCE</a>
+            <a href="https://www.udemy.com" target="_blank" class="btn btn-gold">💻 TEKNOLOJİ KURSLARI</a>
         </div>
 
         <div id="life" class="panel">
             <h2 style="color:var(--purple); margin-bottom:20px;">LIFESTYLE AI</h2>
             
+            <div class="card" id="cardGastro">
+                <div class="loading-ia" id="loadGastro"><div class="spinner"></div><p style="font-size: 0.6rem; margin-top:10px;">Yemek Analiz Ediliyor...</p></div>
+                <h4 style="color:var(--cyan); margin-bottom:10px;">📸 TURKISH GASTRO-VISION</h4>
+                <input type="file" id="gastroCam" accept="image/*" capture="environment" style="display:none;" onchange="processIA('gastro')">
+                <button onclick="document.getElementById('gastroCam').click()" class="btn btn-cyan" style="margin: 0 auto;">YEMEK FOTOSU ÇEK</button>
+                <div id="resGastro" style="font-size:0.75rem; margin-top:10px; color:var(--wa-green);"></div>
+            </div>
+
             <div class="card" id="cardCoffee">
-                <div class="loading-ia" id="loadCoffee">
-                    <div style="border: 3px solid var(--purple); border-top: 3px solid #fff; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite;"></div>
-                    <p style="font-size: 0.7rem; margin-top: 10px;">IA Fincanı Analiz Ediyor...</p>
-                </div>
+                <div class="loading-ia" id="loadCoffee"><div class="spinner"></div><p style="font-size: 0.6rem; margin-top:10px;">IA Kahve Falına Bakıyor...</p></div>
                 <h4 style="color:var(--purple); margin-bottom:10px;">🔮 KAHVE FALI (IA)</h4>
                 <input type="file" id="coffeeCam" accept="image/*" capture="environment" style="display:none;" onchange="processIA('coffee')">
-                <button onclick="document.getElementById('coffeeCam').click()" class="btn btn-purple" style="margin: 0 auto;">FOTOĞRAF ÇEK VE OKU</button>
+                <button onclick="document.getElementById('coffeeCam').click()" class="btn btn-purple" style="margin: 0 auto;">FAL İÇİN FOTOĞRAF ÇEK</button>
                 <div id="resCoffee" style="font-size:0.8rem; margin-top:10px; color:var(--gold); font-weight: bold;"></div>
             </div>
 
-            <div class="card" id="cardGastro">
-                <div class="loading-ia" id="loadGastro">
-                    <div style="border: 3px solid var(--cyan); border-top: 3px solid #fff; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite;"></div>
-                    <p style="font-size: 0.7rem; margin-top: 10px;">Gastro-Sağlık Analizi Yapılıyor...</p>
-                </div>
-                <h4 style="color:var(--cyan); margin-bottom:10px;">🍲 GASTRO-SAĞLIK VİZYONU</h4>
-                <input type="file" id="gastroCam" accept="image/*" capture="environment" style="display:none;" onchange="processIA('gastro')">
-                <button onclick="document.getElementById('gastroCam').click()" class="btn btn-cyan" style="margin: 0 auto;">YEMEĞİ TARA</button>
-                <div id="resGastro" style="font-size:0.75rem; margin-top:10px; color:var(--wa-green);"></div>
-            </div>
+            <a href="https://wa.me/5492246496971" target="_blank" class="btn btn-red">☕ BİR ÇAY ISMARLA (WhatsApp)</a>
         </div>
 
     </div>
 
-    <style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>
+    <footer>
+        <b style="color:var(--cyan);">LUCAS GUZMÁN AGENCY © 2026</b><br>
+        Voz Inteligente 24/7 | Agente de Vida Live 24/7<br>
+        Sectores: Salud, Gastronomía, Industria y Construcción.
+    </footer>
 
     <script>
         function speak(t) {
@@ -165,10 +221,11 @@
             const h = new Date().getHours();
             let g = h < 12 ? "GÜNAYDIN" : h < 18 ? "İYİ GÜNLER" : "İYİ AKŞAMLAR";
             document.getElementById('txtGreet').innerText = g;
+            speak(g + ". Neural Focus AI sistemine hoş geldiniz.");
             setTimeout(() => {
                 document.getElementById('splash').style.opacity = '0';
                 setTimeout(() => document.getElementById('splash').style.display = 'none', 800);
-            }, 2500);
+            }, 3000);
         };
 
         function nav(id, el) {
@@ -176,12 +233,34 @@
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             el.classList.add('active');
+            window.scrollTo(0,0);
+        }
+
+        function conv() {
+            const v = document.getElementById('tryIn').value;
+            if(v > 0) {
+                document.getElementById('usdOut').innerText = "$ " + (v / 43.64).toFixed(2);
+                document.getElementById('goldOut').innerText = (v * 0.00045).toFixed(4) + " gr";
+            } else {
+                document.getElementById('usdOut').innerText = "$ 0.00";
+                document.getElementById('goldOut').innerText = "0.0000 gr";
+            }
+        }
+
+        function runSov() {
+            const n = document.getElementById('uName').value || "Sayın İş Ortağı";
+            const r = document.getElementById('sovRes');
+            r.innerText = "Analiz ediliyor...";
+            setTimeout(() => {
+                const m = `Analiz Tamamlandı. ${n}, verileriniz Lucas Guzmán Agency koruması altındadır.`;
+                r.innerText = m; r.style.color = "var(--gold)";
+                speak(m);
+            }, 2000);
         }
 
         function processIA(type) {
             const load = type === 'coffee' ? document.getElementById('loadCoffee') : document.getElementById('loadGastro');
             const res = type === 'coffee' ? document.getElementById('resCoffee') : document.getElementById('resGastro');
-            
             load.style.display = 'flex';
             res.innerText = "";
 
@@ -189,15 +268,15 @@
                 load.style.display = 'none';
                 let msg = "";
                 if(type === 'coffee') {
-                    const predictions = ["Kısmetin açılıyor, büyük projeler yolda.", "Fincanın çok parlak, yakında bir müjde alacaksın.", "Yolun açık, Lucas Guzmán Agency ile başarı seni bekliyor."];
+                    const predictions = ["Kısmetin açılıyor, büyük projeler yolda.", "Fincanın çok parlak, yakında bir müjde alacaksın.", "Başarı seninle, Lucas Guzmán Agency ile yola devam."];
                     msg = predictions[Math.floor(Math.random() * predictions.length)];
-                    res.innerText = "🔮 IA Yorumu: " + msg;
+                    res.innerText = "🔮 IA FALI: " + msg;
                 } else {
-                    msg = "Bu Türk yemeği harika bir enerji kaynağı! Dengeli ve sağlıklı bir öğün. Afiyet olsun.";
-                    res.innerText = "🥗 Sağlık Analizi: " + msg;
+                    msg = "Harika bir Türk yemeği! Bu besin profili sağlıklı ve enerji verici. Afiyet olsun.";
+                    res.innerText = "🥗 SAĞLIK ANALİZİ: " + msg;
                 }
                 speak(msg);
-            }, 3500); // Tiempo de carga simulado para impacto UX
+            }, 3500);
         }
     </script>
 </body>
