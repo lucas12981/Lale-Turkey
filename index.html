@@ -257,13 +257,33 @@
         }
 
         function getAiMarketReport() {
+            const reportDiv = document.getElementById('market-report');
             speak("Veriler analiz ediliyor. Sektörel korunma raporu hazırlanıyor.");
+            
+            reportDiv.innerHTML = "<p style='color:var(--gold);'>⌛ Analiz ediliyor...</p>";
+
             setTimeout(() => {
                 const nameTag = userName ? userName : "Girişimci";
                 const msg = `Sayın ${nameTag}, TRY kuruna göre Sanayi ve İnşaat sektörlerinde stok alımı önerilir. Gastronomi maliyetleri dengeli seyrediyor.`;
+                
                 alert(msg);
+                
+                reportDiv.innerHTML = `
+                    <div style="border-left: 2px solid var(--gold); padding-left: 10px; margin-top: 10px;">
+                        <p style="color:var(--gold); font-weight:bold; margin-bottom:5px;">📊 AI STRATEJİK RAPOR:</p>
+                        <p style="font-size:0.75rem;">${msg}</p>
+                        <button onclick="shareMarketReport()" class="btn-premium bg-whatsapp" style="padding:8px; font-size:0.6rem; margin-top:10px;">WHATSAPP İLE PAYLAŞ</button>
+                    </div>
+                `;
+                
                 speak(msg);
             }, 1000);
+        }
+
+        function shareMarketReport() {
+            const nameTag = userName ? userName : "Girişimci";
+            const text = encodeURIComponent(`Neural Focus AI Ekonomik Raporu (${nameTag}): Sektörel korunma ve yatırım analizi hazır!`);
+            window.open('https://wa.me/?text=' + text, '_blank');
         }
 
         function convertTRY() {
@@ -343,9 +363,8 @@
             window.open('https://wa.me/?text=' + text, '_blank');
         }
 
-        // REPARACIÓN DEL WINDOW.ONLOAD (MANTENIENDO TU LÓGICA ORIGINAL)
         window.onload = () => {
-            updateMarket(); // Función nueva
+            updateMarket();
             const lastTab = localStorage.getItem('lastTab') || 'business';
             openTab(lastTab);
             setTimeout(() => {
@@ -358,5 +377,5 @@
         };
     </script>
 </body>
-    </html>
-    
+                </html>
+                
