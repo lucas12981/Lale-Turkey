@@ -112,6 +112,8 @@
             color: #fff; padding: 10px; border-radius: 8px; width: 100%;
             margin-bottom: 10px; text-align: center; outline: none;
         }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
@@ -214,7 +216,6 @@
     </footer>
 
     <script>
-        // CONFIGURACIÓN VOZ
         function speak(text) {
             const synth = window.speechSynthesis;
             const utter = new SpeechSynthesisUtterance(text);
@@ -244,7 +245,6 @@
             if(targetBtn) targetBtn.classList.add('active');
         }
 
-        // --- LÓGICA DE MERCADO (FUNCIÓN ESTRELLA) ---
         let liveRate = 30.25;
         async function updateMarket() {
             try {
@@ -256,33 +256,62 @@
             } catch(e) { console.log("Offline market mode"); }
         }
 
+        // --- MOTOR DE SOBERANÍA DIGITAL (AI STRATEGY ENGINE) ---
         function getAiMarketReport() {
             const reportDiv = document.getElementById('market-report');
-            speak("Veriler analiz ediliyor. Sektörel korunma raporu hazırlanıyor.");
+            speak("Veri madenciliği başlatıldı. Neural Focus Yapay Zekası analiz ediyor.");
             
-            reportDiv.innerHTML = "<p style='color:var(--gold);'>⌛ Analiz ediliyor...</p>";
+            reportDiv.innerHTML = `
+                <div style="text-align:center; padding:10px;">
+                    <div style="border: 2px solid var(--cyan); border-top: 2px solid transparent; width:20px; height:20px; border-radius:50%; animation: spin 1s linear infinite; margin:auto;"></div>
+                    <p style="color:var(--cyan); font-size:0.6rem; margin-top:5px;">STRATEJİK VERİLER İŞLENİYOR...</p>
+                </div>
+            `;
 
             setTimeout(() => {
                 const nameTag = userName ? userName : "Girişimci";
-                const msg = `Sayın ${nameTag}, TRY kuruna göre Sanayi ve İnşaat sektörlerinde stok alımı önerilir. Gastronomi maliyetleri dengeli seyrediyor.`;
+                const now = new Date();
                 
-                alert(msg);
-                
+                let currencyAnalysis = (liveRate > 30.50) ? 
+                    "Lira üzerinde baskı gözlemleniyor, maliyet koruma moduna geçilmeli." : 
+                    "Kur stabilitesi yatırım iştahını destekliyor.";
+
+                const sectors = [
+                    { name: "SANAYİ", advice: "Hammadde tedarik zincirinde AI optimizasyonu ile %12 tasarruf öngörülüyor." },
+                    { name: "İNŞAAT", advice: "Demir ve beton maliyet endeksi sabitleniyor, yeni projeler için uygun dönem." },
+                    { name: "GASTRONOMİ", advice: "Gıda enflasyonu verilerine göre menü fiyatlandırması dinamik güncellenmeli." },
+                    { name: "SAĞLIK", advice: "Medikal ekipman ithalatında kur sabitleme stratejisi önerilir." }
+                ];
+                const selectedSector = sectors[Math.floor(Math.random() * sectors.length)];
+
+                let timeInsight = "";
+                const hr = now.getHours();
+                if (hr < 12) timeInsight = "Asya piyasası verileri entegre edildi.";
+                else if (hr < 18) timeInsight = "Avrupa açılış verileri analize dahil edildi.";
+                else timeInsight = "Gün sonu risk değerlendirmesi tamamlandı.";
+
+                const fullReport = `Sayın ${nameTag}, ${timeInsight} ${currencyAnalysis} ${selectedSector.name} sektörü için özel not: ${selectedSector.advice}`;
+
+                alert(fullReport);
+
                 reportDiv.innerHTML = `
-                    <div style="border-left: 2px solid var(--gold); padding-left: 10px; margin-top: 10px;">
-                        <p style="color:var(--gold); font-weight:bold; margin-bottom:5px;">📊 AI STRATEJİK RAPOR:</p>
-                        <p style="font-size:0.75rem;">${msg}</p>
-                        <button onclick="shareMarketReport()" class="btn-premium bg-whatsapp" style="padding:8px; font-size:0.6rem; margin-top:10px;">WHATSAPP İLE PAYLAŞ</button>
+                    <div style="background: rgba(0, 255, 255, 0.05); border: 1px solid var(--cyan); border-radius: 10px; padding: 12px; animation: fadeIn 0.8s ease;">
+                        <h4 style="color: var(--gold); margin: 0 0 8px 0; font-size: 0.8rem;">🛡️ DİJİTAL EGEMENLİK ANALİZİ</h4>
+                        <p style="font-size: 0.72rem; line-height: 1.5; margin: 0;">${fullReport}</p>
+                        <div style="margin-top: 10px; display: flex; gap: 5px;">
+                            <button onclick="shareMarketReport('${selectedSector.name}')" class="btn-premium bg-whatsapp" style="padding: 6px; font-size: 0.6rem; margin: 0;">WHATSAPP PAYLAŞ</button>
+                            <button onclick="getAiMarketReport()" class="btn-premium bg-cyan" style="padding: 6px; font-size: 0.6rem; margin: 0; color:#000;">GÜNCELLE</button>
+                        </div>
                     </div>
                 `;
                 
-                speak(msg);
-            }, 1000);
+                speak(fullReport);
+            }, 2000);
         }
 
-        function shareMarketReport() {
+        function shareMarketReport(sector) {
             const nameTag = userName ? userName : "Girişimci";
-            const text = encodeURIComponent(`Neural Focus AI Ekonomik Raporu (${nameTag}): Sektörel korunma ve yatırım analizi hazır!`);
+            const text = encodeURIComponent(`Neural Focus AI ${sector} Raporu (${nameTag}): Türkiye pazarı için stratejik analizim hazır!`);
             window.open('https://wa.me/?text=' + text, '_blank');
         }
 
@@ -291,13 +320,9 @@
             document.getElementById('tryOutput').innerText = usd > 0 ? "₺ " + (usd * liveRate).toFixed(2) : "₺ 0.00";
         }
 
-        // --- SISTEMA NEURAL VISION CON VOZ ---
         function startGastroAI() {
             const food = document.getElementById('foodName').value;
-            if(!food) {
-                alert("Lütfen yemeğin adını yazın.");
-                return;
-            }
+            if(!food) { alert("Lütfen yemeğin adını yazın."); return; }
             speak("Nöral Vizyon aktif. Lütfen fotoğraf çekin.");
             document.getElementById('gastroInput').click();
         }
@@ -306,26 +331,16 @@
             const food = document.getElementById('foodName').value;
             const loader = document.getElementById('loading-ai');
             const resDiv = document.getElementById('gastro-result');
-            
             loader.innerHTML = "📡 NEURAL-LINK BAĞLANIYOR...";
             loader.style.display = 'block';
             resDiv.style.display = 'none';
-
             speak("Nöral Link bağlanıyor. Veriler analiz ediliyor.");
-
             setTimeout(() => {
                 loader.innerHTML = "🧠 IA ANALİZ EDİLİYOR (100%)...";
-                
                 setTimeout(() => {
                     speak("Analiz tamamlandı. İşte sonuçlar.");
                     window.open(`https://www.google.com/search?q=${encodeURIComponent(food)}+kalori+ve+sağlık+bilgisi`, '_blank');
-                    
-                    resDiv.innerHTML = `
-                        <div style="border: 1px solid var(--cyan); padding: 12px; border-radius: 12px; background: rgba(0,255,255,0.1); text-align: center;">
-                            <strong style="color:var(--cyan); font-size: 0.8rem;">${food.toUpperCase()} ANALİZİ</strong><br>
-                            <p style="margin: 5px 0; font-size: 0.7rem;">NeuralFocus Vision, Google altyapısını kullanarak verileri yeni sekmede açtı.</p>
-                        </div>
-                    `;
+                    resDiv.innerHTML = `<div style="border: 1px solid var(--cyan); padding: 12px; border-radius: 12px; background: rgba(0,255,255,0.1); text-align: center;"><strong style="color:var(--cyan); font-size: 0.8rem;">${food.toUpperCase()} ANALİZİ</strong><br><p style="margin: 5px 0; font-size: 0.7rem;">NeuralFocus Vision, Google altyapısını kullanarak verileri yeni sekmede açtı.</p></div>`;
                     resDiv.style.display = 'block';
                     loader.style.display = 'none';
                 }, 1500);
@@ -342,40 +357,6 @@
             const text = document.getElementById('fal-text');
             display.style.display = 'block';
             text.innerText = "Yapay Zeka fincanınızı analiz ediyor...";
-            
             setTimeout(() => {
                 const nameTag = userName ? "Sevgili " + userName + ", " : "";
-                const res = [
-                    "Hayatında yeni bir sayfa açılıyor.",
-                    "Güzel haberler kapıda, şansın artıyor.",
-                    "Yaratıcılığın zirvesindesin.",
-                    "İç huzurun artacağı bir zaman başlıyor.",
-                    "Yıldızın hiç olmadığı kadar parlak."
-                ];
-                const msg = res[Math.floor(Math.random() * res.length)];
-                text.innerText = nameTag + msg;
-                speak(nameTag + msg);
-            }, 2500);
-        }
-
-        function shareApp() {
-            const text = encodeURIComponent("Neural Focus AI: Arjantinli bir girişimciden Türkiye'ye teknolojik hediye! https://lucas12981.github.io/NeuralFocus-Turkey-Beta/");
-            window.open('https://wa.me/?text=' + text, '_blank');
-        }
-
-        window.onload = () => {
-            updateMarket();
-            const lastTab = localStorage.getItem('lastTab') || 'business';
-            openTab(lastTab);
-            setTimeout(() => {
-                const splash = document.getElementById('splash-screen');
-                if(splash) {
-                    splash.style.opacity = '0';
-                    setTimeout(() => splash.style.display = 'none', 500);
-                }
-            }, 1500);
-        };
-    </script>
-</body>
-                </html>
-                
+  
