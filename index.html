@@ -10,263 +10,243 @@
             --cyan: #00ffff;
             --purple: #bc13fe;
             --gold: #ffcc00;
-            --wa-green: #25D366;
             --turk-red: #e30a17;
-            --dark-bg: #0a0a0a;
-            --card-bg: rgba(255, 255, 255, 0.07);
+            --dark-bg: #050505;
+            --glass: rgba(255, 255, 255, 0.08);
         }
 
         body {
             background-color: var(--dark-bg);
             color: #ffffff;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Segoe UI', Roboto, sans-serif;
             margin: 0; padding: 0;
             display: flex; flex-direction: column; align-items: center;
             overflow-x: hidden;
         }
 
-        /* --- BANNER 3D DINÁMICO --- */
+        /* --- SPLASH ANIMADO --- */
+        #splash {
+            position: fixed; inset: 0; background: #000; z-index: 10000;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: 0.8s ease-in-out;
+        }
+        .pulse-core {
+            width: 100px; height: 100px; border: 3px solid var(--cyan);
+            border-radius: 50%; box-shadow: 0 0 30px var(--cyan);
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.2); opacity: 0.5; } 100% { transform: scale(1); opacity: 1; } }
+
+        /* --- BANNER 3D --- */
         .banner-3d {
-            width: 90%; margin: 25px 0; padding: 30px 15px;
-            background: linear-gradient(135deg, rgba(0,255,255,0.15), rgba(188,19,254,0.15));
-            border: 1px solid rgba(0,255,255,0.3);
-            border-radius: 20px; text-align: center;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5), inset 0 0 15px rgba(0,255,255,0.1);
-            backdrop-filter: blur(10px);
+            width: 90%; margin: 20px 0; padding: 30px 15px;
+            background: linear-gradient(135deg, rgba(0,255,255,0.1), rgba(188,19,254,0.1));
+            border: 1px solid var(--cyan); border-radius: 20px; text-align: center;
+            transform: perspective(1000px) rotateX(5deg);
+            box-shadow: 0 10px 30px rgba(0,255,255,0.2);
         }
 
-        .banner-title {
-            font-size: 2rem; font-weight: 900; letter-spacing: 1px;
-            color: var(--cyan); margin: 0;
-            text-shadow: 0 0 15px var(--cyan);
-        }
-
-        /* --- NAVEGACIÓN TÁCTIL --- */
+        /* --- TABS --- */
         .tab-bar {
-            display: flex; width: 100%; background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(15px); border-bottom: 1px solid #333;
+            display: flex; width: 100%; background: rgba(0,0,0,0.9);
+            backdrop-filter: blur(10px); border-bottom: 2px solid var(--cyan);
             position: sticky; top: 0; z-index: 1000;
         }
         .tab {
-            flex: 1; padding: 20px 0; text-align: center; font-size: 0.75rem;
-            font-weight: 700; color: #777; cursor: pointer; transition: 0.3s;
+            flex: 1; padding: 18px 0; text-align: center; font-size: 0.7rem;
+            font-weight: 900; color: #555; cursor: pointer; text-transform: uppercase;
         }
-        .tab.active { color: var(--cyan); border-bottom: 3px solid var(--cyan); background: rgba(0,255,255,0.05); }
+        .tab.active { color: var(--cyan); border-bottom: 3px solid var(--cyan); }
 
-        .container { 
-            width: 90%; max-width: 450px; padding: 20px 0 120px 0;
-        }
-        
-        .panel { display: none; width: 100%; flex-direction: column; }
-        .panel.active { display: flex; animation: slideUp 0.4s ease-out; }
+        .container { width: 92%; max-width: 450px; padding-bottom: 100px; }
+        .panel { display: none; width: 100%; animation: fadeIn 0.5s; }
+        .panel.active { display: flex; flex-direction: column; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* --- CARDS & BOTONES --- */
         .card {
-            background: var(--card-bg); border-radius: 24px; 
-            padding: 22px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1);
-            text-align: center; box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-        }
-
-        input {
-            width: 100%; padding: 15px; border-radius: 15px; 
-            border: 1px solid #444; background: #000; color: #fff; 
-            margin-bottom: 15px; font-size: 1rem; box-sizing: border-box;
+            background: var(--glass); border-radius: 20px; padding: 20px;
+            margin: 15px 0; border: 1px solid rgba(255,255,255,0.1);
+            position: relative; overflow: hidden;
         }
 
         .btn {
-            width: 100%; padding: 18px; border-radius: 15px; border: none;
-            color: white; font-weight: 800; font-size: 0.85rem; 
-            margin: 8px 0; cursor: pointer; text-transform: uppercase;
-            text-decoration: none; display: inline-block; box-sizing: border-box;
-            transition: transform 0.1s;
+            width: 100%; padding: 16px; border-radius: 12px; border: none;
+            font-weight: 900; font-size: 0.8rem; cursor: pointer;
+            text-transform: uppercase; transition: 0.3s; margin: 5px 0;
+            display: flex; align-items: center; justify-content: center; text-decoration: none;
         }
-        .btn:active { transform: scale(0.97); }
-        
         .btn-cyan { background: var(--cyan); color: #000; }
-        .btn-purple { background: var(--purple); box-shadow: 0 5px 15px rgba(188,19,254,0.3); }
-        .btn-gold { background: linear-gradient(90deg, #ffcc00, #ff9900); color: #000; }
-        .btn-outline { background: transparent; border: 1px solid #555; color: #ccc; }
-
-        /* --- GRID DE SERVICIOS --- */
-        .quick-grid {
-            display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin: 15px 0;
-        }
-        .item-box {
-            background: #151515; padding: 15px; border-radius: 18px;
-            text-decoration: none; border: 1px solid #222; text-align: center;
-        }
-        .item-box span { display: block; font-size: 1.5rem; margin-bottom: 5px; }
-        .item-box label { font-size: 0.65rem; color: #aaa; font-weight: bold; }
-
-        /* --- SPLASH & LOADERS --- */
-        #splash {
-            position: fixed; inset: 0; background: #000; z-index: 10000;
-            display: flex; justify-content: center; align-items: center; transition: 0.6s;
+        .btn-gold { background: var(--gold); color: #000; }
+        .btn-travel { background: linear-gradient(90deg, #00c6ff, #0072ff); color: white; }
+        
+        input {
+            width: 100%; padding: 14px; border-radius: 10px; border: 1px solid #333;
+            background: #000; color: #fff; margin-bottom: 10px; box-sizing: border-box;
         }
 
-        footer { text-align: center; padding: 40px; color: #444; font-size: 0.7rem; }
+        .sector-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 10px 0; }
     </style>
 </head>
 <body>
 
     <div id="splash">
-        <div style="text-align:center;">
-            <div style="font-size: 2rem; font-weight: 900; color: var(--cyan); letter-spacing: 5px;">NEURAL</div>
-            <div style="font-size: 0.8rem; color: #555;">SİSTEM BAŞLATILIYOR...</div>
-        </div>
+        <div class="pulse-core"></div>
+        <h2 style="margin-top:20px; letter-spacing:5px;">NEURAL FOCUS</h2>
     </div>
 
     <div class="tab-bar">
-        <div class="tab active" onclick="nav('biz', this)">İş Dünyası</div>
-        <div class="tab" onclick="nav('acad', this)">Akademi</div>
-        <div class="tab" onclick="nav('life', this)">Yaşam</div>
+        <div class="tab active" onclick="nav('biz', this)">🏢 Business</div>
+        <div class="tab" onclick="nav('travel', this)">🌍 Traveler AI</div>
+        <div class="tab" onclick="nav('life', this)">🔥 Lifestyle</div>
     </div>
 
     <div class="container">
         
         <div id="biz" class="panel active">
             <div class="banner-3d">
-                <p class="banner-title">Hoş Geldiniz</p>
-                <p style="font-size: 0.8rem; opacity: 0.7; margin-top: 10px;">LUCAS GUZMAN AGENCY GÜVENCESİYLE</p>
+                <h2 style="color:var(--cyan); margin:0;">NEURAL FOCUS IA</h2>
+                <small>LUCAS GUZMÁN AGENCY</small>
             </div>
 
             <div class="card">
-                <input type="text" id="uName" placeholder="Adınızı giriniz...">
-                <button onclick="runSov()" class="btn btn-cyan">Kişisel Analizi Başlat</button>
-                <p id="sovRes" style="font-size: 0.8rem; margin-top: 15px; color: #888;"></p>
+                <input type="text" id="uName" placeholder="İsminiz (Nombre)">
+                <button onclick="runSov()" class="btn btn-cyan">SİSTEMİ YETKİLENDİR</button>
+                <div id="sovRes" style="margin-top:10px; font-size:0.8rem;"></div>
             </div>
 
-            <div class="quick-grid">
-                <a href="https://www.turkiye.gov.tr/" class="item-box"><span>🏛️</span><label>e-DEVLET</label></a>
-                <a href="https://enabiz.gov.tr/" class="item-box"><span>🩺</span><label>e-NABIZ</label></a>
-                <a href="https://www.turhavyolları.com" class="item-box"><span>✈️</span><label>THY</label></a>
-                <a href="https://www.gib.gov.tr" class="item-box"><span>💰</span><label>VERGİ (GİB)</label></a>
+            <a href="https://www.turkiye.gov.tr/" target="_blank" class="btn btn-gold">🏛️ e-DEVLET KAPISI</a>
+            
+            <div class="sector-grid">
+                <a href="https://enabiz.gov.tr/" class="btn btn-cyan" style="font-size:0.6rem;">🩺 E-NABIZ</a>
+                <a href="https://www.gib.gov.tr/" class="btn btn-gold" style="font-size:0.6rem;">💰 VERGİ DAİRESİ</a>
             </div>
 
-            <a href="https://translate.google.com/?sl=tr&tl=es" class="btn btn-purple">🌐 Akıllı Çeviri (TR-ES)</a>
-            <a href="https://maps.google.com" class="btn btn-outline">📍 Yakın Yerleri Keşfet</a>
+            <a href="https://translate.google.com/?sl=tr&tl=es" class="btn btn-travel">🌐 AKILLI ÇEVİRMEN</a>
         </div>
 
-        <div id="acad" class="panel">
-            <h3 style="color: var(--cyan); text-align: center;">Eğitim ve Gelişim</h3>
+        <div id="travel" class="panel">
+            <div class="card" style="border-top: 4px solid var(--cyan);">
+                <h3 style="color:var(--cyan);">🌍 GLOBAL TRAVEL ASSISTANT</h3>
+                <p style="font-size:0.8rem;">Nereye gidiyorsunuz? Size özel analiz hazırlayalım.</p>
+                <input type="text" id="destInput" placeholder="Şehir veya Ülke (Barcelona, Tokyo...)">
+                <button onclick="analyzeTravel()" class="btn btn-travel">ROTAYI ANALİZ ET</button>
+                <div id="travelRes" style="margin-top:15px; font-size:0.85rem; line-height:1.4;"></div>
+            </div>
+            
             <div class="card">
-                <p style="font-size: 0.9rem; color: #ccc;">Yapay zeka ve teknoloji dünyasında kendinizi geliştirin.</p>
-                <a href="https://yokakademik.yok.gov.tr" class="btn btn-gold">YÖK AKADEMİK</a>
-                <a href="https://www.udemy.com" class="btn btn-outline">UDEMY KURSLARI</a>
-                <a href="https://btkakademi.gov.tr" class="btn btn-cyan">BTK AKADEMİ</a>
+                <h4>✈️ Hızlı Erişim</h4>
+                <a href="https://www.turkishairlines.com/" class="btn btn-cyan">THY REZERVASYON</a>
+                <a href="https://www.booking.com/" class="btn btn-gold">OTEL ARA</a>
             </div>
         </div>
 
         <div id="life" class="panel">
-            <div class="card" style="border-left: 4px solid var(--cyan);">
-                <h4>🍲 Gastro Analiz</h4>
-                <input type="text" id="dishInput" placeholder="Yemek ismi (Örn: Kebap, Mantı...)">
-                <button onclick="processGastro()" class="btn btn-cyan">Analiz Et</button>
-                <div id="resGastro" style="margin-top: 15px; font-weight: bold; color: var(--cyan);"></div>
+            <div class="card">
+                <h4>🍲 GASTRO ANALİZ</h4>
+                <input type="text" id="dishInput" placeholder="Yemek adı...">
+                <button onclick="processGastro()" class="btn btn-cyan">KALORİ SORGULA</button>
+                <div id="resGastro" style="margin-top:10px; color:var(--cyan);"></div>
             </div>
 
-            <div class="card" style="border-left: 4px solid var(--purple);">
-                <h4>🔮 Kahve Falı (AI)</h4>
-                <p style="font-size: 0.7rem; color: #888;">Fincan fotoğrafınızı çekin, yapay zeka yorumlasın.</p>
-                <input type="file" id="coffeeCam" accept="image/*" capture="environment" style="display:none;" onchange="processCoffee()">
-                <button onclick="document.getElementById('coffeeCam').click()" class="btn btn-purple">📸 Fotoğraf Gönder</button>
-                <div id="resCoffee" style="margin-top: 15px; font-style: italic; color: var(--gold);"></div>
+            <div class="card">
+                <h4>🔮 KAHVE FALINI OKU</h4>
+                <button onclick="processCoffee()" class="btn btn-gold">FOTOĞRAF ANALİZİ VE FAL</button>
+                <div id="resCoffee" style="margin-top:10px; font-style:italic; color:#ffcc00;"></div>
             </div>
-
-            <a href="https://wa.me/5492246496971" class="btn btn-gold" style="text-align:center;">☕ Bize bir çay ısmarla</a>
         </div>
+
     </div>
 
     <footer>
-        <b>NEURAL FOCUS IA © 2026</b><br>
-        Powered by Lucas Guzmán Agency<br>
-        İstanbul | Buenos Aires
+        <center>
+            <p style="color:var(--cyan); font-weight:bold;">NEURAL FOCUS IA © 2026</p>
+            <small>Voz Inteligente 24/7 | Lucas Guzmán</small>
+        </center>
     </footer>
 
     <script>
-        const turkishDishes = {
-            "baklava": "Porsiyonu 450 kcal. Yüksek şeker! Yanında mutlaka sütlü bir içecek veya bol su için.",
-            "kebap": "Yaklaşık 600 kcal. Protein değeri yüksek, ancak lavaş miktarını sınırlamanızı öneririm.",
-            "mantı": "Porsiyonu 350-400 kcal. Yoğurt sindirimi kolaylaştırır, tereyağlı sosu az kullanın.",
-            "simit": "1 adet simit 250-300 kcal. Yarım ekmekten daha fazla karbonhidrat içerir.",
-            "pide": "İçeriğine göre 500-800 kcal arası. Paylaşarak yemek en mantıklısı!",
-            "salata": "Düşük kalorili ve harika bir lif kaynağı. Sosuna dikkat ettiğiniz sürece her gün tüketebilirsiniz."
-        };
+        let voiceActive = false;
 
-        const fortunes = [
-            "Fincanında büyük bir kuş var, çok yakında müjdeli bir haber alacaksın.",
-            "Yolların açılıyor, uzun zamandır beklediğin o yolculuğa nihayet çıkıyorsun.",
-            "Hane içine ay doğuyor, ailevi bir sıkıntınız kökten çözülecek.",
-            "Bir kalabalığa gireceksin, bu kalabalıkta tüm gözler senin üzerinde olacak.",
-            "Kısmetin çok açık, eline beklemediğin bir yerden bir miktar para geçecek.",
-            "Dileğin kabul oluyor, kalbinden geçen o kişiyle bir görüşme görünüyor."
-        ];
-
-        let audioEnabled = false;
-
-        function speak(text) {
-            if(!audioEnabled) return;
-            const msg = new SpeechSynthesisUtterance(text);
-            msg.lang = 'tr-TR';
-            window.speechSynthesis.speak(msg);
+        // SALUDO INICIAL AUTOMÁTICO (Tratando de bypass de seguridad)
+        function welcomeVoice() {
+            if (!voiceActive) {
+                const msg = new SpeechSynthesisUtterance("Neural Focus IA sistemine hoş geldiniz. Ben sizin dijital asistanınızım.");
+                msg.lang = 'tr-TR';
+                window.speechSynthesis.speak(msg);
+                voiceActive = true;
+            }
         }
 
         window.onload = () => {
             setTimeout(() => {
                 document.getElementById('splash').style.opacity = '0';
-                setTimeout(() => document.getElementById('splash').style.display = 'none', 600);
-            }, 2000);
+                setTimeout(() => {
+                    document.getElementById('splash').style.display = 'none';
+                    // Intentar hablar tras el splash
+                    welcomeVoice();
+                }, 800);
+            }, 2500);
         };
 
-        // Habilitar audio tras primer click (Política de navegadores)
-        document.body.addEventListener('click', () => { 
-            if(!audioEnabled) {
-                audioEnabled = true;
-                speak("Sistem aktif.");
-            }
-        }, {once: true});
+        // Forzar activación de voz al primer toque si el navegador bloqueó el auto-play
+        document.body.addEventListener('click', () => welcomeVoice(), {once: true});
 
         function nav(id, el) {
             document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             el.classList.add('active');
-            window.scrollTo(0,0);
+        }
+
+        function speak(text) {
+            const msg = new SpeechSynthesisUtterance(text);
+            msg.lang = 'tr-TR';
+            window.speechSynthesis.speak(msg);
         }
 
         function runSov() {
-            const name = document.getElementById('uName').value || "Değerli Kullanıcı";
+            const n = document.getElementById('uName').value || "Kullanıcı";
             const res = document.getElementById('sovRes');
-            res.innerText = "Yapay zeka kimliğinizi doğruluyor...";
+            res.innerHTML = "Doğrulanıyor...";
             setTimeout(() => {
-                const m = `Merhaba ${name}, NeuralFocusIA ile verileriniz %100 güvende.`;
-                res.innerText = m;
-                res.style.color = "var(--cyan)";
+                const m = `Sistem Onaylandı. Hoş geldin ${n}. Lucas Guzmán Agency koruması altındasınız.`;
+                res.innerHTML = `<span style="color:var(--gold)">${m}</span>`;
                 speak(m);
             }, 1500);
         }
 
+        function analyzeTravel() {
+            const city = document.getElementById('destInput').value;
+            const res = document.getElementById('travelRes');
+            if(!city) return;
+            res.innerHTML = "🤖 IA Raporu Hazırlanıyor...";
+            setTimeout(() => {
+                const report = `Konum: ${city}. <br>📍 Durum: Turistik yoğunluk orta. <br>💳 Para Birimi: Otomatik çevrim aktif. <br>⚠️ Tavsiye: Yerel saat ve hava durumuna göre hazırlık yapın. İyi yolculuklar!`;
+                res.innerHTML = report;
+                speak(`${city} için seyahat planı hazırlandı. İyi yolculuklar.`);
+            }, 2000);
+        }
+
         function processGastro() {
-            const input = document.getElementById('dishInput').value.toLowerCase().trim();
+            const dish = document.getElementById('dishInput').value;
             const res = document.getElementById('resGastro');
             res.innerText = "Analiz ediliyor...";
             setTimeout(() => {
-                let info = turkishDishes[input] || "Yemek tespit edildi. Dengeli tüketildiğinde sağlıklı bir seçenek.";
-                res.innerText = info;
-                speak(info);
-            }, 1000);
+                const m = `${dish} analizi tamamlandı. Dengeli bir öğün için porsiyona dikkat edin.`;
+                res.innerText = m;
+                speak(m);
+            }, 1500);
         }
 
         function processCoffee() {
             const res = document.getElementById('resCoffee');
-            res.innerText = "Telveler okunuyor, kaderiniz şekilleniyor...";
+            res.innerText = "Fincanınız yorumlanıyor...";
             setTimeout(() => {
-                const f = fortunes[Math.floor(Math.random() * fortunes.length)];
-                res.innerText = "🔮 " + f;
+                const fortunes = ["Geleceğin çok parlak.", "Yakında bir yolculuk var.", "Beklediğin haber yolda.", "Şans kapını çalıyor."];
+                const f = fortunes[Math.floor(Math.random()*fortunes.length)];
+                res.innerText = "🔮 Falınız: " + f;
                 speak(f);
-            }, 2500);
+            }, 2000);
         }
     </script>
 </body>
