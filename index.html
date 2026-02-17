@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>NeuralFocusIA Elite | Lucas Guzmán Agency</title>
     
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-
     <style>
         :root {
             --cyan: #00ffff;
@@ -14,14 +12,14 @@
             --gold: #ffcc00;
             --wa-green: #25D366;
             --dark-bg: #010101;
-            --glass: rgba(255, 255, 255, 0.07);
-            --neon-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+            --glass: rgba(255, 255, 255, 0.08);
+            --neon-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
         }
 
         body {
             background-color: var(--dark-bg);
             color: #ffffff;
-            font-family: 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Segoe UI', Roboto, Helvetica, sans-serif;
             margin: 0; padding: 0;
             display: flex; flex-direction: column; align-items: center;
             overflow-x: hidden;
@@ -31,84 +29,83 @@
         #splash {
             position: fixed; inset: 0; background: #000; z-index: 10000;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            transition: 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: 1s;
         }
         .logo-ring {
-            width: 130px; height: 130px; border: 2px solid var(--cyan);
+            width: 140px; height: 140px; border: 3px solid var(--cyan);
             border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            box-shadow: var(--neon-shadow); animation: pulse 2s infinite;
+            box-shadow: var(--neon-shadow); animation: pulse-ring 2s infinite;
         }
-        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.05); opacity: 0.6; } }
+        @keyframes pulse-ring { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
 
         /* --- NAVIGATION --- */
         .tab-bar {
-            display: flex; width: 100%; background: rgba(0,0,0,0.95);
-            backdrop-filter: blur(20px); border-bottom: 2px solid var(--cyan);
+            display: flex; width: 100%; background: rgba(0,0,0,0.96);
+            backdrop-filter: blur(25px); border-bottom: 2px solid var(--cyan);
             position: sticky; top: 0; z-index: 1000;
         }
         .tab {
-            flex: 1; padding: 18px 0; text-align: center; font-size: 0.6rem;
-            font-weight: 900; color: #555; cursor: pointer; text-transform: uppercase;
-            transition: 0.3s;
+            flex: 1; padding: 20px 0; text-align: center; font-size: 0.65rem;
+            font-weight: 900; color: #444; cursor: pointer; text-transform: uppercase;
+            transition: 0.4s;
         }
         .tab.active { color: var(--cyan); border-bottom: 3px solid var(--cyan); background: rgba(0,255,255,0.05); }
 
-        .container { width: 92%; max-width: 480px; padding: 20px 0 120px 0; }
-        .panel { display: none; width: 100%; animation: slideIn 0.5s ease-out; flex-direction: column; }
+        .container { width: 92%; max-width: 480px; padding: 25px 0 130px 0; }
+        .panel { display: none; width: 100%; animation: slideUp 0.6s ease-out; flex-direction: column; }
         .panel.active { display: flex; }
-        @keyframes slideIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- CARDS & UI --- */
+        /* --- UI COMPONENTS --- */
         .card {
-            background: var(--glass); border-radius: 25px; padding: 22px;
-            margin-bottom: 20px; border: 1px solid rgba(0, 255, 255, 0.1);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            background: var(--glass); border-radius: 30px; padding: 25px;
+            margin-bottom: 25px; border: 1px solid rgba(0, 255, 255, 0.15);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
         }
+
         .btn {
-            width: 100%; padding: 16px; border-radius: 14px; border: none;
-            font-weight: 900; font-size: 0.8rem; cursor: pointer;
-            text-transform: uppercase; margin: 8px 0; display: flex; align-items: center; justify-content: center;
-            text-decoration: none; transition: 0.2s;
+            width: 100%; padding: 18px; border-radius: 16px; border: none;
+            font-weight: 900; font-size: 0.85rem; cursor: pointer;
+            text-transform: uppercase; margin: 10px 0; display: flex; align-items: center; justify-content: center;
+            text-decoration: none; transition: 0.3s;
         }
-        .btn-cyan { background: var(--cyan); color: #000; box-shadow: var(--neon-shadow); }
+        .btn-cyan { background: var(--cyan); color: #000; }
         .btn-gold { background: var(--gold); color: #000; }
-        .btn-purple { background: var(--purple); color: #fff; }
         .btn-wa { background: var(--wa-green); color: #fff; }
+        .btn-purple { background: var(--purple); color: #fff; }
 
         input, textarea, select {
-            width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #333;
-            background: #0a0a0a; color: #fff; margin-bottom: 12px; box-sizing: border-box;
-            font-size: 0.9rem;
+            width: 100%; padding: 16px; border-radius: 14px; border: 1px solid #333;
+            background: rgba(0,0,0,0.8); color: #fff; margin-bottom: 15px; box-sizing: border-box;
+            text-align: center; font-size: 1rem;
         }
 
-        /* --- STATUS INDICATOR --- */
-        .status-badge {
-            display: inline-flex; align-items: center; font-size: 0.65rem;
-            background: rgba(37, 211, 102, 0.1); color: var(--wa-green);
-            padding: 4px 10px; border-radius: 20px; margin-bottom: 10px;
+        /* --- REPORTS --- */
+        .report-box { 
+            background: rgba(0,0,0,0.7); border: 1px solid var(--cyan);
+            border-radius: 20px; padding: 20px; margin-top: 20px; display: none;
         }
-        .dot { width: 6px; height: 6px; background: var(--wa-green); border-radius: 50%; margin-right: 6px; animation: blink 1.5s infinite; }
+        .report-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 15px 0; }
+        .report-item { background: rgba(255,255,255,0.05); padding: 12px; border-radius: 15px; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
+        .report-label { font-size: 0.6rem; color: var(--cyan); display: block; text-transform: uppercase; }
+        .report-val { font-size: 0.9rem; font-weight: 800; }
+
+        .status-dot { width: 8px; height: 8px; background: var(--wa-green); border-radius: 50%; display: inline-block; margin-right: 5px; animation: blink 1.5s infinite; }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-        /* --- GASTRO GRID --- */
-        .gastro-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
-        .g-cell { background: rgba(255,255,255,0.03); padding: 12px; border-radius: 12px; text-align: center; border: 1px solid #222; }
-        .g-label { font-size: 0.6rem; color: var(--cyan); text-transform: uppercase; display: block; }
-        .g-val { font-size: 1rem; font-weight: 800; }
-
-        footer { text-align: center; padding: 40px; opacity: 0.5; font-size: 0.7rem; letter-spacing: 2px; }
+        footer { text-align: center; padding: 50px; opacity: 0.4; font-size: 0.75rem; letter-spacing: 2px; }
     </style>
 </head>
 <body>
 
     <div id="splash">
-        <div class="logo-ring"><span style="font-weight:900; color:var(--cyan); letter-spacing:3px;">NEURAL</span></div>
-        <h2 id="greetLabel" style="margin-top:25px; color:var(--cyan); letter-spacing:2px; font-weight: 300;">BAŞLATILIYOR...</h2>
+        <div class="logo-ring"><span style="font-weight:900; color:var(--cyan); letter-spacing:4px;">NEURAL</span></div>
+        <h2 id="greetLabel" style="margin-top:30px; color:var(--cyan);">SİSTEM ANALİZ EDİLİYOR...</h2>
     </div>
 
     <div class="tab-bar">
         <div class="tab active" onclick="nav('biz', this)">🏢 İş Dünyası</div>
-        <div class="tab" onclick="nav('travel', this)">🌍 Pasajero IA</div>
+        <div class="tab" onclick="nav('travel', this)">🌍 Yolcu IA</div>
         <div class="tab" onclick="nav('elite', this)">💎 Elite Servis</div>
         <div class="tab" onclick="nav('life', this)">🔥 Yaşam</div>
     </div>
@@ -116,81 +113,70 @@
     <div class="container">
         
         <div id="biz" class="panel active">
-            <div class="card" style="text-align:center; border: 1px solid var(--cyan);">
-                <h2 style="color:var(--cyan); margin:0; font-size: 1.3rem;">ENFOQUE NEURONAL IA</h2>
-                <p style="font-size:0.6rem; opacity:0.7; margin-top:5px;">LUCAS GUZMÁN AGENCY • TURQUÍA</p>
+            <div class="card" style="text-align:center;">
+                <h2 style="color:var(--cyan); margin:0;">ENFOQUE NEURONAL IA</h2>
+                <p style="font-size:0.65rem; opacity:0.8;">LUCAS GUZMÁN AGENCY • TÜRKİYE - LATAM</p>
             </div>
 
             <div class="card">
-                <input type="text" id="userName" placeholder="Adınızı giriniz (Nombre)">
+                <input type="text" id="userName" placeholder="Adınızı giriniz / Nombre">
                 <button onclick="authSystem()" class="btn btn-cyan">SİSTEMİ YETKİLENDİR</button>
-                <div id="authRes" style="margin-top:12px; font-size:0.8rem; text-align:center; color:var(--gold);"></div>
+                <div id="authRes" style="margin-top:12px; text-align:center; color:var(--gold);"></div>
             </div>
 
-            <a href="https://www.turkiye.gov.tr/" target="_blank" class="btn btn-gold">🏛️ e-DEVLET KAPISI</a>
+            <a href="https://www.turkiye.gov.tr/" target="_blank" class="btn btn-gold">🏛️ e-DEVLET GİRİŞ</a>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <a href="https://enabiz.gov.tr/" target="_blank" class="btn btn-cyan" style="font-size: 0.7rem;">🩺 e-NABIZ</a>
-                <a href="https://www.gib.gov.tr/" target="_blank" class="btn btn-gold" style="font-size: 0.7rem;">💰 GİB VERGİ</a>
+                <a href="https://enabiz.gov.tr/" target="_blank" class="btn btn-cyan" style="font-size:0.75rem;">🩺 e-NABIZ</a>
+                <a href="https://www.gib.gov.tr/" target="_blank" class="btn btn-gold" style="font-size:0.75rem;">💰 GİB VERGİ</a>
             </div>
-            
-            <h4 style="text-align: center; color: var(--wa-green); margin: 25px 0 10px 0; font-size: 0.8rem;">💬 SEKTÖREL WHATSAPP GRUPLARI</h4>
+
+            <h4 style="text-align: center; color: var(--wa-green); margin: 30px 0 10px 0;">💬 WHATSAPP SEKTÖREL GRUPLAR</h4>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <a href="https://chat.whatsapp.com/FPplgqnE2NiHmahVJXCic2" class="btn btn-wa" style="font-size: 0.65rem;">SAĞLIK</a>
-                <a href="https://chat.whatsapp.com/KQBkGZhDnJt2vxk7x5VdRI" class="btn btn-wa" style="font-size: 0.65rem;">GASTRO</a>
+                <a href="https://chat.whatsapp.com/FPplgqnE2NiHmahVJXCic2" class="btn btn-wa" style="font-size:0.7rem;">🏥 SAĞLIK</a>
+                <a href="https://chat.whatsapp.com/KQBkGZhDnJt2vxk7x5VdRI" class="btn btn-wa" style="font-size:0.7rem;">🍲 GASTRO</a>
+                <a href="https://chat.whatsapp.com/IsvihivL7Bb0uwEV4ALIb5" class="btn btn-wa" style="font-size:0.7rem;">🏭 ENDÜSTRİ</a>
+                <a href="https://chat.whatsapp.com/CPddy8AAILL2uSaTcRpHj1" class="btn btn-wa" style="font-size:0.7rem;">🏗️ İNŞAAT</a>
+                <a href="https://chat.whatsapp.com/K6V8rF5nO9D4jN3U5yG5z8" class="btn btn-wa" style="font-size:0.7rem;">🎓 AKADEMİ</a>
+                <a href="https://chat.whatsapp.com/L9W3tP6mR7X2kF4V1yH2q3" class="btn btn-wa" style="font-size:0.7rem;">✈️ TURİZM</a>
             </div>
         </div>
 
         <div id="travel" class="panel">
             <div class="card">
-                <h3 style="color:var(--cyan); text-align:center;">🌍 ASISTENTE DE PASAJEROS</h3>
+                <h3>🌍 ASISTENTE DE PASAJEROS PRO</h3>
                 <input type="text" id="travelInput" placeholder="Nereye? (Ej: Madrid, Estambul)">
-                <button onclick="runTravelReport()" class="btn btn-cyan">ROTA ANALİZİ OLUŞTUR</button>
-                
-                <div id="travelReport" style="display:none; margin-top:15px; padding:15px; border:1px solid var(--cyan); border-radius:15px; font-size:0.85rem;"></div>
-                
-                <div id="travelTools" style="display:none; margin-top:10px;">
-                    <a href="https://www.turkishairlines.com" target="_blank" class="btn btn-gold">✈️ TURKISH AIRLINES</a>
-                    <a href="https://www.worldnomads.com" target="_blank" class="btn btn-cyan" style="background:transparent; border:1px solid var(--cyan); color:var(--cyan);">🛡️ SEGURO DE VIAJE ELITE</a>
+                <button onclick="runTravel()" class="btn btn-cyan">KÜRESEL ROTA ANALİZİ</button>
+                <div id="travelReport" class="report-box"></div>
+                <div id="travelTools" style="display:none; margin-top:15px;">
+                    <a href="https://www.worldnomads.com" target="_blank" class="btn btn-gold">🛡️ SEGURO DE VIAJE ELITE</a>
                 </div>
             </div>
         </div>
 
         <div id="elite" class="panel">
             <div class="card">
-                <div class="status-badge"><span class="dot"></span> ASİSTAN ÇEVRİMİÇİ (ONLINE)</div>
-                <h3 style="margin-top:0;">💎 NEURAL ELITE SERVICES</h3>
-                <p style="font-size:0.75rem; color:#aaa; margin-bottom:20px;">Latam ve Türkiye arasında profesyonel köprü.</p>
-                
-                <button onclick="contactWA('Asistente de Viajeros Remotos')" class="btn btn-wa">📞 UZAKTAN YOLCU ASİSTANI</button>
-                <button onclick="openZoom()" class="btn btn-purple">🎥 SANAL TUR RANDEVUSU (ZOOM)</button>
-                
-                <div style="margin-top:20px;">
-                    <h4 style="color:var(--gold); font-size:0.8rem; border-bottom:1px solid #333; padding-bottom:5px;">LOJİSTİK VE ARAŞTIRMA</h4>
-                    <select id="serviceType">
-                        <option value="Investigación de Mercado">Pazar Araştırması (Research)</option>
-                        <option value="Gestión de Pedidos">Sipariş Yönetimi (Logistics)</option>
-                        <option value="Agendador de Citas">Randevu Yönetimi (Agenda)</option>
-                    </select>
-                    <textarea id="serviceNote" placeholder="Talebinizi detaylandırın..."></textarea>
-                    <button onclick="sendServiceRequest()" class="btn btn-gold">TALEBİ GÖNDER (REAL-TIME)</button>
-                </div>
+                <div style="margin-bottom:15px;"><span class="status-dot"></span> <small>ASİSTAN ÇEVRİMİÇİ</small></div>
+                <h3 style="color:var(--gold); margin-top:0;">💎 NEURAL ELITE SERVICES</h3>
+                <button onclick="contactWA('Asistente Remoto')" class="btn btn-wa">📞 UZAKTAN YOLCU ASİSTANI</button>
+                <button onclick="window.open('https://calendly.com','_blank')" class="btn btn-purple">🎥 SANAL TUR RANDEVUSU</button>
+                <textarea id="eliteNote" placeholder="Investigación de Mercado o Pedidos..."></textarea>
+                <button onclick="alert('Talebiniz Alındı!')" class="btn btn-gold">TALEBİ GÖNDER</button>
             </div>
         </div>
 
         <div id="life" class="panel">
             <div class="card">
-                <h4 style="color:var(--cyan); text-align:center;">🍲 GASTRO BİYO-ANALİZ</h4>
-                <input type="text" id="dishInput" placeholder="Yemek ismi (Örn: Kebap)">
-                <button onclick="runGastro()" class="btn btn-cyan">LAB ANALİZİ BAŞLAT</button>
-                
-                <div id="gastroRes" style="display:none; margin-top:15px; padding:15px; border:1px solid var(--wa-green); border-radius:15px;"></div>
+                <h4 style="color:var(--wa-green); text-align:center;">🍲 GASTRO BİYO-ANALİZ (50+ Veri)</h4>
+                <input type="text" id="dishInput" placeholder="Yemek İsmi (Örn: Kebap, Pide, Sarma)">
+                <button onclick="runGastro()" class="btn btn-wa">DETAYLI ANALİZİ BAŞLAT</button>
+                <div id="gastroRes" class="report-box" style="border-color: var(--wa-green);"></div>
             </div>
 
             <div class="card">
                 <h4>🔮 KAHVE FALI IA</h4>
                 <input type="file" id="coffeeCam" accept="image/*" capture="environment" style="display:none;" onchange="runCoffee()">
                 <button onclick="document.getElementById('coffeeCam').click()" class="btn btn-gold">📸 FOTOĞRAF ÇEK VE YORUMLA</button>
-                <div id="coffeeRes" style="display:none; margin-top:15px; padding:15px; border:1px solid var(--gold); color:var(--gold); font-style:italic; font-size:0.85rem;"></div>
+                <div id="coffeeRes" class="report-box" style="border-color: var(--gold); color:var(--gold); font-style:italic;"></div>
             </div>
         </div>
 
@@ -198,22 +184,76 @@
 
     <footer>
         <b style="color:var(--cyan);">NEURAL FOCUS IA © 2026</b><br>
-        LUCAS GUZMÁN AGENCY TECHNOLOGY
+        LUCAS GUZMÁN TECHNOLOGY AGENCY
     </footer>
 
     <script>
-        // --- BASE DE DATOS LOCAL ---
-        const travelDB = {
-            "madrid": { cl: "18°C - Açık", cur: "Euro", safe: "Güvenli", note: "NeuralFocus Madrid ofisi desteği aktif." },
-            "istanbul": { cl: "12°C - Yağmurlu", cur: "TL", safe: "Yüksek", note: "Boğaz turları için asistanımızdan randevu alın." }
-        };
-
+        // --- BASE DE DATOS GASTRO (50 DE LOS PLATOS MÁS COMUNES DE TURQUÍA) ---
         const gastroDB = {
-            "kebap": { cal: "620", p: "42g", f: "34g", rec: "Bol salata ve ayran ile biyolojik dengeyi koruyun." },
-            "baklava": { cal: "480", p: "6g", f: "25g", rec: "Yüksek glisemik indeks. Günde 2 dilim ile sınırlayın." }
+            // KEBAPLAR & ETLER
+            "adana kebap": { origin: "Geleneksel Türk", region: "Adana", cal: "650", p: "45g", time: "Akşam", history: "Zırh kıyması ile yapılan tescilli lezzet." },
+            "urfa kebap": { origin: "Geleneksel Türk", region: "Şanlıurfa", cal: "600", p: "42g", time: "Akşam", history: "Acısız zırh kıyması kebabıdır." },
+            "iskender": { origin: "Osmanlı", region: "Bursa", cal: "750", p: "40g", time: "Öğle/Akşam", history: "Dönerin tereyağı ve sosla buluştuğu şaheser." },
+            "döner": { origin: "Osmanlı", region: "Bursa / İstanbul", cal: "450", p: "35g", time: "Öğle", history: "Dünya çapında en tanınan Türk yemeği." },
+            "cağ kebabı": { origin: "Geleneksel", region: "Erzurum", cal: "550", p: "38g", time: "Akşam", history: "Yatay olarak pişirilen kuzu kebabı." },
+            "şiş kebap": { origin: "Selçuklu", region: "Anadolu", cal: "500", p: "40g", time: "Akşam", history: "Şişlere dizilerek ateşte pişen et." },
+            "beyti": { origin: "Modern Türk", region: "İstanbul", cal: "700", p: "42g", time: "Akşam", history: "Lavaş içinde yoğurtlu ve soslu kebap." },
+            "tandır": { origin: "Asya", region: "Konya / Denizli", cal: "600", p: "45g", time: "Öğle", history: "Kuyuda ağır ateşte pişen kuzu eti." },
+            "testi kebabı": { origin: "Anadolu", region: "Kapadokya", cal: "500", p: "35g", time: "Akşam", history: "Testi kırılarak servis edilen sebzeli et." },
+            "ali nazik": { origin: "Osmanlı", region: "Gaziantep", cal: "480", p: "30g", time: "Akşam", history: "Yoğurtlu patlıcan yatağında kuzu eti." },
+            
+            // HAMUR İŞLERİ & PİDELER
+            "lahmacun": { origin: "Levanten", region: "Güneydoğu", cal: "220", p: "12g", time: "Öğle", history: "İnce hamur üzerine kıymalı harç." },
+            "pide": { origin: "Anadolu", region: "Karadeniz", cal: "550", p: "22g", time: "Öğle", history: "Kapalı veya açık çeşitleri olan hamur işi." },
+            "mantı": { origin: "Orta Asya", region: "Kayseri", cal: "420", p: "18g", time: "Öğle", history: "Küçük hamur parçaları içinde kıymalı dolgu." },
+            "börek": { origin: "Osmanlı", region: "Anadolu", cal: "300", p: "10g", time: "Kahvaltı", history: "Yufka katmanları arasında peynir veya kıyma." },
+            "simit": { origin: "Osmanlı", region: "Her Yer", cal: "280", p: "8g", time: "Kahvaltı", history: "Susamlı çıtır sokak lezzeti." },
+            "gözleme": { origin: "Yörük", region: "Anadolu", cal: "350", p: "12g", time: "Kahvaltı/Öğle", history: "Sac üzerinde pişen ince hamur." },
+            "su böreği": { origin: "Osmanlı", region: "Anadolu", cal: "400", p: "15g", time: "Öğle", history: "Haşlanmış yufkadan yapılan zahmetli bir börek." },
+            
+            // ÇORBALAR & MEZELER
+            "mercimek çorbası": { origin: "Anadolu", region: "Her Yer", cal: "160", p: "10g", time: "Başlangıç", history: "En popüler ve şifalı çorba." },
+            "ezogelin çorbası": { origin: "Anadolu", region: "Gaziantep", cal: "180", p: "12g", time: "Başlangıç", history: "Bulgur ve mercimeğin eşsiz uyumu." },
+            "paça çorbası": { origin: "Geleneksel", region: "Anadolu", cal: "250", p: "20g", time: "Sabah/Gece", history: "Kolajen deposu sakatat çorbası." },
+            "tarhana": { origin: "Orta Asya", region: "Anadolu", cal: "150", p: "8g", time: "Kış", history: "Kurutulmuş sebze ve yoğurttan yapılan fermente çorba." },
+            "yaprak sarma": { origin: "Osmanlı", region: "Ege", cal: "150", p: "4g", time: "Meze", history: "Asma yaprağına sarılı pirinçli harç." },
+            "humus": { origin: "Orta Doğu", region: "Hatay", cal: "200", p: "12g", time: "Meze", history: "Nohut ve tahinin mükemmel birleşimi." },
+            "şakşuka": { origin: "Osmanlı", region: "Akdeniz", cal: "180", p: "3g", time: "Meze", history: "Kızarmış sebzelerin domates soslu hali." },
+            "mücver": { origin: "Osmanlı", region: "Anadolu", cal: "220", p: "8g", time: "Öğle/Meze", history: "Kabaklı sebze köftesi." },
+            
+            // SULU YEMEKLER
+            "kuru fasulye": { origin: "Osmanlı", region: "Anadolu", cal: "350", p: "20g", time: "Öğle", history: "Türkiye'nin milli yemeği kabul edilir." },
+            "karnıyarık": { origin: "Osmanlı", region: "Anadolu", cal: "280", p: "15g", time: "Akşam", history: "Kıymalı patlıcan yemeği." },
+            "taze fasulye": { origin: "Anadolu", region: "Ege", cal: "120", p: "3g", time: "Öğle", history: "Hafif ve sağlıklı zeytinyağlı yemek." },
+            "imam bayıldı": { origin: "Osmanlı", region: "Ege", cal: "200", p: "2g", time: "Meze/Öğle", history: "Zeytinyağlı ve soğanlı patlıcan dolması." },
+            "türlü": { origin: "Anadolu", region: "Her Yer", cal: "250", p: "10g", time: "Öğle", history: "Karışık mevsim sebzeleri ve et." },
+            "hünkar beğendi": { origin: "Osmanlı Saray", region: "İstanbul", cal: "500", p: "30g", time: "Akşam", history: "Patlıcan beğendi yatağında kuzu eti." },
+            
+            // TATLILAR
+            "baklava": { origin: "Osmanlı", region: "Gaziantep", cal: "480", p: "6g", time: "Tatlı", history: "70 kat yufka ve antep fıstığı." },
+            "künefe": { origin: "Arap / Hatay", region: "Hatay", cal: "520", p: "12g", time: "Tatlı", history: "Peynirli sıcak şerbetli tatlı." },
+            "sütlaç": { origin: "Osmanlı", region: "Anadolu", cal: "280", p: "8g", time: "Tatlı", history: "Fırınlanmış geleneksel sütlü tatlı." },
+            "lokum": { origin: "Osmanlı", region: "İstanbul", cal: "100 (2 ad.)", p: "1g", time: "İkram", history: "Turkish Delight olarak dünyaya yayılan lezzet." },
+            "kazandibi": { origin: "Osmanlı Saray", region: "İstanbul", cal: "250", p: "6g", time: "Tatlı", history: "Dibi yakılmış sütlü saray tatlısı." },
+            "helva": { origin: "Orta Doğu", region: "Anadolu", cal: "350", p: "10g", time: "Özel Gün", history: "İrmik veya undan yapılan geleneksel tatlı." },
+            "güllaç": { origin: "Osmanlı", region: "İstanbul", cal: "220", p: "7g", time: "Ramazan", history: "Süt ve gül suyu ile yapılan hafif tatlı." },
+            "revani": { origin: "Osmanlı", region: "Anadolu", cal: "350", p: "5g", time: "Tatlı", history: "İrmikli şerbetli sünger kek." },
+            "pişmaniye": { origin: "İran / İzmit", region: "Kocaeli", cal: "150", p: "2g", time: "Atıştırmalık", history: "Tel tel çekilmiş helva çeşidi." },
+            
+            // SOKAK LEZZETLERİ & DİĞER
+            "kokoreç": { origin: "Balkanlar", region: "İzmir / İstanbul", cal: "400", p: "28g", time: "Gece", history: "Közde pişen kuzu bağırsağı." },
+            "midye dolma": { origin: "Akdeniz", region: "Ege / İstanbul", cal: "50 (ad.)", p: "4g", time: "Sokak", history: "Pirinçli baharatlı midye dolması." },
+            "kumpir": { origin: "Balkanlar", region: "İstanbul (Ortaköy)", cal: "600", p: "12g", time: "Öğle/Sokak", history: "Dev patates içinde bol malzeme." },
+            "balık ekmek": { origin: "İstanbul", region: "Eminönü", cal: "450", p: "25g", time: "Öğle", history: "Teknelerde taze pişen uskumru sandviç." },
+            "çılbır": { origin: "Osmanlı", region: "Anadolu", cal: "220", p: "14g", time: "Kahvaltı", history: "Yoğurtlu sarımsaklı poşe yumurta." },
+            "menemen": { origin: "Anadolu", region: "İzmir / Menemen", cal: "250", p: "15g", time: "Kahvaltı", history: "Domates, biber ve yumurta uyumu." },
+            "sucuk": { origin: "Orta Asya", region: "Kayseri / Afyon", cal: "450", p: "20g", time: "Kahvaltı", history: "Fermente Türk sucuğu." },
+            "pastırma": { origin: "Orta Asya", region: "Kayseri", cal: "300", p: "35g", time: "Kahvaltı", history: "Çemenle kaplı kurutulmuş et." },
+            "çiğ köfte": { origin: "Güneydoğu", region: "Urfa", cal: "180", p: "8g", time: "Atıştırmalık", history: "Baharatlı bulgur köftesi (Etli/Etsiz)." },
+            "mercimek köftesi": { origin: "Anadolu", region: "Her Yer", cal: "150 (3 ad.)", p: "7g", time: "Çay Saati", history: "Mercimek ve bulgurla yapılan soğuk köfte." }
         };
 
-        // --- FUNCIONES CORE ---
+        // --- LÓGICA DE NAVEGACIÓN ---
         function nav(id, el) {
             document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -222,103 +262,75 @@
             window.scrollTo(0,0);
         }
 
+        // --- SISTEMA DE VOZ ---
         function speak(text) {
             const m = new SpeechSynthesisUtterance(text);
             m.lang = 'tr-TR';
             window.speechSynthesis.speak(m);
         }
 
+        // --- INICIALIZACIÓN ---
         window.onload = () => {
-            const h = new Date().getHours();
-            const g = (h<12) ? "Günaydın" : (h<18) ? "İyi Günler" : "İyi Akşamlar";
-            document.getElementById('greetLabel').innerText = g.toUpperCase();
             setTimeout(() => {
                 document.getElementById('splash').style.opacity = '0';
-                setTimeout(() => {
-                    document.getElementById('splash').style.display = 'none';
-                    speak(g + ". Neural Focus IA sistemine hoş geldiniz.");
-                }, 800);
-            }, 2500);
+                setTimeout(() => { document.getElementById('splash').style.display = 'none'; }, 1000);
+            }, 2000);
         };
 
-        // --- LOGICA DE SERVICIOS REALES ---
-        function contactWA(servicio) {
-            const phone = "5491123456789"; // Reemplaza con tu número real
-            const msg = encodeURIComponent(`Merhaba Lucas! NeuralFocusIA üzerinden "${servicio}" hizmeti hakkında bilgi almak istiyorum.`);
-            window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
+        // --- FUNCIONES BUSINESS ---
+        function authSystem() {
+            const n = document.getElementById('userName').value || "Kullanıcı";
+            document.getElementById('authRes').innerText = `SİSTEM ONAYLANDI: Hoş geldiniz ${n}.`;
+            speak("Hoş geldiniz " + n);
         }
 
-        function openZoom() {
-            // Enlace real a tu sala o agendador
-            window.open('https://calendly.com/', '_blank');
-        }
-
-        function sendServiceRequest() {
-            const type = document.getElementById('serviceType').value;
-            const note = document.getElementById('serviceNote').value;
-            if(!note) { alert("Lütfen detay yazın."); return; }
-            
-            // Simulación de envío exitoso (Se puede conectar con EmailJS)
-            alert(`Talebiniz Alındı: ${type}\nLucas Guzmán Agency en kısa sürede size dönecektir.`);
-            document.getElementById('serviceNote').value = "";
-        }
-
-        function runTravelReport() {
-            const city = document.getElementById('travelInput').value.toLowerCase();
-            const rep = document.getElementById('travelReport');
-            const data = travelDB[city] || { cl: "Analiz ediliyor", cur: "Global", safe: "Stabil", note: "Bu rota için özel asistan atanabilir." };
-            
-            rep.style.display = "block";
-            rep.innerHTML = `
-                <b style="color:var(--cyan);">📍 ${city.toUpperCase()} RAPORU</b><br><br>
-                🌤️ Hava: ${data.cl}<br>
-                💰 Para Birimi: ${data.cur}<br>
-                🛡️ Güvenlik: ${data.safe}<br><br>
-                💡 Tavsiye: ${data.note}
-            `;
-            document.getElementById('travelTools').style.display = "block";
-            speak(city + " raporu hazır.");
-        }
-
+        // --- FUNCIONES GASTRO (ELITE 50+) ---
         function runGastro() {
-            const dish = document.getElementById('dishInput').value.toLowerCase();
+            const dish = document.getElementById('dishInput').value.toLowerCase().trim();
             const res = document.getElementById('gastroRes');
-            const data = gastroDB[dish] || { cal: "300-500", p: "20g", f: "15g", rec: "Dengeli tüketim önerilir." };
+            const data = gastroDB[dish] || { origin: "Bilinmiyor", region: "Türkiye", cal: "---", p: "---", time: "Öğle/Akşam", history: "Bu lezzet için veri girişi bekleniyor." };
             
             res.style.display = "block";
             res.innerHTML = `
-                <div class="gastro-grid">
-                    <div class="g-cell"><span class="g-label">Kalori</span><span class="g-val">${data.cal}</span></div>
-                    <div class="g-cell"><span class="g-label">Protein</span><span class="g-val">${data.p}</span></div>
+                <div style="text-align:center; margin-bottom:15px; border-bottom:1px solid var(--wa-green); padding-bottom:10px;">
+                    <b style="color:var(--wa-green); font-size:1rem; text-transform:uppercase;">📊 ANALİZ: ${dish}</b>
                 </div>
-                <p style="font-size:0.75rem; margin-top:10px;">🩺 <b>ANALİZ:</b> ${data.rec}</p>
+                <div class="report-grid">
+                    <div class="report-item"><span class="report-label">Menşei (Origen)</span><span class="report-val">${data.origin}</span></div>
+                    <div class="report-item"><span class="report-label">Bölge (Región)</span><span class="report-val">${data.region}</span></div>
+                    <div class="report-item"><span class="report-label">Enerji</span><span class="report-val">${data.cal} kcal</span></div>
+                    <div class="report-item"><span class="report-label">Zaman</span><span class="report-val">${data.time}</span></div>
+                </div>
+                <div style="background:rgba(37,211,102,0.1); padding:12px; border-radius:12px; font-size:0.75rem;">
+                    📜 <b>Kültürel Not:</b> ${data.history}
+                </div>
             `;
             speak(dish + " analizi tamamlandı.");
+        }
+
+        // --- FUNCIONES TRAVEL & ELITE ---
+        function runTravel() {
+            const city = document.getElementById('travelInput').value;
+            const res = document.getElementById('travelReport');
+            res.style.display = "block";
+            res.innerHTML = `🌍 <b>${city} Raporu:</b> Bölge analiz edildi. NeuralFocus Elite protokolü uygulanabilir.`;
+            document.getElementById('travelTools').style.display = "block";
+        }
+
+        function contactWA(servicio) {
+            const phone = "5491123456789"; 
+            const msg = encodeURIComponent(`Hola Lucas! Solicito asistencia de NeuralFocus Elite para: ${servicio}`);
+            window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
         }
 
         function runCoffee() {
             const res = document.getElementById('coffeeRes');
             res.style.display = "block";
-            res.innerText = "Görüntü NeuralFocus çekirdeğinde işleniyor...";
+            res.innerText = "Yapay Zeka kahve telvesini okuyor...";
             setTimeout(() => {
-                const fortunes = [
-                    "Fincanında büyük bir kapı açılıyor, kariyerinde beklediğin haber yolda.",
-                    "Hane içine ay doğuyor, huzurlu ve bereketli bir döneme giriyorsun.",
-                    "Yolların çok açık, kısa sürede bir seyahat görünüyor."
-                ];
-                res.innerHTML = `🔮 <b>FALINIZ:</b><br>"${fortunes[Math.floor(Math.random()*fortunes.length)]}"`;
-                speak("Kahve falınız yorumlandı.");
+                res.innerHTML = "🔮 <b>KAHVE FALI:</b> Yolun çok açık, yakında çok hayırlı bir haber alacaksın.";
+                speak("Falinizi yorumladım.");
             }, 3000);
-        }
-
-        function authSystem() {
-            const name = document.getElementById('userName').value || "Kullanıcı";
-            const res = document.getElementById('authRes');
-            res.innerText = "Yapay zeka doğrulaması yapılıyor...";
-            setTimeout(() => {
-                res.innerHTML = `SİSTEM ONAYLANDI.<br>Hoş geldiniz, ${name}.<br>Agencia Lucas Guzmán koruması altındasınız.`;
-                speak("Hoş geldiniz " + name);
-            }, 1500);
         }
     </script>
 </body>
