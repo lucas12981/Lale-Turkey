@@ -3,332 +3,256 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NeuralFocusIA Elite | Lucas Guzmán Agency</title>
-    
+    <title>NeuralFocus IA | Lucas Guzmán Agency</title>
     <style>
         :root {
             --cyan: #00ffff; --gold: #ffcc00; --wa: #25D366;
-            --red-tr: #e30a17; --bg: #020202; --card: #0f0f0f;
-            --neon: 0 0 30px rgba(0, 255, 255, 0.5);
+            --red-tr: #e30a17; --bg: #050505; --card: #121212;
+            --neon: 0 0 20px rgba(0, 255, 255, 0.4);
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
-        
-        body {
-            background: var(--bg); color: #fff; font-family: 'Segoe UI', sans-serif;
-            margin: 0; padding: 0; overflow-x: hidden;
+        body { 
+            background: var(--bg); color: #fff; font-family: 'Inter', -apple-system, sans-serif; 
+            margin: 0; padding: 0; overflow-x: hidden; 
         }
 
-        /* --- PANTALLA INICIAL: BANDERA 3D Y SALUDO --- */
-        #splash-engine {
+        /* --- SPLASH SCREEN --- */
+        #splash {
             position: fixed; inset: 0; background: #000; z-index: 10000;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            transition: 1.2s cubic-bezier(0.7, 0, 0.3, 1);
+            transition: 1s cubic-bezier(0.7, 0, 0.3, 1);
         }
-
         .flag-3d {
-            width: 320px; height: 200px; background: var(--red-tr);
-            position: relative; border-radius: 8px;
-            transform-style: preserve-3d;
-            animation: wave3D 4s infinite ease-in-out;
-            box-shadow: 0 30px 60px rgba(227, 10, 23, 0.5);
+            width: 280px; height: 160px; background: var(--red-tr); border-radius: 12px;
+            position: relative; transform-style: preserve-3d; animation: wave 4s infinite ease-in-out;
+            box-shadow: 0 20px 50px rgba(227, 10, 23, 0.4);
         }
+        @keyframes wave { 0%, 100% { transform: perspective(1000px) rotateY(15deg); } 50% { transform: perspective(1000px) rotateY(-15deg); } }
 
-        @keyframes wave3D {
-            0%, 100% { transform: perspective(1000px) rotateY(15deg) rotateX(5deg) skewY(2deg); }
-            50% { transform: perspective(1000px) rotateY(-15deg) rotateX(-5deg) skewY(-2deg); }
+        /* --- NAV --- */
+        .nav-bar {
+            display: flex; position: sticky; top: 0; background: rgba(18,18,18,0.95);
+            backdrop-filter: blur(10px); z-index: 9000; border-bottom: 2px solid var(--cyan);
         }
-
-        .symbol { position: absolute; top: 50%; left: 45%; transform: translate(-50%, -50%); display: flex; align-items: center; }
-        .moon { width: 80px; height: 80px; background: #fff; border-radius: 50%; position: relative; }
-        .moon::after { content: ''; position: absolute; width: 65px; height: 65px; background: var(--red-tr); border-radius: 50%; top: 7.5px; left: 20px; }
-        .star { font-size: 50px; color: #fff; margin-left: -5px; transform: rotate(15deg); }
-
-        #auto-greeting {
-            margin-top: 50px; font-size: 2.2rem; font-weight: 900; text-align: center;
-            background: linear-gradient(to right, #fff, var(--gold));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            text-transform: uppercase; letter-spacing: 5px;
+        .nav-item {
+            flex: 1; padding: 20px 0; text-align: center; font-size: 0.7rem;
+            font-weight: 900; color: #555; cursor: pointer; text-transform: uppercase;
         }
+        .nav-item.active { color: var(--cyan); border-bottom: 2px solid var(--cyan); }
 
-        /* --- ESTRUCTURA APP --- */
-        .app-nav {
-            display: flex; width: 100%; background: #000; border-bottom: 2px solid var(--cyan);
-            position: sticky; top: 0; z-index: 9000; backdrop-filter: blur(15px);
-        }
-        .nav-link {
-            flex: 1; padding: 25px 0; text-align: center; font-size: 0.8rem;
-            font-weight: 900; color: #444; cursor: pointer; text-transform: uppercase;
-        }
-        .nav-link.active { color: var(--cyan); border-bottom: 3px solid var(--cyan); text-shadow: var(--neon); }
+        .container { padding: 25px 20px 120px 20px; max-width: 500px; margin: auto; }
+        .section { display: none; animation: fadeIn 0.4s ease forwards; }
+        .section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        .container { width: 92%; max-width: 550px; margin: auto; padding: 40px 0 160px 0; }
-        .view { display: none; animation: viewIn 0.8s ease forwards; }
-        .view.active { display: block; }
-        @keyframes viewIn { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
-
-        .card-neural {
-            background: var(--card); border-radius: 40px; padding: 40px;
-            margin-bottom: 35px; border: 1px solid rgba(255,255,255,0.05);
-            box-shadow: 0 30px 60px rgba(0,0,0,0.8); position: relative;
-        }
-
-        /* --- BOTONES SECTORES --- */
-        .btn-neural {
-            width: 100%; padding: 25px; border-radius: 22px; border: none;
-            font-weight: 900; font-size: 1rem; cursor: pointer;
-            text-transform: uppercase; margin: 15px 0; display: flex;
-            align-items: center; justify-content: center; text-decoration: none;
-            transition: 0.4s; box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+        /* --- CARDS & BUTTONS --- */
+        .card { background: var(--card); border-radius: 25px; padding: 25px; margin-bottom: 25px; border: 1px solid #222; }
+        .btn { 
+            width: 100%; padding: 20px; border-radius: 15px; border: none; 
+            font-weight: 900; cursor: pointer; text-transform: uppercase; transition: 0.3s;
+            display: flex; align-items: center; justify-content: center; text-decoration: none;
         }
         .btn-cyan { background: var(--cyan); color: #000; box-shadow: var(--neon); }
         .btn-gold { background: var(--gold); color: #000; }
         .btn-wa { background: var(--wa); color: #fff; }
-        .btn-red { background: var(--red-tr); color: #fff; }
 
         select, input {
-            width: 100%; padding: 25px; border-radius: 20px; border: 2px solid #222;
-            background: #000; color: #fff; font-size: 1.1rem; text-align: center; margin-bottom: 20px;
+            width: 100%; padding: 18px; border-radius: 12px; background: #000; 
+            color: #fff; border: 1px solid #333; margin-bottom: 15px; font-size: 1rem;
         }
 
-        /* --- REPORTES --- */
-        .output-box {
-            background: #000; border-radius: 25px; padding: 25px;
-            margin-top: 25px; border-left: 6px solid var(--wa); display: none;
+        /* --- CHAT CONCIERGE --- */
+        #chat-widget { position: fixed; bottom: 20px; left: 20px; z-index: 9999; }
+        .chat-trigger { 
+            width: 65px; height: 65px; background: var(--wa); border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center; font-size: 30px; 
+            cursor: pointer; box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
         }
-        .grid-data { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0; }
-        .data-item { background: #111; padding: 15px; border-radius: 15px; text-align: center; border: 1px solid #222; }
-        .data-item b { color: var(--cyan); font-size: 1.2rem; display: block; }
+        .chat-window { 
+            display: none; position: absolute; bottom: 85px; left: 0; width: 280px; 
+            background: #fff; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.6); 
+        }
+        .chat-header { background: #075E54; color: white; padding: 15px; font-weight: 900; font-size: 0.9rem; }
+        .chat-body { height: 200px; background: #e5ddd5; padding: 15px; overflow-y: auto; color: #000; font-size: 0.8rem; }
 
-        #audio-engine {
-            position: fixed; bottom: 40px; right: 40px; width: 75px; height: 75px;
-            background: var(--gold); border-radius: 50%; display: flex;
-            align-items: center; justify-content: center; z-index: 9500;
-            box-shadow: 0 0 30px rgba(255,204,0,0.4); cursor: pointer;
-        }
+        /* --- GASTRO RES --- */
+        #gastro-res { background: #000; border-radius: 20px; padding: 20px; border-left: 5px solid var(--wa); display: none; margin-top: 15px; }
     </style>
 </head>
-<body onclick="activateSystems()">
+<body onclick="enableAudio()">
 
-    <audio id="master-track" loop src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3"></audio>
-    <div id="audio-engine" onclick="toggleM()">🎵</div>
+    <audio id="audio" loop src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
 
-    <div id="splash-engine">
-        <div class="flag-3d">
-            <div class="symbol">
-                <div class="moon"></div>
-                <div class="star">★</div>
-            </div>
-        </div>
-        <div id="auto-greeting">ANALIZANDO TIEMPO...</div>
+    <div id="splash">
+        <div class="flag-3d"></div>
+        <h2 id="greet" style="margin-top:30px; letter-spacing:3px;">YÜKLENİYOR...</h2>
     </div>
 
-    <nav class="app-nav">
-        <div class="nav-link active" onclick="go('life', this)">🔥 Yaşam</div>
-        <div class="nav-link" onclick="go('travel', this)">🌍 Guía</div>
-        <div class="nav-link" onclick="go('biz', this)">🏢 BIZ</div>
+    <nav class="nav-bar">
+        <div class="nav-item active" onclick="showTab('hub', this)">Neural Hub</div>
+        <div class="nav-item" onclick="showTab('gastro', this)">Bio-Gastro</div>
+        <div class="nav-item" onclick="showTab('agency', this)">Agency</div>
     </nav>
 
     <div class="container">
+        
+        <div id="hub" class="section active">
+            <div class="card" style="border-top: 5px solid var(--gold);">
+                <h2 style="color:var(--gold); margin:0 0 10px 0;">🔮 CAFÉ FALIA IA</h2>
+                <p style="color:#666; font-size:0.8rem;">Análisis de patrones para tu éxito en Turquía.</p>
+                <button class="btn btn-gold" onclick="getFortune()">LEER MI TAZA</button>
+                <div id="fortune-out" style="display:none; margin-top:15px; font-style:italic; color:var(--gold); border: 1px dashed; padding: 10px;"></div>
+            </div>
 
-        <div id="life" class="view active">
-            <div class="card-neural">
-                <h2 style="color:var(--wa); text-align:center;">🍲 BIO-GASTRO NEURAL (50)</h2>
-                <select id="food-master" onchange="processGastro()">
-                    <option value="">-- SELECCIONE UN MANJAR --</option>
-                    <optgroup label="KEBAPS & CARNES">
+            <div class="card">
+                <h3>🌍 TRIP SUPPORT VIP</h3>
+                <input type="text" id="city-in" placeholder="¿Ciudad de destino?">
+                <button class="btn btn-cyan" onclick="getTrip()">OBTENER REPORTE</button>
+                <div id="trip-out" style="display:none; margin-top:15px; font-size:0.9rem; background:#000; padding:15px; border-radius:15px;"></div>
+            </div>
+        </div>
+
+        <div id="gastro" class="section">
+            <div class="card">
+                <h2 style="color:var(--wa);">🍲 BIO-GASTRO (50)</h2>
+                <select id="food-sel" onchange="showFood()">
+                    <option value="">-- ELIGE UN PLATO --</option>
+                    <optgroup label="KEBAPS">
                         <option value="adana">Adana Kebap</option>
-                        <option value="iskender">Iskender Kebap</option>
+                        <option value="iskender">Iskender</option>
                         <option value="beyti">Beyti Sarma</option>
-                        <option value="cag">Cağ Kebabı</option>
-                        <option value="testi">Testi Kebabı</option>
+                        <option value="testi">Testi Kebap</option>
                         <option value="doner">Et Döner</option>
-                        <option value="sis">Kuzu Şiş</option>
-                        <option value="alinazik">Ali Nazik</option>
-                        <option value="sac">Sac Kavurma</option>
-                        <option value="kofte">Izgara Köfte</option>
                     </optgroup>
-                    <optgroup label="TRADICIONAL & MASAS">
+                    <optgroup label="MASAS & TRADICIÓN">
                         <option value="manti">Mantı</option>
                         <option value="lahmacun">Lahmacun</option>
-                        <option value="pide">Kıymalı Pide</option>
+                        <option value="pide">Pide</option>
                         <option value="borek">Su Böreği</option>
-                        <option value="icli">İçli Köfte</option>
-                        <option value="sarma">Yaprak Sarma</option>
                         <option value="simit">Simit</option>
-                        <option value="gozleme">Gözleme</option>
-                        <option value="kokorec">Kokoreç</option>
-                        <option value="midye">Midye Dolma</option>
                     </optgroup>
-                    <optgroup label="SOPAS & MEZES">
-                        <option value="mercimek">Mercimek Çorbası</option>
-                        <option value="paca">Kelle Paça</option>
-                        <option value="ezogelin">Ezogelin Çorbası</option>
-                        <option value="humus">Humus</option>
-                        <option value="haydari">Haydari</option>
-                        <option value="cacik">Cacık</option>
-                    </optgroup>
-                    <optgroup label="POSTRES REALE">
+                    <optgroup label="POSTRES">
                         <option value="baklava">Baklava</option>
                         <option value="kunefe">Künefe</option>
-                        <option value="sutlac">Fırın Sütlaç</option>
                         <option value="lokum">Turkish Delight</option>
-                        <option value="kazandibi">Kazandibi</option>
-                        <option value="revani">Revani</option>
                     </optgroup>
-                </select>
+                    </select>
 
-                <div id="gastro-out" class="output-box">
-                    <h3 id="g-name" style="margin:0; color:var(--wa); font-size:1.8rem;"></h3>
-                    <div class="grid-data">
-                        <div class="data-item"><small>CALORÍAS</small><b id="g-cal"></b></div>
-                        <div class="data-item"><small>ORIGEN</small><b id="g-ori"></b></div>
-                    </div>
-                    <p id="g-desc" style="line-height:1.6; color:#ccc;"></p>
-                    <div style="background:#111; padding:20px; border-radius:15px; border:1px solid var(--gold); margin-top:20px;">
-                        <small style="color:var(--gold); font-weight:900;">📜 NOTA DE LUCAS GUZMÁN AGENCY:</small>
-                        <p id="g-note" style="margin:5px 0 0 0; font-size:0.9rem;"></p>
-                    </div>
+                <div id="gastro-res">
+                    <h3 id="fn" style="color:var(--wa); margin:0;"></h3>
+                    <p id="fd" style="font-size:0.85rem; color:#ccc;"></p>
+                    <small id="ft" style="color:var(--gold); font-weight:bold;"></small>
                 </div>
             </div>
-
-            <div class="card-neural" style="border-top: 5px solid var(--gold);">
-                <h3 style="color:var(--gold); text-align:center;">🔮 KAHVE FALI (CAFÉ IA)</h3>
-                <button onclick="revealFortune()" class="btn-neural btn-gold">👁️ LEER MI TAZA</button>
-                <div id="fortune-out" class="output-box" style="border-color:var(--gold); color:var(--gold); font-style:italic; font-size:1.1rem;"></div>
-            </div>
         </div>
 
-        <div id="travel" class="view">
-            <div class="card-neural">
-                <h2 style="color:var(--cyan); text-align:center;">🌍 GUÍA TURÍSTICO ELITE</h2>
-                <input type="text" id="city-search" placeholder="Buscar Ciudad (Estambul, Antalya...)">
-                <button onclick="searchCity()" class="btn-neural btn-cyan">GENERAR REPORTE TURÍSTICO</button>
-                <div id="travel-out" class="output-box" style="border-color:var(--cyan);"></div>
-            </div>
-
-            <div class="card-neural">
-                <h3 style="text-align:center; color:var(--gold);">🛡️ RESERVAS OFICIALES</h3>
-                <a href="https://www.turkishairlines.com" target="_blank" class="btn-neural btn-red">✈️ TURKISH AIRLINES</a>
-                <a href="https://www.booking.com" target="_blank" class="btn-neural btn-cyan" style="background:#003580; color:white;">🏨 BUSCADOR DE HOTELES (WORLDWIDE)</a>
-            </div>
-        </div>
-
-        <div id="biz" class="view">
-            <div class="card-neural" style="text-align:center;">
-                <h1 style="color:var(--cyan); font-size:3rem; margin:0;">NEURAL FOCUS</h1>
-                <p style="letter-spacing:8px; opacity:0.5; font-size:0.8rem;">LUCAS GUZMÁN AGENCY</p>
-            </div>
-
-            <h3 style="text-align:center; color:var(--gold); margin-bottom:20px;">🚀 SECTORES ESTRATÉGICOS</h3>
-            
-            <a href="https://chat.whatsapp.com/FPplgqnE2NiHmahVJXCic2" class="btn-neural btn-wa">🏥 SECTOR SALUD</a>
-            <button onclick="go('life', document.querySelectorAll('.nav-link')[0])" class="btn-neural btn-cyan">🍲 SECTOR GASTRONOMÍA</button>
-            <button onclick="alert('Conexión con Sector Industria Pesada establecida.')" class="btn-neural btn-gold">⚙️ SECTOR INDUSTRIA</button>
-            <a href="https://chat.whatsapp.com/CPddy8AAILL2uSaTcRpHj1" class="btn-neural btn-wa">🏗️ SECTOR CONSTRUCCIÓN</a>
-
-            <div style="margin-top:30px;">
-                <a href="https://www.turkiye.gov.tr/" class="btn-neural btn-red">🏛️ GOBIERNO (E-DEVLET)</a>
+        <div id="agency" class="section">
+            <div class="card" style="text-align:center;">
+                <h1 style="color:var(--cyan); margin:0;">LUCAS GUZMÁN</h1>
+                <p style="opacity:0.4; letter-spacing:5px; font-size:0.7rem;">STRATEGIC AGENCY</p>
+                <div style="margin-top:25px;">
+                    <a href="https://wa.me/542246496971" class="btn btn-wa" style="margin-bottom:15px;">WHATSAPP DIRECTO</a>
+                    <button class="btn btn-cyan" style="margin-bottom:15px;" onclick="alert('Analista de Calidad de Contenido activado.')">CONTENT QUALITY ANALYST</button>
+                    <button class="btn btn-gold" onclick="alert('Asistente Remoto LATAM buscando...')">RESEARCH ASSISTANT</button>
+                </div>
+                <div style="margin-top:20px; font-size:0.8rem; opacity:0.6;">
+                    menteglobalempresarial@gmail.com<br>Twitter: @neuralfocus
+                </div>
             </div>
         </div>
 
     </div>
 
+    <div id="chat-widget">
+        <div class="chat-trigger" onclick="toggleChat()">💬</div>
+        <div class="chat-window" id="chat-ui">
+            <div class="chat-header">Neural Concierge</div>
+            <div class="chat-body">
+                <div style="background:#fff; padding:10px; border-radius:10px; margin-bottom:10px;">¡Hola! Soy tu asistente de NeuralFocus. ¿Cómo podemos ayudarte hoy con tu negocio o viaje en Turquía?</div>
+            </div>
+            <div style="padding:10px; background:#eee; display:flex;">
+                <input type="text" id="chat-msg" placeholder="Escribe..." style="margin:0; flex:1; color:#000;">
+                <button onclick="sendWA()" style="border:none; background:var(--wa); color:#fff; border-radius:50%; width:40px; margin-left:5px; cursor:pointer;">✈️</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // BASE DE DATOS MAESTRA: 50 PLATOS REALES
-        const DATA_MASTER = {
-            "adana": { n: "Adana Kebap", c: "650", o: "Adana", d: "Carne de cordero picada a mano con grasa de cola y pimientos rojos, asada en espadas anchas al carbón.", t: "Es el kebap más icónico. Debe ser picante y servirse sobre pan lavaş." },
-            "beyti": { n: "Beyti Sarma", c: "720", o: "Estambul", d: "Carne picada a la parrilla envuelta en pan lavaş, cortada en cilindros y bañada en salsa de tomate y yogur.", t: "Creado por Beyti Güler. La clave es la mantequilla de oveja derretida al final." },
-            "iskender": { n: "Iskender Kebap", c: "780", o: "Bursa", d: "Láminas de döner sobre trozos de pan pide, bañadas en salsa de tomate, mantequilla hirviendo y yogur.", t: "Solo es auténtico si la mantequilla se vierte frente al comensal." },
-            "baklava": { n: "Baklava", c: "450", o: "Gaziantep", d: "40 capas de masa filo rellenas de pistachos de Antep y almíbar de azúcar puro.", t: "Debe sonar crujiente al morder. Es el rey de los postres turcos." },
-            "manti": { n: "Mantı", c: "410", o: "Kayseri", d: "Pequeños dumplings rellenos de carne con yogur de ajo, aceite de pimentón y menta seca.", t: "Tradicionalmente, 40 manti deben caber en una sola cuchara de madera." },
-            "lahmacun": { n: "Lahmacun", c: "230", o: "Gaziantep", d: "Masa extra fina con una mezcla de carne picada, perejil y tomate. La 'pizza turca'.", t: "Se debe enrollar con mucho perejil y jugo de limón fresco." },
-            "kunefe": { n: "Künefe", c: "530", o: "Hatay", d: "Queso Hatay derretido entre fideos de masa kadayıf con almíbar caliente.", t: "Debe comerse inmediatamente para que el queso se estire perfectamente." },
-            "doner": { n: "Et Döner", c: "450", o: "Bursa", d: "Carne apilada verticalmente que gira frente a un fuego asándose lentamente.", t: "El corte debe ser fino como el papel para ser considerado de calidad superior." },
-            "cag": { n: "Cağ Kebabı", c: "550", o: "Erzurum", d: "Kebap de cordero giratorio horizontal marinado con cebolla y pimienta.", t: "Es el ancestro del Döner. Se sirve en brochetas individuales." },
-            "testi": { n: "Testi Kebabı", c: "600", o: "Capadocia", d: "Guiso de carne y verduras cocinado dentro de una jarra de cerámica sellada.", t: "Se rompe la vasija frente al cliente; una experiencia única de Anatolia central." }
-            // Lógica preparada para los 50 platos registrados.
+        // DATABASE
+        const FOODS = {
+            "adana": {n:"Adana Kebap", d:"Carne de cordero picada con pimiento rojo asada al carbón.", t:"Tip: Acompañar con Ayran."},
+            "baklava": {n:"Baklava", d:"Capas de masa filo con pistacho y almíbar.", t:"Tip: Busca el sonido crujiente."},
+            "iskender": {n:"Iskender", d:"Láminas de döner sobre pan con salsa de tomate y mantequilla.", t:"Tip: El plato estrella de Bursa."},
+            "manti": {n:"Mantı", d:"Pequeños dumplings turcos con yogur y ajo.", t:"Tip: La 'pasta' de Anatolia."},
+            "lahmacun": {n:"Lahmacun", d:"Fina masa con carne y verduras picadas.", t:"Tip: Ponle mucho limón y perejil."}
         };
 
-        const TRAVEL_DB = {
-            "estambul": "📍 <b>ESTAMBUL:</b> Puente entre continentes. <br><b>Seguridad:</b> Alta. <br><b>Destacados:</b> Santa Sofía, Gran Bazar. <br><b>Vuelo:</b> Conexión activa con Turkish Airlines.",
-            "capadocia": "📍 <b>CAPADOCIA:</b> Tierra de globos y cuevas. <br><b>Seguridad:</b> Máxima. <br><b>Destacados:</b> Museo Göreme, Hoteles de piedra.",
-            "antalya": "📍 <b>ANTALYA:</b> La perla del Mediterráneo. <br><b>Seguridad:</b> Óptima. <br><b>Destacados:</b> Playa de Lara, Casco Antiguo Kaleiçi."
+        const TRIPS = {
+            "estambul": "📍 Estambul: Seguridad 10/10. Destino clave. Conexión Turkish Airlines activa.",
+            "antalya": "📍 Antalya: Riviera turca. Ideal para playa e inmobiliaria.",
+            "capadocia": "📍 Capadocia: Vuelos en globo y hoteles de cueva. Máxima seguridad."
         };
 
         const FORTUNES = [
-            "🔮 Lucas, el halcón en tu taza indica un éxito masivo en NeuralFocus.",
-            "🔮 Una gran alianza económica se aproxima desde el Bósforo.",
-            "🔮 Veo una llave dorada: Hoy se abre la puerta de un megaproyecto industrial.",
-            "🔮 Tres estrellas alineadas: Prosperidad y expansión global para tu agencia."
+            "🔮 El Bósforo te traerá una alianza económica inesperada.",
+            "🔮 El halcón en tu taza augura éxito en Lucas Guzmán Agency.",
+            "🔮 Una puerta de oro se abre en Estambul para tus proyectos."
         ];
 
-        /* --- SISTEMA DE SALUDO DINÁMICO --- */
-        function initGreeting() {
+        // LOGIC
+        window.onload = () => {
             const h = new Date().getHours();
-            let m = "";
-            if(h >= 5 && h < 12) m = "GÜNAYDIN (Buen día) ☀️";
-            else if(h >= 12 && h < 18) m = "İYİ GÜNLER (Buenas tardes) 🌤️";
-            else m = "İYİ AKŞAMLAR (Buenas noches) 🌙";
-            document.getElementById('auto-greeting').innerText = m;
-        }
+            const g = document.getElementById('greet');
+            if(h < 12) g.innerText = "GÜNAYDIN ☀️";
+            else if(h < 18) g.innerText = "İYİ GÜNLER 🌤️";
+            else g.innerText = "İYİ AKŞAMLAR 🌙";
+            setTimeout(() => { document.getElementById('splash').style.transform = "translateY(-100%)"; }, 3000);
+        };
 
-        /* --- LÓGICA DE CONTROL --- */
-        function go(id, el) {
-            document.querySelectorAll('.view, .nav-link').forEach(x => x.classList.remove('active'));
+        function showTab(id, el) {
+            document.querySelectorAll('.section, .nav-item').forEach(x => x.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             el.classList.add('active');
-            window.scrollTo(0,0);
         }
 
-        function processGastro() {
-            const v = document.getElementById('food-master').value;
-            const b = document.getElementById('gastro-out');
+        function getFortune() {
+            const out = document.getElementById('fortune-out');
+            out.style.display = 'block';
+            out.innerHTML = "🌀 Analizando...";
+            setTimeout(() => { out.innerHTML = FORTUNES[Math.floor(Math.random()*FORTUNES.length)]; }, 1500);
+        }
+
+        function showFood() {
+            const v = document.getElementById('food-sel').value;
             if(!v) return;
-            const d = DATA_MASTER[v] || { n: "Plato Especial", c: "350", o: "Anatolia", d: "Análisis nutritivo en proceso por NeuralFocus.", t: "Consulte al chef local." };
-            document.getElementById('g-name').innerText = d.n.toUpperCase();
-            document.getElementById('g-cal').innerText = d.c + " kcal";
-            document.getElementById('g-ori').innerText = d.o;
-            document.getElementById('g-desc').innerText = d.d;
-            document.getElementById('g-note').innerText = d.t;
-            b.style.display = 'block';
+            const d = FOODS[v] || {n:"Plato Analizado", d:"Bio-análisis completado por NeuralFocus.", t:"Tip: Consumo recomendado."};
+            document.getElementById('fn').innerText = d.n;
+            document.getElementById('fd').innerText = d.d;
+            document.getElementById('ft').innerText = d.t;
+            document.getElementById('gastro-res').style.display = 'block';
         }
 
-        function searchCity() {
-            const c = document.getElementById('city-search').value.toLowerCase().trim();
-            const b = document.getElementById('travel-out');
-            b.innerHTML = TRAVEL_DB[c] || `📍 <b>${c.toUpperCase()}:</b> Analizado. Destino con alto potencial. Verifique vuelos en Turkish Airlines.`;
-            b.style.display = 'block';
+        function getTrip() {
+            const c = document.getElementById('city-in').value.toLowerCase();
+            const out = document.getElementById('trip-out');
+            out.style.display = 'block';
+            out.innerHTML = TRIPS[c] || `📍 ${c.toUpperCase()}: Analizado. Destino seguro. Contacta soporte para logística.`;
         }
 
-        function revealFortune() {
-            const b = document.getElementById('fortune-out');
-            b.style.display = 'block';
-            b.innerHTML = "🌀 <i>Conectando con NeuralFocus Intelligence...</i>";
-            setTimeout(() => {
-                b.innerHTML = FORTUNES[Math.floor(Math.random() * FORTUNES.length)];
-            }, 2000);
+        function toggleChat() {
+            const ui = document.getElementById('chat-ui');
+            ui.style.display = ui.style.display === 'block' ? 'none' : 'block';
         }
 
-        let isStarted = false;
-        function activateSystems() {
-            if(!isStarted) {
-                document.getElementById('master-track').play();
-                isStarted = true;
-                document.getElementById('audio-engine').style.background = "var(--cyan)";
-            }
-        }
-        function toggleM() {
-            const a = document.getElementById('master-track');
-            a.paused ? a.play() : a.pause();
+        function sendWA() {
+            const m = document.getElementById('chat-msg').value;
+            if(!m) return;
+            window.open(`https://wa.me/542246496971?text=Consulta VIP: ${encodeURIComponent(m)}`);
         }
 
-        window.onload = () => {
-            initGreeting();
-            setTimeout(() => {
-                document.getElementById('splash-engine').style.transform = "translateY(-100%)";
-            }, 4000);
-        };
+        let a = false;
+        function enableAudio() { if(!a){document.getElementById('audio').play(); a=true;} }
     </script>
 </body>
 </html>
