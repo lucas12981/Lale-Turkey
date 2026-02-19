@@ -1,258 +1,207 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NeuralFocus IA | Lucas Guzmán Agency</title>
+    <title>NeuralFocus AI Global</title>
     <style>
         :root {
             --cyan: #00ffff; --gold: #ffcc00; --wa: #25D366;
             --red-tr: #e30a17; --bg: #050505; --card: #121212;
-            --neon: 0 0 20px rgba(0, 255, 255, 0.4);
+            --text: #ffffff;
         }
 
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
-        body { 
-            background: var(--bg); color: #fff; font-family: 'Inter', -apple-system, sans-serif; 
-            margin: 0; padding: 0; overflow-x: hidden; 
-        }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Inter', sans-serif; }
+        
+        body { background: var(--bg); color: var(--text); margin: 0; padding: 0; overflow-x: hidden; }
 
-        /* --- SPLASH SCREEN --- */
+        /* --- SPLASH SCREEN: LOGO NEURALFOCUS --- */
         #splash {
             position: fixed; inset: 0; background: #000; z-index: 10000;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            transition: 1s cubic-bezier(0.7, 0, 0.3, 1);
+            transition: 1s ease-in-out;
         }
-        .flag-3d {
-            width: 280px; height: 160px; background: var(--red-tr); border-radius: 12px;
-            position: relative; transform-style: preserve-3d; animation: wave 4s infinite ease-in-out;
-            box-shadow: 0 20px 50px rgba(227, 10, 23, 0.4);
+        .neural-logo {
+            width: 80px; height: 80px; border: 3px solid var(--cyan);
+            border-radius: 15px; position: relative; animation: rotateLogo 4s infinite linear;
+            box-shadow: 0 0 40px var(--cyan);
         }
-        @keyframes wave { 0%, 100% { transform: perspective(1000px) rotateY(15deg); } 50% { transform: perspective(1000px) rotateY(-15deg); } }
+        @keyframes rotateLogo { 
+            0% { transform: rotate(0deg) scale(1); } 
+            50% { transform: rotate(180deg) scale(1.1); } 
+            100% { transform: rotate(360deg) scale(1); } 
+        }
+        #greeting { margin-top: 30px; font-weight: 900; letter-spacing: 5px; text-transform: uppercase; color: var(--cyan); }
 
-        /* --- NAV --- */
-        .nav-bar {
-            display: flex; position: sticky; top: 0; background: rgba(18,18,18,0.95);
-            backdrop-filter: blur(10px); z-index: 9000; border-bottom: 2px solid var(--cyan);
-        }
-        .nav-item {
-            flex: 1; padding: 20px 0; text-align: center; font-size: 0.7rem;
-            font-weight: 900; color: #555; cursor: pointer; text-transform: uppercase;
-        }
-        .nav-item.active { color: var(--cyan); border-bottom: 2px solid var(--cyan); }
+        /* --- LAYOUT PRINCIPAL --- */
+        .app-container { display: none; padding: 20px; max-width: 600px; margin: auto; }
+        .header { text-align: center; padding: 20px 0; border-bottom: 1px solid #222; margin-bottom: 20px; }
+        .header h1 { font-size: 1.5rem; letter-spacing: 2px; color: var(--cyan); margin: 0; }
 
-        .container { padding: 25px 20px 120px 20px; max-width: 500px; margin: auto; }
-        .section { display: none; animation: fadeIn 0.4s ease forwards; }
-        .section.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        /* --- CARDS & BUTTONS --- */
-        .card { background: var(--card); border-radius: 25px; padding: 25px; margin-bottom: 25px; border: 1px solid #222; }
+        .card { background: var(--card); border-radius: 20px; padding: 25px; margin-bottom: 20px; border: 1px solid #222; }
+        
+        /* --- BOTONES FUNCIONALES --- */
         .btn { 
-            width: 100%; padding: 20px; border-radius: 15px; border: none; 
-            font-weight: 900; cursor: pointer; text-transform: uppercase; transition: 0.3s;
-            display: flex; align-items: center; justify-content: center; text-decoration: none;
+            width: 100%; padding: 18px; border-radius: 12px; border: none; 
+            font-weight: 900; cursor: pointer; margin-bottom: 12px; 
+            text-transform: uppercase; transition: 0.3s;
         }
-        .btn-cyan { background: var(--cyan); color: #000; box-shadow: var(--neon); }
+        .btn-cyan { background: var(--cyan); color: #000; }
         .btn-gold { background: var(--gold); color: #000; }
         .btn-wa { background: var(--wa); color: #fff; }
 
+        /* --- SISTEMAS INTERACTIVOS --- */
+        #cam-box { display: none; width: 100%; border-radius: 15px; overflow: hidden; margin-bottom: 15px; border: 2px solid var(--gold); background: #000; }
+        video { width: 100%; height: auto; }
+
+        .result-panel { 
+            display: none; background: #000; padding: 15px; border-radius: 10px; 
+            border-left: 4px solid var(--cyan); margin-top: 15px; font-size: 0.9rem; line-height: 1.6;
+        }
+
         select, input {
-            width: 100%; padding: 18px; border-radius: 12px; background: #000; 
-            color: #fff; border: 1px solid #333; margin-bottom: 15px; font-size: 1rem;
+            width: 100%; padding: 15px; border-radius: 10px; background: #000; 
+            color: #fff; border: 1px solid #333; margin-bottom: 15px;
         }
 
-        /* --- CHAT CONCIERGE --- */
-        #chat-widget { position: fixed; bottom: 20px; left: 20px; z-index: 9999; }
-        .chat-trigger { 
-            width: 65px; height: 65px; background: var(--wa); border-radius: 50%; 
-            display: flex; align-items: center; justify-content: center; font-size: 30px; 
-            cursor: pointer; box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+        /* BOTÓN FLOTANTE */
+        .wa-float {
+            position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px;
+            background: var(--wa); border-radius: 50%; display: flex; 
+            align-items: center; justify-content: center; font-size: 24px; cursor: pointer; box-shadow: 0 5px 20px #000;
         }
-        .chat-window { 
-            display: none; position: absolute; bottom: 85px; left: 0; width: 280px; 
-            background: #fff; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.6); 
-        }
-        .chat-header { background: #075E54; color: white; padding: 15px; font-weight: 900; font-size: 0.9rem; }
-        .chat-body { height: 200px; background: #e5ddd5; padding: 15px; overflow-y: auto; color: #000; font-size: 0.8rem; }
-
-        /* --- GASTRO RES --- */
-        #gastro-res { background: #000; border-radius: 20px; padding: 20px; border-left: 5px solid var(--wa); display: none; margin-top: 15px; }
     </style>
 </head>
-<body onclick="enableAudio()">
-
-    <audio id="audio" loop src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+<body>
 
     <div id="splash">
-        <div class="flag-3d"></div>
-        <h2 id="greet" style="margin-top:30px; letter-spacing:3px;">YÜKLENİYOR...</h2>
+        <div class="neural-logo"></div>
+        <div id="greeting">Iniciando NeuralFocus AI...</div>
     </div>
 
-    <nav class="nav-bar">
-        <div class="nav-item active" onclick="showTab('hub', this)">Neural Hub</div>
-        <div class="nav-item" onclick="showTab('gastro', this)">Bio-Gastro</div>
-        <div class="nav-item" onclick="showTab('agency', this)">Agency</div>
-    </nav>
-
-    <div class="container">
-        
-        <div id="hub" class="section active">
-            <div class="card" style="border-top: 5px solid var(--gold);">
-                <h2 style="color:var(--gold); margin:0 0 10px 0;">🔮 CAFÉ FALIA IA</h2>
-                <p style="color:#666; font-size:0.8rem;">Análisis de patrones para tu éxito en Turquía.</p>
-                <button class="btn btn-gold" onclick="getFortune()">LEER MI TAZA</button>
-                <div id="fortune-out" style="display:none; margin-top:15px; font-style:italic; color:var(--gold); border: 1px dashed; padding: 10px;"></div>
-            </div>
-
-            <div class="card">
-                <h3>🌍 TRIP SUPPORT VIP</h3>
-                <input type="text" id="city-in" placeholder="¿Ciudad de destino?">
-                <button class="btn btn-cyan" onclick="getTrip()">OBTENER REPORTE</button>
-                <div id="trip-out" style="display:none; margin-top:15px; font-size:0.9rem; background:#000; padding:15px; border-radius:15px;"></div>
-            </div>
+    <div class="app-container" id="app">
+        <div class="header">
+            <h1>NEURALFOCUS AI GLOBAL</h1>
         </div>
 
-        <div id="gastro" class="section">
-            <div class="card">
-                <h2 style="color:var(--wa);">🍲 BIO-GASTRO (50)</h2>
-                <select id="food-sel" onchange="showFood()">
-                    <option value="">-- ELIGE UN PLATO --</option>
-                    <optgroup label="KEBAPS">
-                        <option value="adana">Adana Kebap</option>
-                        <option value="iskender">Iskender</option>
-                        <option value="beyti">Beyti Sarma</option>
-                        <option value="testi">Testi Kebap</option>
-                        <option value="doner">Et Döner</option>
-                    </optgroup>
-                    <optgroup label="MASAS & TRADICIÓN">
-                        <option value="manti">Mantı</option>
-                        <option value="lahmacun">Lahmacun</option>
-                        <option value="pide">Pide</option>
-                        <option value="borek">Su Böreği</option>
-                        <option value="simit">Simit</option>
-                    </optgroup>
-                    <optgroup label="POSTRES">
-                        <option value="baklava">Baklava</option>
-                        <option value="kunefe">Künefe</option>
-                        <option value="lokum">Turkish Delight</option>
-                    </optgroup>
-                    </select>
-
-                <div id="gastro-res">
-                    <h3 id="fn" style="color:var(--wa); margin:0;"></h3>
-                    <p id="fd" style="font-size:0.85rem; color:#ccc;"></p>
-                    <small id="ft" style="color:var(--gold); font-weight:bold;"></small>
-                </div>
-            </div>
+        <div class="card">
+            <h3 style="color:var(--gold); margin-top:0;">🔮 LECTOR DE CAFÉ (VISION IA)</h3>
+            <div id="cam-box"><video id="video" autoplay playsinline></video></div>
+            <button class="btn btn-gold" id="cam-btn" onclick="toggleCamera()">ACTIVAR ESCÁNER BIOMÉTRICO</button>
+            <div id="coffee-res" class="result-panel" style="border-color: var(--gold);"></div>
         </div>
 
-        <div id="agency" class="section">
-            <div class="card" style="text-align:center;">
-                <h1 style="color:var(--cyan); margin:0;">LUCAS GUZMÁN</h1>
-                <p style="opacity:0.4; letter-spacing:5px; font-size:0.7rem;">STRATEGIC AGENCY</p>
-                <div style="margin-top:25px;">
-                    <a href="https://wa.me/542246496971" class="btn btn-wa" style="margin-bottom:15px;">WHATSAPP DIRECTO</a>
-                    <button class="btn btn-cyan" style="margin-bottom:15px;" onclick="alert('Analista de Calidad de Contenido activado.')">CONTENT QUALITY ANALYST</button>
-                    <button class="btn btn-gold" onclick="alert('Asistente Remoto LATAM buscando...')">RESEARCH ASSISTANT</button>
-                </div>
-                <div style="margin-top:20px; font-size:0.8rem; opacity:0.6;">
-                    menteglobalempresarial@gmail.com<br>Twitter: @neuralfocus
-                </div>
-            </div>
+        <div class="card">
+            <h3 style="color:var(--wa); margin-top:0;">🍲 BIO-GASTRO DATABASE</h3>
+            <select id="food-select" onchange="searchFood()">
+                <option value="">Buscar Plato Turco...</option>
+                <option value="adana">Adana Kebap (Carne/Proteína)</option>
+                <option value="baklava">Baklava (Energía/Dulce)</option>
+                <option value="iskender">Iskender (Especialidad Bursa)</option>
+                <option value="manti">Manti (Carbohidratos Anatolia)</option>
+                <option value="lahmacun">Lahmacun (Pizza Turca)</option>
+                </select>
+            <div id="food-res" class="result-panel" style="border-color: var(--wa);"></div>
         </div>
 
-    </div>
+        <div class="card">
+            <h3 style="color:var(--cyan); margin-top:0;">🌍 MODERN TRIP SUPPORT</h3>
+            <input type="text" id="city-input" placeholder="Ingresa ciudad (Ej: Estambul)">
+            <button class="btn btn-cyan" onclick="getTripInfo()">ANALIZAR DESTINO Y VUELOS</button>
+            <div id="trip-res" class="result-panel"></div>
+        </div>
 
-    <div id="chat-widget">
-        <div class="chat-trigger" onclick="toggleChat()">💬</div>
-        <div class="chat-window" id="chat-ui">
-            <div class="chat-header">Neural Concierge</div>
-            <div class="chat-body">
-                <div style="background:#fff; padding:10px; border-radius:10px; margin-bottom:10px;">¡Hola! Soy tu asistente de NeuralFocus. ¿Cómo podemos ayudarte hoy con tu negocio o viaje en Turquía?</div>
-            </div>
-            <div style="padding:10px; background:#eee; display:flex;">
-                <input type="text" id="chat-msg" placeholder="Escribe..." style="margin:0; flex:1; color:#000;">
-                <button onclick="sendWA()" style="border:none; background:var(--wa); color:#fff; border-radius:50%; width:40px; margin-left:5px; cursor:pointer;">✈️</button>
-            </div>
+        <div class="card">
+            <h3 style="margin-top:0;">🏢 SECTORES ESTRATÉGICOS</h3>
+            <button class="btn btn-cyan" onclick="openSector('SALUD')">CONEXIÓN SECTOR SALUD</button>
+            <button class="btn btn-gold" onclick="openSector('CONSTRUCCION')">SECTOR CONSTRUCCIÓN</button>
+            <button class="btn btn-wa" onclick="openSector('ASISTENTE')">VIRTUAL RESEARCH ASSISTANT</button>
+            <div id="sector-res" class="result-panel" style="border-color: #fff;"></div>
         </div>
     </div>
+
+    <div class="wa-float" onclick="window.open('https://wa.me/542246496971')">💬</div>
 
     <script>
-        // DATABASE
-        const FOODS = {
-            "adana": {n:"Adana Kebap", d:"Carne de cordero picada con pimiento rojo asada al carbón.", t:"Tip: Acompañar con Ayran."},
-            "baklava": {n:"Baklava", d:"Capas de masa filo con pistacho y almíbar.", t:"Tip: Busca el sonido crujiente."},
-            "iskender": {n:"Iskender", d:"Láminas de döner sobre pan con salsa de tomate y mantequilla.", t:"Tip: El plato estrella de Bursa."},
-            "manti": {n:"Mantı", d:"Pequeños dumplings turcos con yogur y ajo.", t:"Tip: La 'pasta' de Anatolia."},
-            "lahmacun": {n:"Lahmacun", d:"Fina masa con carne y verduras picadas.", t:"Tip: Ponle mucho limón y perejil."}
+        // BASE DE DATOS REAL
+        const DATA = {
+            foods: {
+                "adana": "<b>ADANA KEBAP:</b> Carne de cordero picada con pimiento rojo. Análisis: 650kcal. Rico en hierro y proteínas.",
+                "baklava": "<b>BAKLAVA:</b> 40 capas de masa filo y pistacho. Análisis: 450kcal por porción. Alta energía inmediata.",
+                "iskender": "<b>ISKENDER:</b> Döner sobre pan con mantequilla fundida. Plato icónico de la región de Bursa.",
+                "manti": "<b>MANTI:</b> Dumplings de carne con yogur frío y aceite picante. Balance perfecto de carbohidratos.",
+                "lahmacun": "<b>LAHMACUN:</b> Base fina de masa con carne picada y especias. Bajo en grasas si se añade limón."
+            },
+            trips: {
+                "estambul": "<b>REPORTE ESTAMBUL:</b> Vuelos disponibles via Turkish Airlines. Seguridad: Óptima. Clima: Templado. Destino recomendado: Sultanahmet.",
+                "antalya": "<b>REPORTE ANTALYA:</b> Destino de playa y resorts. Alta demanda en verano. Aeropuerto internacional activo."
+            }
         };
 
-        const TRIPS = {
-            "estambul": "📍 Estambul: Seguridad 10/10. Destino clave. Conexión Turkish Airlines activa.",
-            "antalya": "📍 Antalya: Riviera turca. Ideal para playa e inmobiliaria.",
-            "capadocia": "📍 Capadocia: Vuelos en globo y hoteles de cueva. Máxima seguridad."
-        };
-
-        const FORTUNES = [
-            "🔮 El Bósforo te traerá una alianza económica inesperada.",
-            "🔮 El halcón en tu taza augura éxito en Lucas Guzmán Agency.",
-            "🔮 Una puerta de oro se abre en Estambul para tus proyectos."
-        ];
-
-        // LOGIC
+        // SALUDO AUTOMÁTICO Y SPLASH
         window.onload = () => {
             const h = new Date().getHours();
-            const g = document.getElementById('greet');
-            if(h < 12) g.innerText = "GÜNAYDIN ☀️";
-            else if(h < 18) g.innerText = "İYİ GÜNLER 🌤️";
-            else g.innerText = "İYİ AKŞAMLAR 🌙";
-            setTimeout(() => { document.getElementById('splash').style.transform = "translateY(-100%)"; }, 3000);
+            const g = document.getElementById('greeting');
+            if(h < 12) g.innerText = "GÜNAYDIN (BUEN DÍA) ☀️";
+            else if(h < 18) g.innerText = "İYİ GÜNLER (BUENAS TARDES) 🌤️";
+            else g.innerText = "İYİ AKŞAMLAR (BUENAS NOCHES) 🌙";
+
+            setTimeout(() => {
+                document.getElementById('splash').style.opacity = "0";
+                setTimeout(() => {
+                    document.getElementById('splash').style.display = "none";
+                    document.getElementById('app').style.display = "block";
+                }, 800);
+            }, 3000);
         };
 
-        function showTab(id, el) {
-            document.querySelectorAll('.section, .nav-item').forEach(x => x.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            el.classList.add('active');
+        // FUNCIONALIDAD: CÁMARA REAL
+        let streamActive = null;
+        async function toggleCamera() {
+            const box = document.getElementById('cam-box');
+            const btn = document.getElementById('cam-btn');
+            const res = document.getElementById('coffee-res');
+
+            if (!streamActive) {
+                try {
+                    streamActive = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+                    document.getElementById('video').srcObject = streamActive;
+                    box.style.display = "block";
+                    btn.innerText = "ANALIZAR TAZA DE CAFÉ";
+                } catch (e) { alert("Error al acceder a la cámara."); }
+            } else {
+                res.style.display = "block";
+                res.innerHTML = "<b>ANÁLISIS NEURAL:</b> Veo éxito financiero y un viaje inminente a Turquía. El camino está despejado.";
+                streamActive.getTracks().forEach(track => track.stop());
+                streamActive = null;
+                box.style.display = "none";
+                btn.innerText = "ACTIVAR ESCÁNER BIOMÉTRICO";
+            }
         }
 
-        function getFortune() {
-            const out = document.getElementById('fortune-out');
-            out.style.display = 'block';
-            out.innerHTML = "🌀 Analizando...";
-            setTimeout(() => { out.innerHTML = FORTUNES[Math.floor(Math.random()*FORTUNES.length)]; }, 1500);
+        // FUNCIONALIDAD: BUSCADOR DE COMIDA
+        function searchFood() {
+            const val = document.getElementById('food-select').value;
+            const res = document.getElementById('food-res');
+            if(!val) return;
+            res.style.display = "block";
+            res.innerHTML = DATA.foods[val] || "Análisis nutricional en proceso para este plato.";
         }
 
-        function showFood() {
-            const v = document.getElementById('food-sel').value;
-            if(!v) return;
-            const d = FOODS[v] || {n:"Plato Analizado", d:"Bio-análisis completado por NeuralFocus.", t:"Tip: Consumo recomendado."};
-            document.getElementById('fn').innerText = d.n;
-            document.getElementById('fd').innerText = d.d;
-            document.getElementById('ft').innerText = d.t;
-            document.getElementById('gastro-res').style.display = 'block';
+        // FUNCIONALIDAD: GUÍA DE VIAJE
+        function getTripInfo() {
+            const city = document.getElementById('city-input').value.toLowerCase();
+            const res = document.getElementById('trip-res');
+            res.style.display = "block";
+            res.innerHTML = DATA.trips[city] || `<b>REPORTE PARA ${city.toUpperCase()}:</b> Analizando seguridad y vuelos... Destino disponible para planificación VIP.`;
         }
 
-        function getTrip() {
-            const c = document.getElementById('city-in').value.toLowerCase();
-            const out = document.getElementById('trip-out');
-            out.style.display = 'block';
-            out.innerHTML = TRIPS[c] || `📍 ${c.toUpperCase()}: Analizado. Destino seguro. Contacta soporte para logística.`;
+        // FUNCIONALIDAD: SECTORES
+        function openSector(name) {
+            const res = document.getElementById('sector-res');
+            res.style.display = "block";
+            res.innerHTML = `🌀 <b>CONECTANDO CON SECTOR ${name}...</b><br>Acceso concedido. Cargando base de datos estratégica de Turquía.`;
         }
-
-        function toggleChat() {
-            const ui = document.getElementById('chat-ui');
-            ui.style.display = ui.style.display === 'block' ? 'none' : 'block';
-        }
-
-        function sendWA() {
-            const m = document.getElementById('chat-msg').value;
-            if(!m) return;
-            window.open(`https://wa.me/542246496971?text=Consulta VIP: ${encodeURIComponent(m)}`);
-        }
-
-        let a = false;
-        function enableAudio() { if(!a){document.getElementById('audio').play(); a=true;} }
     </script>
 </body>
 </html>
