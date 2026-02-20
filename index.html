@@ -1,207 +1,167 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NeuralFocus AI Global</title>
-    <style>
-        :root {
-            --cyan: #00ffff; --gold: #ffcc00; --wa: #25D366;
-            --red-tr: #e30a17; --bg: #050505; --card: #121212;
-            --text: #ffffff;
-        }
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, SafeAreaView, Dimensions } from 'react-native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { NavigationContainer } from '@react-navigation/native';
+import { MaterialCommunityIcons, FontAwesome5, Ionicons } from '@expo/vector-icons';
 
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Inter', sans-serif; }
-        
-        body { background: var(--bg); color: var(--text); margin: 0; padding: 0; overflow-x: hidden; }
+// --- CONFIGURACIÓN DE ESTILO TURQUÍA 2026 ---
+const THEME = {
+  primary: '#E30A17', // Rojo Turco
+  secondary: '#005C92', // Azul Bósforo
+  accent: '#FFD700', // Oro Bizantino
+  background: '#F4F7F6',
+  card: '#FFFFFF',
+  text: '#1A1A1B'
+};
 
-        /* --- SPLASH SCREEN: LOGO NEURALFOCUS --- */
-        #splash {
-            position: fixed; inset: 0; background: #000; z-index: 10000;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            transition: 1s ease-in-out;
-        }
-        .neural-logo {
-            width: 80px; height: 80px; border: 3px solid var(--cyan);
-            border-radius: 15px; position: relative; animation: rotateLogo 4s infinite linear;
-            box-shadow: 0 0 40px var(--cyan);
-        }
-        @keyframes rotateLogo { 
-            0% { transform: rotate(0deg) scale(1); } 
-            50% { transform: rotate(180deg) scale(1.1); } 
-            100% { transform: rotate(360deg) scale(1); } 
-        }
-        #greeting { margin-top: 30px; font-weight: 900; letter-spacing: 5px; text-transform: uppercase; color: var(--cyan); }
+// --- PANTALLA 1: GUÍA TURÍSTICO & VIAJES ---
+const TouristGuideScreen = () => (
+  <SafeAreaView style={styles.safeArea}>
+    <ScrollView style={styles.container}>
+      <View style={styles.heroSection}>
+        <Text style={styles.welcomeText}>Hoş Geldiniz</Text>
+        <Text style={styles.subWelcome}>Tu puerta a Turquía</Text>
+      </View>
 
-        /* --- LAYOUT PRINCIPAL --- */
-        .app-container { display: none; padding: 20px; max-width: 600px; margin: auto; }
-        .header { text-align: center; padding: 20px 0; border-bottom: 1px solid #222; margin-bottom: 20px; }
-        .header h1 { font-size: 1.5rem; letter-spacing: 2px; color: var(--cyan); margin: 0; }
+      {/* SECCIÓN TURKISH AIRLINES */}
+      <View style={styles.mainCard}>
+        <View style={styles.cardHeader}>
+          <MaterialCommunityIcons name="airplane" size={24} color={THEME.primary} />
+          <Text style={styles.cardTitle}>Turkish Airlines</Text>
+        </View>
+        <Text style={styles.cardDesc}>Gestiona tus vuelos y check-in en tiempo real.</Text>
+        <TouchableOpacity style={styles.actionButtonMain}>
+          <Text style={styles.actionButtonText}>Buscar Vuelos</Text>
+        </TouchableOpacity>
+      </View>
 
-        .card { background: var(--card); border-radius: 20px; padding: 25px; margin-bottom: 20px; border: 1px solid #222; }
-        
-        /* --- BOTONES FUNCIONALES --- */
-        .btn { 
-            width: 100%; padding: 18px; border-radius: 12px; border: none; 
-            font-weight: 900; cursor: pointer; margin-bottom: 12px; 
-            text-transform: uppercase; transition: 0.3s;
-        }
-        .btn-cyan { background: var(--cyan); color: #000; }
-        .btn-gold { background: var(--gold); color: #000; }
-        .btn-wa { background: var(--wa); color: #fff; }
+      {/* SECCIÓN HOTELES */}
+      <View style={[styles.mainCard, { borderLeftColor: THEME.secondary, borderLeftWidth: 5 }]}>
+        <View style={styles.cardHeader}>
+          <FontAwesome5 name="hotel" size={20} color={THEME.secondary} />
+          <Text style={styles.cardTitle}>Alojamiento Premium</Text>
+        </View>
+        <TextInput style={styles.searchInput} placeholder="¿A dónde vas? (Estambul, Antalya...)" />
+        <TouchableOpacity style={[styles.actionButtonMain, { backgroundColor: THEME.secondary }]}>
+          <Text style={styles.actionButtonText}>Buscar Hoteles</Text>
+        </TouchableOpacity>
+      </View>
+    </ScrollView>
+  </SafeAreaView>
+);
 
-        /* --- SISTEMAS INTERACTIVOS --- */
-        #cam-box { display: none; width: 100%; border-radius: 15px; overflow: hidden; margin-bottom: 15px; border: 2px solid var(--gold); background: #000; }
-        video { width: 100%; height: auto; }
+// --- PANTALLA 2: MOVILIDAD URBANA (Super Apps Integration) ---
+const MobilityScreen = () => (
+  <View style={styles.container}>
+    <Text style={styles.headerTitle}>Transporte Diario</Text>
+    
+    <View style={styles.gridContainer}>
+      {/* Integración BiTaksi / Uber */}
+      <TouchableOpacity style={styles.gridItem}>
+        <Ionicons name="car-sport" size={40} color="#FBC02D" />
+        <Text style={styles.gridText}>BiTaksi / Taxi</Text>
+      </TouchableOpacity>
 
-        .result-panel { 
-            display: none; background: #000; padding: 15px; border-radius: 10px; 
-            border-left: 4px solid var(--cyan); margin-top: 15px; font-size: 0.9rem; line-height: 1.6;
-        }
+      {/* Integración Martı / Scooters */}
+      <TouchableOpacity style={styles.gridItem}>
+        <MaterialCommunityIcons name="scooter" size={40} color="#2E7D32" />
+        <Text style={styles.gridText}>Martı</Text>
+      </TouchableOpacity>
 
-        select, input {
-            width: 100%; padding: 15px; border-radius: 10px; background: #000; 
-            color: #fff; border: 1px solid #333; margin-bottom: 15px;
-        }
+      {/* Integración IstanbulKart */}
+      <TouchableOpacity style={styles.gridItem}>
+        <MaterialCommunityIcons name="integrated-circuit-chip" size={40} color={THEME.primary} />
+        <Text style={styles.gridText}>IstanbulKart</Text>
+      </TouchableOpacity>
 
-        /* BOTÓN FLOTANTE */
-        .wa-float {
-            position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px;
-            background: var(--wa); border-radius: 50%; display: flex; 
-            align-items: center; justify-content: center; font-size: 24px; cursor: pointer; box-shadow: 0 5px 20px #000;
-        }
-    </style>
-</head>
-<body>
+      {/* Integración Şehir Hatları (Ferry) */}
+      <TouchableOpacity style={styles.gridItem}>
+        <FontAwesome5 name="ship" size={35} color={THEME.secondary} />
+        <Text style={styles.gridText}>Ferry / Vapur</Text>
+      </TouchableOpacity>
+    </View>
 
-    <div id="splash">
-        <div class="neural-logo"></div>
-        <div id="greeting">Iniciando NeuralFocus AI...</div>
-    </div>
+    <View style={styles.statusBox}>
+      <Text style={styles.statusTitle}>Estado del Bósforo</Text>
+      <Text style={styles.statusUpdate}>✅ Todos los servicios de ferry operando normalmente.</Text>
+    </View>
+  </View>
+);
 
-    <div class="app-container" id="app">
-        <div class="header">
-            <h1>NEURALFOCUS AI GLOBAL</h1>
-        </div>
+// --- PANTALLA 3: SERVICIOS & LOGÍSTICA (Getir / Trendyol) ---
+const ServicesScreen = () => (
+  <ScrollView style={styles.container}>
+    <Text style={styles.headerTitle}>Entregas y Compras</Text>
+    
+    <TouchableOpacity style={styles.bannerGetir}>
+      <Text style={styles.bannerTitle}>GETIR</Text>
+      <Text style={styles.bannerSub}>Tu compra en la puerta en 10 min</Text>
+    </TouchableOpacity>
 
-        <div class="card">
-            <h3 style="color:var(--gold); margin-top:0;">🔮 LECTOR DE CAFÉ (VISION IA)</h3>
-            <div id="cam-box"><video id="video" autoplay playsinline></video></div>
-            <button class="btn btn-gold" id="cam-btn" onclick="toggleCamera()">ACTIVAR ESCÁNER BIOMÉTRICO</button>
-            <div id="coffee-res" class="result-panel" style="border-color: var(--gold);"></div>
-        </div>
+    <View style={styles.row}>
+      <TouchableOpacity style={styles.smallServiceCard}>
+        <MaterialCommunityIcons name="shopping" size={30} color={THEME.primary} />
+        <Text>Trendyol</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.smallServiceCard}>
+        <MaterialCommunityIcons name="home-search" size={30} color="#007AFF" />
+        <Text>Sahibinden</Text>
+      </TouchableOpacity>
+    </View>
+  </ScrollView>
+);
 
-        <div class="card">
-            <h3 style="color:var(--wa); margin-top:0;">🍲 BIO-GASTRO DATABASE</h3>
-            <select id="food-select" onchange="searchFood()">
-                <option value="">Buscar Plato Turco...</option>
-                <option value="adana">Adana Kebap (Carne/Proteína)</option>
-                <option value="baklava">Baklava (Energía/Dulce)</option>
-                <option value="iskender">Iskender (Especialidad Bursa)</option>
-                <option value="manti">Manti (Carbohidratos Anatolia)</option>
-                <option value="lahmacun">Lahmacun (Pizza Turca)</option>
-                </select>
-            <div id="food-res" class="result-panel" style="border-color: var(--wa);"></div>
-        </div>
+// --- NAVEGACIÓN Y ESTRUCTURA FINAL ---
+const Tab = createBottomTabNavigator();
 
-        <div class="card">
-            <h3 style="color:var(--cyan); margin-top:0;">🌍 MODERN TRIP SUPPORT</h3>
-            <input type="text" id="city-input" placeholder="Ingresa ciudad (Ej: Estambul)">
-            <button class="btn btn-cyan" onclick="getTripInfo()">ANALIZAR DESTINO Y VUELOS</button>
-            <div id="trip-res" class="result-panel"></div>
-        </div>
+export default function TurkeyDailyApp() {
+  return (
+    <NavigationContainer>
+      <Tab.Navigator
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ color, size }) => {
+            let icon;
+            if (route.name === 'Guía') icon = 'map-marker-radius';
+            else if (route.name === 'Moverse') icon = 'train-car';
+            else if (route.name === 'Servicios') icon = 'cube-send';
+            return <MaterialCommunityIcons name={icon} size={size} color={color} />;
+          },
+          tabBarActiveTintColor: THEME.primary,
+          tabBarInactiveTintColor: 'gray',
+          headerShown: false
+        })}
+      >
+        <Tab.Screen name="Guía" component={TouristGuideScreen} />
+        <Tab.Screen name="Moverse" component={MobilityScreen} />
+        <Tab.Screen name="Servicios" component={ServicesScreen} />
+      </Tab.Navigator>
+    </NavigationContainer>
+  );
+}
 
-        <div class="card">
-            <h3 style="margin-top:0;">🏢 SECTORES ESTRATÉGICOS</h3>
-            <button class="btn btn-cyan" onclick="openSector('SALUD')">CONEXIÓN SECTOR SALUD</button>
-            <button class="btn btn-gold" onclick="openSector('CONSTRUCCION')">SECTOR CONSTRUCCIÓN</button>
-            <button class="btn btn-wa" onclick="openSector('ASISTENTE')">VIRTUAL RESEARCH ASSISTANT</button>
-            <div id="sector-res" class="result-panel" style="border-color: #fff;"></div>
-        </div>
-    </div>
-
-    <div class="wa-float" onclick="window.open('https://wa.me/542246496971')">💬</div>
-
-    <script>
-        // BASE DE DATOS REAL
-        const DATA = {
-            foods: {
-                "adana": "<b>ADANA KEBAP:</b> Carne de cordero picada con pimiento rojo. Análisis: 650kcal. Rico en hierro y proteínas.",
-                "baklava": "<b>BAKLAVA:</b> 40 capas de masa filo y pistacho. Análisis: 450kcal por porción. Alta energía inmediata.",
-                "iskender": "<b>ISKENDER:</b> Döner sobre pan con mantequilla fundida. Plato icónico de la región de Bursa.",
-                "manti": "<b>MANTI:</b> Dumplings de carne con yogur frío y aceite picante. Balance perfecto de carbohidratos.",
-                "lahmacun": "<b>LAHMACUN:</b> Base fina de masa con carne picada y especias. Bajo en grasas si se añade limón."
-            },
-            trips: {
-                "estambul": "<b>REPORTE ESTAMBUL:</b> Vuelos disponibles via Turkish Airlines. Seguridad: Óptima. Clima: Templado. Destino recomendado: Sultanahmet.",
-                "antalya": "<b>REPORTE ANTALYA:</b> Destino de playa y resorts. Alta demanda en verano. Aeropuerto internacional activo."
-            }
-        };
-
-        // SALUDO AUTOMÁTICO Y SPLASH
-        window.onload = () => {
-            const h = new Date().getHours();
-            const g = document.getElementById('greeting');
-            if(h < 12) g.innerText = "GÜNAYDIN (BUEN DÍA) ☀️";
-            else if(h < 18) g.innerText = "İYİ GÜNLER (BUENAS TARDES) 🌤️";
-            else g.innerText = "İYİ AKŞAMLAR (BUENAS NOCHES) 🌙";
-
-            setTimeout(() => {
-                document.getElementById('splash').style.opacity = "0";
-                setTimeout(() => {
-                    document.getElementById('splash').style.display = "none";
-                    document.getElementById('app').style.display = "block";
-                }, 800);
-            }, 3000);
-        };
-
-        // FUNCIONALIDAD: CÁMARA REAL
-        let streamActive = null;
-        async function toggleCamera() {
-            const box = document.getElementById('cam-box');
-            const btn = document.getElementById('cam-btn');
-            const res = document.getElementById('coffee-res');
-
-            if (!streamActive) {
-                try {
-                    streamActive = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
-                    document.getElementById('video').srcObject = streamActive;
-                    box.style.display = "block";
-                    btn.innerText = "ANALIZAR TAZA DE CAFÉ";
-                } catch (e) { alert("Error al acceder a la cámara."); }
-            } else {
-                res.style.display = "block";
-                res.innerHTML = "<b>ANÁLISIS NEURAL:</b> Veo éxito financiero y un viaje inminente a Turquía. El camino está despejado.";
-                streamActive.getTracks().forEach(track => track.stop());
-                streamActive = null;
-                box.style.display = "none";
-                btn.innerText = "ACTIVAR ESCÁNER BIOMÉTRICO";
-            }
-        }
-
-        // FUNCIONALIDAD: BUSCADOR DE COMIDA
-        function searchFood() {
-            const val = document.getElementById('food-select').value;
-            const res = document.getElementById('food-res');
-            if(!val) return;
-            res.style.display = "block";
-            res.innerHTML = DATA.foods[val] || "Análisis nutricional en proceso para este plato.";
-        }
-
-        // FUNCIONALIDAD: GUÍA DE VIAJE
-        function getTripInfo() {
-            const city = document.getElementById('city-input').value.toLowerCase();
-            const res = document.getElementById('trip-res');
-            res.style.display = "block";
-            res.innerHTML = DATA.trips[city] || `<b>REPORTE PARA ${city.toUpperCase()}:</b> Analizando seguridad y vuelos... Destino disponible para planificación VIP.`;
-        }
-
-        // FUNCIONALIDAD: SECTORES
-        function openSector(name) {
-            const res = document.getElementById('sector-res');
-            res.style.display = "block";
-            res.innerHTML = `🌀 <b>CONECTANDO CON SECTOR ${name}...</b><br>Acceso concedido. Cargando base de datos estratégica de Turquía.`;
-        }
-    </script>
-</body>
-</html>
+// --- ESTILOS PROFESIONALES ---
+const styles = StyleSheet.create({
+  safeArea: { flex: 1, backgroundColor: THEME.background },
+  container: { flex: 1, padding: 20 },
+  heroSection: { marginVertical: 30 },
+  welcomeText: { fontSize: 32, fontWeight: '900', color: THEME.text },
+  subWelcome: { fontSize: 18, color: '#666' },
+  headerTitle: { fontSize: 24, fontWeight: 'bold', marginBottom: 20, marginTop: 40 },
+  mainCard: { backgroundColor: THEME.card, borderRadius: 20, padding: 20, marginBottom: 20, elevation: 5, shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 10 },
+  cardHeader: { flexDirection: 'row', alignItems: 'center', marginBottom: 10 },
+  cardTitle: { fontSize: 20, fontWeight: 'bold', marginLeft: 10 },
+  cardDesc: { color: '#666', marginBottom: 15 },
+  searchInput: { backgroundColor: '#f0f0f0', padding: 12, borderRadius: 10, marginBottom: 15 },
+  actionButtonMain: { backgroundColor: THEME.primary, padding: 15, borderRadius: 12, alignItems: 'center' },
+  actionButtonText: { color: 'white', fontWeight: 'bold', fontSize: 16 },
+  gridContainer: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
+  gridItem: { backgroundColor: 'white', width: '47%', height: 120, borderRadius: 20, justifyContent: 'center', alignItems: 'center', marginBottom: 15, elevation: 3 },
+  gridText: { marginTop: 10, fontWeight: '600', color: THEME.text },
+  statusBox: { backgroundColor: '#E3F2FD', padding: 20, borderRadius: 15, marginTop: 10 },
+  statusTitle: { fontWeight: 'bold', color: THEME.secondary, marginBottom: 5 },
+  bannerGetir: { backgroundColor: '#5D3EBD', padding: 25, borderRadius: 20, marginBottom: 20 },
+  bannerTitle: { color: THEME.accent, fontSize: 28, fontWeight: 'bold' },
+  bannerSub: { color: 'white', fontSize: 14 },
+  row: { flexDirection: 'row', justifyContent: 'space-between' },
+  smallServiceCard: { backgroundColor: 'white', width: '47%', padding: 20, borderRadius: 20, alignItems: 'center', elevation: 2 }
+});
