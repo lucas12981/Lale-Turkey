@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lale Super App - 2026</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Lale Super App - Official 2026</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     
     <style>
         :root {
@@ -13,183 +13,246 @@
             --bosphorus-blue: #005C92;
             --bizantine-gold: #FFD700;
             --bg-light: #F8FAFC;
-            --dark-slate: #1E293B;
             --white: #FFFFFF;
+            --dark: #0F172A;
+            --gray: #64748B;
             --getir-purple: #5D3EBD;
+            --trendyol-orange: #F27A1A;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background-color: #111; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: #000; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
 
-        /* Frame del Teléfono */
-        .app-container {
-            width: 375px;
-            height: 780px;
-            background-color: var(--bg-light);
-            border-radius: 45px;
-            overflow: hidden;
-            position: relative;
-            box-shadow: 0 0 0 10px #333, 0 20px 50px rgba(0,0,0,0.5);
-            display: flex;
-            flex-direction: column;
+        /* Mobile Shell */
+        .app-shell {
+            width: 100%; max-width: 414px; height: 100vh;
+            background-color: var(--bg-light); position: relative;
+            display: flex; flex-direction: column; overflow: hidden;
         }
 
-        /* Pantalla de Carga con Logo Lale */
-        #splash-screen {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-color: var(--dark-slate);
-            display: flex; flex-direction: column;
-            justify-content: center; align-items: center;
-            z-index: 1000; transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1);
+        /* Splash Screen */
+        #splash {
+            position: absolute; inset: 0; background: var(--dark); z-index: 2000;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: clip-path 0.8s ease-in-out; clip-path: circle(150% at 50% 50%);
+        }
+        .splash-logo { font-size: 100px; margin-bottom: 20px; filter: drop-shadow(0 0 20px var(--turkish-red)); }
+
+        /* Header */
+        header {
+            padding: 60px 20px 20px; background: var(--white);
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid #f1f5f9; z-index: 10;
+        }
+        .brand { color: var(--turkish-red); font-weight: 800; font-size: 26px; letter-spacing: 1px; }
+
+        /* Screens */
+        .screen-container { flex: 1; overflow-y: auto; padding-bottom: 100px; position: relative; }
+        .screen { display: none; padding: 20px; animation: fadeIn 0.4s ease; }
+        .screen.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Lale News Widget */
+        .widget-news {
+            background: linear-gradient(135deg, var(--bosphorus-blue), #003352);
+            border-radius: 28px; padding: 22px; color: white; margin-bottom: 25px;
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 10px 20px rgba(0,92,146,0.2);
         }
 
-        .tulip-icon { font-size: 90px; color: var(--turkish-red); }
-        .splash-title { color: var(--white); font-size: 45px; font-weight: 800; letter-spacing: 10px; margin-top: 10px; }
-
-        /* Header Dinámico */
-        .app-header {
-            padding: 50px 20px 15px;
-            background: var(--white);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #eee;
+        /* Service Cards */
+        .card {
+            background: var(--white); border-radius: 24px; padding: 20px;
+            margin-bottom: 15px; border: 1px solid #e2e8f0; transition: transform 0.2s;
+        }
+        .card:active { transform: scale(0.98); }
+        .card-thy { background: var(--turkish-red); color: white; border: none; }
+        
+        .btn-lale {
+            width: 100%; padding: 16px; border-radius: 16px; border: none;
+            font-weight: 700; cursor: pointer; display: flex; align-items: center; 
+            justify-content: center; gap: 12px; font-size: 15px;
         }
 
-        /* Sección de Noticias del Bósforo */
-        .bosporus-news {
-            background: linear-gradient(135deg, var(--bosphorus-blue), #003d63);
-            margin: 15px;
-            padding: 18px;
-            border-radius: 20px;
-            color: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        /* Grid */
+        .services-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px; }
+        .service-item {
+            background: white; border-radius: 24px; padding: 20px; text-align: center;
+            border: 1px solid #f1f5f9; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
         }
+        .service-item i { font-size: 32px; margin-bottom: 12px; display: block; }
 
-        .news-info h4 { font-size: 14px; opacity: 0.9; }
-        .news-info p { font-size: 18px; font-weight: 800; }
-
-        /* Estilo de Botones y Tarjetas */
-        .content { flex: 1; overflow-y: auto; padding: 10px 20px 100px; }
-        .main-card {
-            background: var(--white); border-radius: 25px; padding: 20px;
-            margin-bottom: 15px; border: 1px solid #E2E8F0;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-        }
-
-        .btn-action {
-            width: 100%; padding: 14px; border-radius: 15px; border: none;
-            font-weight: 700; cursor: pointer; transition: 0.2s;
-            display: flex; justify-content: center; align-items: center; gap: 10px;
-        }
-        .btn-red { background: var(--turkish-red); color: white; }
-        .btn-purple { background: var(--getir-purple); color: white; }
-        .btn-action:active { transform: scale(0.96); }
-
-        /* Grid de Apps Turcas Integradas */
-        .app-grid {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px;
-        }
-        .grid-item {
-            background: white; padding: 15px; border-radius: 18px;
-            text-align: center; border: 1px solid #eee; cursor: pointer;
-        }
-        .grid-item i { font-size: 28px; margin-bottom: 8px; display: block; }
-
-        /* Navegación Inferior */
-        .nav-bar {
-            position: absolute; bottom: 0; width: 100%; height: 85px;
-            background: white; border-top: 1px solid #eee;
+        /* Navigation Bar */
+        nav {
+            position: absolute; bottom: 0; width: 100%; height: 90px;
+            background: rgba(255,255,255,0.95); backdrop-filter: blur(10px);
             display: flex; justify-content: space-around; align-items: center;
-            padding-bottom: 15px;
+            padding-bottom: 20px; border-top: 1px solid #f1f5f9;
         }
-        .nav-item { display: flex; flex-direction: column; align-items: center; color: #94a3b8; font-size: 11px; cursor: pointer; }
-        .nav-item.active { color: var(--turkish-red); }
+        .nav-link { 
+            display: flex; flex-direction: column; align-items: center; 
+            color: var(--gray); font-size: 11px; font-weight: 600; text-decoration: none;
+        }
+        .nav-link.active { color: var(--turkish-red); }
+        .nav-link i { font-size: 24px; margin-bottom: 5px; }
+
+        /* Wallet Section */
+        .wallet-card {
+            background: var(--dark); border-radius: 24px; padding: 25px; color: white;
+            margin-bottom: 20px; position: relative; overflow: hidden;
+        }
+        .wallet-balance { font-size: 32px; font-weight: 800; margin: 10px 0; }
+        .qr-button {
+            position: absolute; right: 20px; top: 50%; transform: translateY(-50%);
+            background: var(--bizantine-gold); width: 60px; height: 60px;
+            border-radius: 18px; display: flex; justify-content: center; align-items: center; color: var(--dark);
+        }
     </style>
 </head>
 <body>
 
-    <div class="app-container">
-        <div id="splash-screen">
-            <div class="tulip-icon">🌷</div>
-            <div class="splash-title">LALE</div>
-            <p style="color: var(--bizantine-gold); font-weight: 600;">SUPER APP TURKEY</p>
+    <div class="app-shell">
+        <div id="splash">
+            <div class="splash-logo">🌷</div>
+            <h1 style="color: white; letter-spacing: 8px; font-weight: 900;">LALE</h1>
+            <p style="color: var(--bizantine-gold); margin-top: 10px; font-weight: 600;">SÜPER UYGULAMA</p>
         </div>
 
-        <div class="app-header">
-            <div style="display: flex; align-items: center; gap: 8px;">
-                <span style="color: var(--turkish-red); font-weight: 900; font-size: 22px;">LALE</span>
-            </div>
-            <i class="fa-solid fa-user-circle" style="font-size: 24px; color: var(--dark-slate);"></i>
-        </div>
+        <header>
+            <div class="brand">LALE</div>
+            <div onclick="navigate('profile')"><i class="fa-solid fa-circle-user" style="font-size: 28px; color: var(--dark);"></i></div>
+        </header>
 
-        <div class="content">
-            <div class="bosporus-news">
-                <div class="news-info">
-                    <h4>Estado del Bósforo</h4>
-                    <p>Tráfico Fluido</p>
-                    <span style="font-size: 11px;">🚢 Ferries Sehir Hatlari operando</span>
+        <main class="screen-container">
+            <section id="home" class="screen active">
+                <div class="widget-news">
+                    <div>
+                        <h4 style="opacity: 0.8; font-size: 12px;">Boğaz Raporu</h4>
+                        <p style="font-size: 20px; font-weight: 800;">Trafik Akıcı</p>
+                        <span style="font-size: 11px;"><i class="fa-solid fa-ship"></i> Vapurlar zamanında</span>
+                    </div>
+                    <div style="text-align: right;">
+                        <i class="fa-solid fa-cloud-sun" style="color: var(--bizantine-gold); font-size: 32px;"></i>
+                        <p style="font-weight: 700; font-size: 18px;">18°C</p>
+                    </div>
                 </div>
-                <div style="text-align: right;">
-                    <i class="fa-solid fa-cloud-sun" style="font-size: 30px; color: var(--bizantine-gold);"></i>
-                    <p style="font-size: 16px; font-weight: bold;">18°C</p>
-                </div>
-            </div>
 
-            <div class="main-card" style="background: var(--turkish-red); border: none; color: white;">
-                <h3 style="margin-bottom: 5px;"><i class="fa-solid fa-plane"></i> Turkish Airlines</h3>
-                <p style="font-size: 12px; opacity: 0.9;">Vuelos directos y gestión de reservas 2026.</p>
-                <button class="btn-action btn-white" style="background: white; color: var(--turkish-red); margin-top: 15px;" onclick="openApp('Turkish Airlines')">Ver mis vuelos</button>
-            </div>
+                <div class="card card-thy">
+                    <h3 style="display: flex; align-items: center; gap: 10px;">
+                        <i class="fa-solid fa-plane-departure"></i> Türk Hava Yolları
+                    </h3>
+                    <p style="font-size: 13px; margin: 12px 0; opacity: 0.9;">Uçuş planla, check-in yap ve millerini yönet.</p>
+                    <button class="btn-lale" style="background: white; color: var(--turkish-red);" onclick="openService('https://www.turkishairlines.com/')">
+                        Biletlerimi Yönet
+                    </button>
+                </div>
 
-            <div class="main-card">
-                <h3 style="color: var(--dark-slate);"><i class="fa-solid fa-hotel"></i> Alojamiento</h3>
-                <p style="font-size: 12px; color: #64748B; margin-top: 5px;">Los mejores hoteles de Estambul y la Riviera Turca.</p>
-                <button class="btn-action btn-red" style="margin-top: 15px;" onclick="openApp('Hotel Search')">Buscar Hotel</button>
-            </div>
+                <h3 style="margin: 20px 0 15px; color: var(--dark);">Popüler Servisler</h3>
+                <div class="services-grid">
+                    <div class="service-item" onclick="openService('bitaksi://')">
+                        <i class="fa-solid fa-taxi" style="color: #FBC02D;"></i>
+                        <span style="font-weight: 700;">BiTaksi</span>
+                    </div>
+                    <div class="service-item" onclick="openService('getir://')">
+                        <i class="fa-solid fa-basket-shopping" style="color: var(--getir-purple);"></i>
+                        <span style="font-weight: 700;">Getir</span>
+                    </div>
+                    <div class="service-item" onclick="openService('marti://')">
+                        <i class="fa-solid fa-bolt" style="color: #2E7D32;"></i>
+                        <span style="font-weight: 700;">Martı</span>
+                    </div>
+                    <div class="service-item" onclick="openService('https://www.istanbulkart.istanbul/')">
+                        <i class="fa-solid fa-credit-card" style="color: var(--bosphorus-blue);"></i>
+                        <span style="font-weight: 700;">İstanbulKart</span>
+                    </div>
+                </div>
+            </section>
 
-            <h3 style="margin: 10px 0; font-size: 18px;">Servicios Diarios</h3>
-            <div class="app-grid">
-                <div class="grid-item" onclick="openApp('BiTaksi')">
-                    <i class="fa-solid fa-taxi" style="color: #FBC02D;"></i>
-                    <span style="font-weight: 600; font-size: 13px;">BiTaksi</span>
+            <section id="wallet" class="screen">
+                <h2 style="margin-bottom: 20px;">Lale Pay</h2>
+                <div class="wallet-card">
+                    <p style="opacity: 0.7; font-size: 14px;">Toplam Bakiye</p>
+                    <p class="wallet-balance">₺ 1.250,50</p>
+                    <p style="font-size: 12px;">**** **** **** 4026</p>
+                    <div class="qr-button" onclick="alert('QR Okuyucu Açılıyor...')">
+                        <i class="fa-solid fa-qrcode" style="font-size: 28px;"></i>
+                    </div>
                 </div>
-                <div class="grid-item" onclick="openApp('Getir')">
-                    <i class="fa-solid fa-shopping-basket" style="color: var(--getir-purple);"></i>
-                    <span style="font-weight: 600; font-size: 13px;">Getir</span>
+                <div class="card">
+                    <h4>Son İşlemler</h4>
+                    <div style="margin-top: 15px; display: flex; justify-content: space-between; font-size: 14px;">
+                        <span><i class="fa-solid fa-utensils"></i> Yemeksepeti</span>
+                        <span style="font-weight: 700; color: var(--turkish-red);">-₺ 240,00</span>
+                    </div>
                 </div>
-                <div class="grid-item" onclick="openApp('Marti')">
-                    <i class="fa-solid fa-scooter" style="color: #2E7D32;"></i>
-                    <span style="font-weight: 600; font-size: 13px;">Martı</span>
-                </div>
-                <div class="grid-item" onclick="openApp('IstanbulKart')">
-                    <i class="fa-solid fa-credit-card" style="color: var(--bosphorus-blue);"></i>
-                    <span style="font-weight: 600; font-size: 13px;">IstanbulKart</span>
-                </div>
-            </div>
-        </div>
+            </section>
 
-        <div class="nav-bar">
-            <div class="nav-item active"><i class="fa-solid fa-house"></i><span>Inicio</span></div>
-            <div class="nav-item" onclick="openApp('Mapa')"><i class="fa-solid fa-map-location-dot"></i><span>Mapa</span></div>
-            <div class="nav-item" onclick="openApp('Trendyol')"><i class="fa-solid fa-bag-shopping"></i><span>Compras</span></div>
-            <div class="nav-item" onclick="openApp('Ajustes')"><i class="fa-solid fa-bars"></i><span>Menú</span></div>
-        </div>
+            <section id="shop" class="screen">
+                <h2 style="margin-bottom: 20px;">Alışveriş</h2>
+                <div class="card" style="border-left: 6px solid var(--trendyol-orange);">
+                    <h3 style="color: var(--trendyol-orange);">Trendyol</h3>
+                    <p style="font-size: 13px; margin-top: 5px;">Her şeyi bulabileceğin adres.</p>
+                    <button class="btn-lale" style="background: var(--trendyol-orange); color: white; margin-top: 15px;" onclick="openService('trendyol://')">Hemen Keşfet</button>
+                </div>
+                <div class="card" style="border-left: 6px solid #ea004b;">
+                    <h3 style="color: #ea004b;">Yemeksepeti</h3>
+                    <button class="btn-lale" style="background: #ea004b; color: white; margin-top: 15px;" onclick="openService('yemeksepeti://')">Sipariş Ver</button>
+                </div>
+            </section>
+        </main>
+
+        <nav>
+            <a href="#" class="nav-link active" onclick="navigate('home')">
+                <i class="fa-solid fa-house-chimney"></i><span>Anasayfa</span>
+            </a>
+            <a href="#" class="nav-link" onclick="navigate('wallet')">
+                <i class="fa-solid fa-wallet"></i><span>Cüzdan</span>
+            </a>
+            <a href="#" class="nav-link" onclick="navigate('shop')">
+                <i class="fa-solid fa-bag-shopping"></i><span>Market</span>
+            </a>
+            <a href="#" class="nav-link" onclick="alert('Destek Hattı: +90 212 LALE')">
+                <i class="fa-solid fa-headset"></i><span>Destek</span>
+            </a>
+        </nav>
     </div>
 
     <script>
-        // Animación de salida de la pantalla Splash
+        // Splash Screen Exit
         setTimeout(() => {
-            const splash = document.getElementById('splash-screen');
-            splash.style.transform = 'translateY(-100%)';
-        }, 2200);
+            const splash = document.getElementById('splash');
+            splash.style.clipPath = 'circle(0% at 50% 50%)';
+        }, 2500);
 
-        // Función para simular apertura de servicios
-        function openApp(service) {
-            alert("LALE SUPER APP\n------------------------\nAbriendo interfaz de: " + service + "\nConectando con servidores de Turquía...");
+        // Real Navigation Logic
+        function navigate(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            
+            document.getElementById(screenId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        // Real Service Connection (Deep Linking)
+        function openService(url) {
+            window.location.href = url;
+            
+            // Fallback for Deep Links
+            if(url.includes('://')) {
+                setTimeout(() => {
+                    if (confirm("Uygulama yüklü değil. Web sürümüne gitmek ister misiniz?")) {
+                        const webMap = {
+                            'bitaksi': 'https://www.bitaksi.com',
+                            'getir': 'https://getir.com',
+                            'marti': 'https://www.marti.tech',
+                            'trendyol': 'https://www.trendyol.com',
+                            'yemeksepeti': 'https://www.yemeksepeti.com'
+                        };
+                        const key = Object.keys(webMap).find(k => url.includes(k));
+                        if(key) window.location.href = webMap[key];
+                    }
+                }, 2000);
+            }
         }
     </script>
 </body>
