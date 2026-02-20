@@ -1,167 +1,229 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, SafeAreaView, Dimensions } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { 
+  View, Text, StyleSheet, ScrollView, TouchableOpacity, 
+  TextInput, SafeAreaView, Animated, StatusBar, Alert 
+} from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import { MaterialCommunityIcons, FontAwesome5, Ionicons } from '@expo/vector-icons';
 
-// --- CONFIGURACIÓN DE ESTILO TURQUÍA 2026 ---
+// --- CONFIGURACIÓN DE IDENTIDAD VISUAL ---
 const THEME = {
-  primary: '#E30A17', // Rojo Turco
+  primary: '#E30A17', // Rojo Turquía
   secondary: '#005C92', // Azul Bósforo
-  accent: '#FFD700', // Oro Bizantino
-  background: '#F4F7F6',
-  card: '#FFFFFF',
-  text: '#1A1A1B'
+  accent: '#FFD700', // Oro
+  bg: '#F8FAFC',
+  white: '#FFFFFF',
+  dark: '#1E293B',
+  gray: '#64748B'
 };
 
-// --- PANTALLA 1: GUÍA TURÍSTICO & VIAJES ---
-const TouristGuideScreen = () => (
+// --- COMPONENTE: LOGO LALE (Vectorial) ---
+const LaleLogo = ({ size = 80 }) => (
+  <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+    <MaterialCommunityIcons name="flower-tulip" size={size} color={THEME.primary} />
+    <View style={{ height: 4, width: size / 2, backgroundColor: THEME.accent, borderRadius: 2, marginTop: -5 }} />
+  </View>
+);
+
+// --- PANTALLA DE ENTRADA (SPLASH SCREEN) ---
+const SplashScreen = ({ onFinish }) => {
+  const fadeAnim = new Animated.Value(0);
+
+  useEffect(() => {
+    Animated.sequence([
+      Animated.timing(fadeAnim, { toValue: 1, duration: 1500, useNativeDriver: true }),
+      Animated.delay(1000),
+      Animated.timing(fadeAnim, { toValue: 0, duration: 1000, useNativeDriver: true }),
+    ]).start(() => onFinish());
+  }, []);
+
+  return (
+    <View style={styles.splashContainer}>
+      <StatusBar barStyle="light-content" />
+      <Animated.View style={{ opacity: fadeAnim, alignItems: 'center' }}>
+        <LaleLogo size={120} />
+        <Text style={styles.splashTitle}>LALE</Text>
+        <Text style={styles.splashTagline}>Your Turkish Super App</Text>
+      </Animated.View>
+    </View>
+  );
+};
+
+// --- PANTALLA 1: GUÍA TURÍSTICA & VIAJES ---
+const TouristScreen = () => {
+  const handlePress = (service) => Alert.alert("Lale Travel", `Conectando con ${service}...`);
+
+  return (
+    <SafeAreaView style={styles.safeArea}>
+      <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
+        <View style={styles.headerRow}>
+          <LaleLogo size={40} />
+          <Text style={styles.headerBrand}>LALE</Text>
+        </View>
+
+        <Text style={styles.welcomeText}>¡Hola! ¿A dónde vamos hoy?</Text>
+
+        <View style={styles.travelCard}>
+          <View style={styles.airlineBadge}>
+            <MaterialCommunityIcons name="star" size={14} color={THEME.accent} />
+            <Text style={styles.badgeText}>PARTNER OFICIAL</Text>
+          </View>
+          <Text style={styles.cardTitleLarge}>Turkish Airlines</Text>
+          <Text style={styles.cardSubtitle}>Reserva y gestiona tus vuelos internacionales y locales.</Text>
+          <TouchableOpacity style={styles.btnPrimary} onPress={() => handlePress("Turkish Airlines")}>
+            <Text style={styles.btnText}>Buscar Vuelos</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.hotelCard}>
+          <Text style={[styles.cardTitleLarge, { color: THEME.dark }]}>Hoteles en Turquía</Text>
+          <View style={styles.searchBox}>
+            <Ionicons name="location-outline" size={20} color={THEME.gray} />
+            <TextInput placeholder="Estambul, Capadocia, Antalya..." style={styles.input} />
+          </View>
+          <TouchableOpacity style={styles.btnSecondary} onPress={() => handlePress("Buscador de Hoteles")}>
+            <Text style={styles.btnText}>Ver Disponibilidad</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+  );
+};
+
+// --- PANTALLA 2: MOVILIDAD (Integración Bitaksi, Marti, etc) ---
+const MobilityScreen = () => {
+  const services = [
+    { id: '1', name: 'BiTaksi', icon: 'taxi', color: '#FBC02D', brand: 'Taxi' },
+    { id: '2', name: 'Martı', icon: 'scooter', color: '#2E7D32', brand: 'Scooter' },
+    { id: '3', name: 'İstanbulKart', icon: 'card-bulleted', color: THEME.primary, brand: 'NFC Pay' },
+    { id: '4', name: 'Ferry', icon: 'ship', color: THEME.secondary, brand: 'Bosphorus' },
+  ];
+
+  return (
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        <Text style={styles.sectionTitle}>Movilidad Urbana</Text>
+        <View style={styles.mobilityGrid}>
+          {services.map(item => (
+            <TouchableOpacity 
+              key={item.id} 
+              style={styles.gridButton}
+              onPress={() => Alert.alert("Servicio Externo", `Abriendo interfaz de ${item.name}...`)}
+            >
+              <View style={[styles.iconCircle, { backgroundColor: item.color + '15' }]}>
+                {item.id === '4' ? <FontAwesome5 name={item.icon} size={28} color={item.color} /> : 
+                <MaterialCommunityIcons name={item.icon} size={32} color={item.color} />}
+              </View>
+              <Text style={styles.gridLabel}>{item.name}</Text>
+              <Text style={styles.gridSubLabel}>{item.brand}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+
+        <View style={styles.statusBanner}>
+          <Ionicons name="information-circle" size={20} color={THEME.secondary} />
+          <Text style={styles.statusText}>El tráfico en el puente del Bósforo es fluido actualmente.</Text>
+        </View>
+      </View>
+    </SafeAreaView>
+  );
+};
+
+// --- PANTALLA 3: LOGÍSTICA (Getir / Trendyol / Sahibinden) ---
+const LogisticsScreen = () => (
   <SafeAreaView style={styles.safeArea}>
     <ScrollView style={styles.container}>
-      <View style={styles.heroSection}>
-        <Text style={styles.welcomeText}>Hoş Geldiniz</Text>
-        <Text style={styles.subWelcome}>Tu puerta a Turquía</Text>
-      </View>
-
-      {/* SECCIÓN TURKISH AIRLINES */}
-      <View style={styles.mainCard}>
-        <View style={styles.cardHeader}>
-          <MaterialCommunityIcons name="airplane" size={24} color={THEME.primary} />
-          <Text style={styles.cardTitle}>Turkish Airlines</Text>
+      <Text style={styles.sectionTitle}>Servicios Diarios</Text>
+      
+      <TouchableOpacity style={styles.superCardGetir} onPress={() => Alert.alert("Getir", "Abriendo entregas rápidas...")}>
+        <View>
+          <Text style={styles.getirLogo}>getir</Text>
+          <Text style={styles.getirText}>Tu compra en minutos</Text>
         </View>
-        <Text style={styles.cardDesc}>Gestiona tus vuelos y check-in en tiempo real.</Text>
-        <TouchableOpacity style={styles.actionButtonMain}>
-          <Text style={styles.actionButtonText}>Buscar Vuelos</Text>
+        <MaterialCommunityIcons name="chevron-right" size={30} color={THEME.accent} />
+      </TouchableOpacity>
+
+      <View style={styles.row}>
+        <TouchableOpacity style={styles.serviceBox} onPress={() => Alert.alert("Trendyol", "Abriendo Marketplace...")}>
+          <MaterialCommunityIcons name="shopping" size={30} color={THEME.primary} />
+          <Text style={styles.serviceBoxText}>Trendyol</Text>
         </TouchableOpacity>
-      </View>
-
-      {/* SECCIÓN HOTELES */}
-      <View style={[styles.mainCard, { borderLeftColor: THEME.secondary, borderLeftWidth: 5 }]}>
-        <View style={styles.cardHeader}>
-          <FontAwesome5 name="hotel" size={20} color={THEME.secondary} />
-          <Text style={styles.cardTitle}>Alojamiento Premium</Text>
-        </View>
-        <TextInput style={styles.searchInput} placeholder="¿A dónde vas? (Estambul, Antalya...)" />
-        <TouchableOpacity style={[styles.actionButtonMain, { backgroundColor: THEME.secondary }]}>
-          <Text style={styles.actionButtonText}>Buscar Hoteles</Text>
+        <TouchableOpacity style={styles.serviceBox} onPress={() => Alert.alert("Sahibinden", "Abriendo Clasificados...")}>
+          <MaterialCommunityIcons name="home-city" size={30} color={THEME.secondary} />
+          <Text style={styles.serviceBoxText}>Sahibinden</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
   </SafeAreaView>
 );
 
-// --- PANTALLA 2: MOVILIDAD URBANA (Super Apps Integration) ---
-const MobilityScreen = () => (
-  <View style={styles.container}>
-    <Text style={styles.headerTitle}>Transporte Diario</Text>
-    
-    <View style={styles.gridContainer}>
-      {/* Integración BiTaksi / Uber */}
-      <TouchableOpacity style={styles.gridItem}>
-        <Ionicons name="car-sport" size={40} color="#FBC02D" />
-        <Text style={styles.gridText}>BiTaksi / Taxi</Text>
-      </TouchableOpacity>
-
-      {/* Integración Martı / Scooters */}
-      <TouchableOpacity style={styles.gridItem}>
-        <MaterialCommunityIcons name="scooter" size={40} color="#2E7D32" />
-        <Text style={styles.gridText}>Martı</Text>
-      </TouchableOpacity>
-
-      {/* Integración IstanbulKart */}
-      <TouchableOpacity style={styles.gridItem}>
-        <MaterialCommunityIcons name="integrated-circuit-chip" size={40} color={THEME.primary} />
-        <Text style={styles.gridText}>IstanbulKart</Text>
-      </TouchableOpacity>
-
-      {/* Integración Şehir Hatları (Ferry) */}
-      <TouchableOpacity style={styles.gridItem}>
-        <FontAwesome5 name="ship" size={35} color={THEME.secondary} />
-        <Text style={styles.gridText}>Ferry / Vapur</Text>
-      </TouchableOpacity>
-    </View>
-
-    <View style={styles.statusBox}>
-      <Text style={styles.statusTitle}>Estado del Bósforo</Text>
-      <Text style={styles.statusUpdate}>✅ Todos los servicios de ferry operando normalmente.</Text>
-    </View>
-  </View>
-);
-
-// --- PANTALLA 3: SERVICIOS & LOGÍSTICA (Getir / Trendyol) ---
-const ServicesScreen = () => (
-  <ScrollView style={styles.container}>
-    <Text style={styles.headerTitle}>Entregas y Compras</Text>
-    
-    <TouchableOpacity style={styles.bannerGetir}>
-      <Text style={styles.bannerTitle}>GETIR</Text>
-      <Text style={styles.bannerSub}>Tu compra en la puerta en 10 min</Text>
-    </TouchableOpacity>
-
-    <View style={styles.row}>
-      <TouchableOpacity style={styles.smallServiceCard}>
-        <MaterialCommunityIcons name="shopping" size={30} color={THEME.primary} />
-        <Text>Trendyol</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.smallServiceCard}>
-        <MaterialCommunityIcons name="home-search" size={30} color="#007AFF" />
-        <Text>Sahibinden</Text>
-      </TouchableOpacity>
-    </View>
-  </ScrollView>
-);
-
-// --- NAVEGACIÓN Y ESTRUCTURA FINAL ---
+// --- NAVEGACIÓN PRINCIPAL ---
 const Tab = createBottomTabNavigator();
 
-export default function TurkeyDailyApp() {
+export default function LaleApp() {
+  const [loading, setLoading] = useState(true);
+
+  if (loading) return <SplashScreen onFinish={() => setLoading(false)} />;
+
   return (
     <NavigationContainer>
       <Tab.Navigator
         screenOptions={({ route }) => ({
           tabBarIcon: ({ color, size }) => {
             let icon;
-            if (route.name === 'Guía') icon = 'map-marker-radius';
-            else if (route.name === 'Moverse') icon = 'train-car';
-            else if (route.name === 'Servicios') icon = 'cube-send';
+            if (route.name === 'Viajes') icon = 'earth';
+            else if (route.name === 'Moverse') icon = 'map-marker-distance';
+            else if (route.name === 'Servicios') icon = 'grid';
             return <MaterialCommunityIcons name={icon} size={size} color={color} />;
           },
           tabBarActiveTintColor: THEME.primary,
-          tabBarInactiveTintColor: 'gray',
+          tabBarInactiveTintColor: THEME.gray,
+          tabBarStyle: { height: 65, paddingBottom: 10 },
           headerShown: false
         })}
       >
-        <Tab.Screen name="Guía" component={TouristGuideScreen} />
+        <Tab.Screen name="Viajes" component={TouristScreen} />
         <Tab.Screen name="Moverse" component={MobilityScreen} />
-        <Tab.Screen name="Servicios" component={ServicesScreen} />
+        <Tab.Screen name="Servicios" component={LogisticsScreen} />
       </Tab.Navigator>
     </NavigationContainer>
   );
 }
 
-// --- ESTILOS PROFESIONALES ---
+// --- ESTILOS MEJORADOS (UI/UX 2026) ---
 const styles = StyleSheet.create({
-  safeArea: { flex: 1, backgroundColor: THEME.background },
+  splashContainer: { flex: 1, backgroundColor: THEME.dark, justifyContent: 'center', alignItems: 'center' },
+  splashTitle: { color: THEME.white, fontSize: 42, fontWeight: '900', letterSpacing: 5, marginTop: 10 },
+  splashTagline: { color: THEME.accent, fontSize: 14, fontWeight: '600' },
+  safeArea: { flex: 1, backgroundColor: THEME.bg },
   container: { flex: 1, padding: 20 },
-  heroSection: { marginVertical: 30 },
-  welcomeText: { fontSize: 32, fontWeight: '900', color: THEME.text },
-  subWelcome: { fontSize: 18, color: '#666' },
-  headerTitle: { fontSize: 24, fontWeight: 'bold', marginBottom: 20, marginTop: 40 },
-  mainCard: { backgroundColor: THEME.card, borderRadius: 20, padding: 20, marginBottom: 20, elevation: 5, shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 10 },
-  cardHeader: { flexDirection: 'row', alignItems: 'center', marginBottom: 10 },
-  cardTitle: { fontSize: 20, fontWeight: 'bold', marginLeft: 10 },
-  cardDesc: { color: '#666', marginBottom: 15 },
-  searchInput: { backgroundColor: '#f0f0f0', padding: 12, borderRadius: 10, marginBottom: 15 },
-  actionButtonMain: { backgroundColor: THEME.primary, padding: 15, borderRadius: 12, alignItems: 'center' },
-  actionButtonText: { color: 'white', fontWeight: 'bold', fontSize: 16 },
-  gridContainer: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
-  gridItem: { backgroundColor: 'white', width: '47%', height: 120, borderRadius: 20, justifyContent: 'center', alignItems: 'center', marginBottom: 15, elevation: 3 },
-  gridText: { marginTop: 10, fontWeight: '600', color: THEME.text },
-  statusBox: { backgroundColor: '#E3F2FD', padding: 20, borderRadius: 15, marginTop: 10 },
-  statusTitle: { fontWeight: 'bold', color: THEME.secondary, marginBottom: 5 },
-  bannerGetir: { backgroundColor: '#5D3EBD', padding: 25, borderRadius: 20, marginBottom: 20 },
-  bannerTitle: { color: THEME.accent, fontSize: 28, fontWeight: 'bold' },
-  bannerSub: { color: 'white', fontSize: 14 },
+  headerRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 20 },
+  headerBrand: { fontSize: 22, fontWeight: '900', color: THEME.primary, marginLeft: 10, letterSpacing: 2 },
+  welcomeText: { fontSize: 26, fontWeight: '800', color: THEME.dark, marginBottom: 25 },
+  travelCard: { backgroundColor: THEME.primary, borderRadius: 25, padding: 25, elevation: 8 },
+  airlineBadge: { flexDirection: 'row', backgroundColor: 'rgba(0,0,0,0.2)', alignSelf: 'flex-start', padding: 5, borderRadius: 5, marginBottom: 10 },
+  badgeText: { color: THEME.accent, fontSize: 10, fontWeight: 'bold', marginLeft: 5 },
+  cardTitleLarge: { color: THEME.white, fontSize: 24, fontWeight: 'bold', marginBottom: 8 },
+  cardSubtitle: { color: 'rgba(255,255,255,0.8)', fontSize: 14, marginBottom: 20 },
+  btnPrimary: { backgroundColor: THEME.white, padding: 15, borderRadius: 15, alignItems: 'center' },
+  btnText: { color: THEME.dark, fontWeight: 'bold', fontSize: 16 },
+  hotelCard: { backgroundColor: THEME.white, borderRadius: 25, padding: 25, marginTop: 20, borderWidth: 1, borderColor: '#E2E8F0' },
+  searchBox: { flexDirection: 'row', backgroundColor: '#F1F5F9', padding: 12, borderRadius: 15, alignItems: 'center', marginVertical: 15 },
+  input: { flex: 1, marginLeft: 10, color: THEME.dark },
+  btnSecondary: { backgroundColor: THEME.secondary, padding: 15, borderRadius: 15, alignItems: 'center' },
+  sectionTitle: { fontSize: 22, fontWeight: 'bold', color: THEME.dark, marginBottom: 20, marginTop: 10 },
+  mobilityGrid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
+  gridButton: { backgroundColor: THEME.white, width: '47%', borderRadius: 20, padding: 20, alignItems: 'center', marginBottom: 15, elevation: 3 },
+  iconCircle: { width: 60, height: 60, borderRadius: 30, justifyContent: 'center', alignItems: 'center', marginBottom: 10 },
+  gridLabel: { fontWeight: 'bold', color: THEME.dark, fontSize: 16 },
+  gridSubLabel: { color: THEME.gray, fontSize: 12 },
+  statusBanner: { flexDirection: 'row', backgroundColor: '#E0F2FE', padding: 15, borderRadius: 15, alignItems: 'center', marginTop: 10 },
+  statusText: { marginLeft: 10, color: THEME.secondary, fontSize: 13, flex: 1 },
+  superCardGetir: { backgroundColor: '#5D3EBD', borderRadius: 25, padding: 25, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 },
+  getirLogo: { color: THEME.accent, fontSize: 32, fontWeight: '900' },
+  getirText: { color: THEME.white, fontSize: 16, fontWeight: '600' },
   row: { flexDirection: 'row', justifyContent: 'space-between' },
-  smallServiceCard: { backgroundColor: 'white', width: '47%', padding: 20, borderRadius: 20, alignItems: 'center', elevation: 2 }
+  serviceBox: { backgroundColor: THEME.white, width: '47%', padding: 25, borderRadius: 25, alignItems: 'center', elevation: 2 },
+  serviceBoxText: { marginTop: 10, fontWeight: 'bold', color: THEME.dark }
 });
