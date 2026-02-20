@@ -59,6 +59,12 @@
         .service-item i { font-size: 24px; margin-bottom: 10px; display: block; }
         .service-label { font-size: 11px; font-weight: 700; }
 
+        /* Estilos Billetera Virtual */
+        .wallet-actions { margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .wallet-btn { background: var(--white); border: 1px solid #eee; padding: 15px; border-radius: 18px; text-align: center; cursor: pointer; }
+        .wallet-btn img { height: 25px; margin-bottom: 8px; display: block; margin-inline: auto; }
+        .wallet-btn span { font-size: 12px; font-weight: 700; color: var(--dark); }
+
         /* Navbar Corregido */
         nav { position: absolute; bottom: 0; width: 100%; height: 90px; background: rgba(255,255,255,0.98); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #eee; padding-bottom: 20px; }
         .nav-btn { display: flex; flex-direction: column; align-items: center; color: var(--gray); font-size: 11px; font-weight: 600; cursor: pointer; text-decoration: none; border: none; background: none; }
@@ -109,7 +115,7 @@
             </div>
 
             <div class="services-grid">
-                <div class="service-item" onclick="openApp('bitaksi://')"><i class="fa-solid fa-taxi" style="color:#FBC02D"></i><span class="service-label">BiTaksi</span></div>
+                <div class="service-item" onclick="handleBiTaksiPress()"><i class="fa-solid fa-taxi" style="color:#FBC02D"></i><span class="service-label">BiTaksi / Uber</span></div>
                 <div class="service-item" onclick="openApp('getapp://getir')"><i class="fa-solid fa-basket-shopping" style="color:#5D3EBD"></i><span class="service-label">Getir</span></div>
                 <div class="service-item" onclick="openApp('https://muze.gov.tr')"><i class="fa-solid fa-landmark" style="color:#607D8B"></i><span class="service-label">Museum</span></div>
                 <div class="service-item" onclick="openApp('https://mobiett.istanbul')"><i class="fa-solid fa-bus" style="color:#2196F3"></i><span class="service-label">Mobiett</span></div>
@@ -123,7 +129,18 @@
             <div style="background: var(--dark); padding: 25px; border-radius: 25px; color: white;">
                 <p style="opacity: 0.7;">Toplam Bakiye</p>
                 <p style="font-size: 32px; font-weight: 800; margin: 10px 0;">₺ 1.450,00</p>
-                <button onclick="alert('QR Okuyucu Aktif')" style="width: 100%; padding: 15px; border-radius: 15px; border: none; background: var(--bizantine-gold); font-weight: 800; margin-top: 10px;">ÖDEME YAP (QR)</button>
+                <button onclick="handlePayment('QR')" style="width: 100%; padding: 15px; border-radius: 15px; border: none; background: var(--bizantine-gold); font-weight: 800; margin-top: 10px; color: var(--dark);">ÖDEME YAP (QR)</button>
+            </div>
+
+            <div class="wallet-actions">
+                <div class="wallet-btn" onclick="handlePayment('Papara')">
+                    <i class="fa-solid fa-p" style="color:#BBFF00; font-size:20px; margin-bottom:5px;"></i>
+                    <span>Papara Connect</span>
+                </div>
+                <div class="wallet-btn" onclick="handlePayment('Oldubil')">
+                    <i class="fa-solid fa-wallet" style="color:#005C92; font-size:20px; margin-bottom:5px;"></i>
+                    <span>Oldubil Pay</span>
+                </div>
             </div>
         </section>
 
@@ -165,7 +182,11 @@
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         document.querySelectorAll('.nav-btn').forEach(n => n.classList.remove('active'));
         document.getElementById(id).classList.add('active');
-        event.currentTarget.classList.add('active');
+        
+        // Corrección: Asegurar que el botón del nav se resalte correctamente
+        const navBtns = document.querySelectorAll('.nav-btn');
+        if(id === 'home') navBtns[0].classList.add('active');
+        if(id === 'wallet') navBtns[2].classList.add('active');
     }
 
     // 4. Notificaciones Push
@@ -184,7 +205,42 @@
         } catch (e) { console.log("Hava durumu hatası"); }
     }
 
-    // 6. Abrir Aplicaciones Externas
+    // 6. BLOQUE CORREGIDO: BiTaksi / Uber Inteligente
+    function handleBiTaksiPress() {
+        const bitaksiUrl = 'bitaksi://';
+        const uberUrl = 'uber://';
+        
+        // Intentamos abrir BiTaksi, si falla después de 500ms, intentamos Uber o Web
+        const start = Date.now();
+        window.location.href = bitaksiUrl;
+        
+        setTimeout(() => {
+            if (Date.now() - start < 1000) {
+                // Si seguimos aquí, BiTaksi no abrió. Intentamos Uber.
+                window.location.href = uberUrl;
+                setTimeout(() => {
+                    if (Date.now() - start < 2000) {
+                        // Si falla Uber, vamos a la web de BiTaksi
+                        window.location.href = 'https://www.bitaksi.com';
+                    }
+                }, 500);
+            }
+        }, 500);
+    }
+
+    // 7. BLOQUE CORREGIDO: Lale Pay (Conexión Billeteras)
+    function handlePayment(provider) {
+        if (provider === 'Papara') {
+            window.location.href = 'papara://';
+            setTimeout(() => { window.location.href = 'https://www.papara.com'; }, 1000);
+        } else if (provider === 'Oldubil') {
+            window.location.href = 'oldubil://';
+            setTimeout(() => { window.location.href = 'https://www.oldubil.com.tr'; }, 1000);
+        } else {
+            alert('QR Okuyucu Hazırlanıyor... Lütfen bekleyin.');
+        }
+    }
+
     function openApp(url) {
         window.location.href = url;
     }
