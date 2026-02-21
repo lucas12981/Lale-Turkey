@@ -42,7 +42,7 @@
         .screen { display: none; animation: fadeIn 0.4s ease; }
         .screen.active { display: block; }
 
-        /* NUEVA FUNCIÓN: ÇAY SAATİ CARD (Diseño Enamorador) */
+        /* ÇAY SAATİ CARD */
         .cay-card {
             background: linear-gradient(135deg, #FF6B6B, var(--turkish-red));
             border-radius: 30px; padding: 25px; color: white; margin-bottom: 25px;
@@ -66,11 +66,23 @@
         .service-item { background: white; padding: 18px 10px; border-radius: 24px; text-align: center; border: 1px solid rgba(0,0,0,0.03); cursor: pointer; transition: 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.01); }
         .service-item:active { transform: scale(0.92); }
         .service-item i { font-size: 24px; margin-bottom: 10px; display: block; }
-        .service-label { font-size: 11px; font-weight: 700; color: var(--text-dark); }
+        .service-label { font-size: 11px; font-weight: 700; }
 
-        /* Lale Pay Style Upgraded */
+        /* Lale Pay Estilo Original */
         .wallet-card-premium { background: var(--dark); padding: 25px; border-radius: 30px; color: white; box-shadow: 0 15px 30px rgba(0,0,0,0.2); }
         .btn-pay-qr { width: 100%; padding: 16px; border-radius: 18px; border: none; background: var(--bizantine-gold); font-weight: 800; margin-top: 15px; color: var(--dark); font-size: 15px; cursor: pointer; }
+
+        /* Estilo para los botones de las billeteras */
+        .wallet-btn-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 20px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .wallet-btn-row:active { opacity: 0.6; }
+        .wallet-btn-row span { font-weight: 700; color: var(--dark); font-size: 16px; }
 
         nav { position: absolute; bottom: 25px; left: 20px; right: 20px; height: 80px; background: var(--glass); backdrop-filter: blur(20px); border-radius: 28px; display: flex; justify-content: space-around; align-items: center; box-shadow: 0 15px 35px rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,0.4); }
         .nav-btn { display: flex; flex-direction: column; align-items: center; color: var(--gray); font-size: 11px; font-weight: 700; cursor: pointer; border: none; background: none; }
@@ -106,7 +118,7 @@
         <section id="home" class="screen active">
             <div class="welcome-section">
                 <p id="auto-greeting" style="font-size: 30px; font-weight: 800; color: var(--dark);">Merhaba</p>
-                <p style="color: var(--gray); font-size: 14px; font-weight: 500;">Türkiye'de harika bir gün keşfedilmeyi bekliyor.</p>
+                <p style="color: var(--gray); font-size: 14px; font-weight: 500;">Türkiye'de harika bir día keşfedilmeyi bekliyor.</p>
             </div>
 
             <div class="cay-card" onclick="openCayMap()">
@@ -131,7 +143,7 @@
 
             <div class="services-grid">
                 <div class="service-item" onclick="handleBiTaksiPress()"><i class="fa-solid fa-taxi" style="color:#FBC02D"></i><span class="service-label">BiTaksi / Uber</span></div>
-                <div class="service-item" onclick="openApp('getapp://getir')"><i class="fa-solid fa-basket-shopping" style="color:#5D3EBD"></i><span class="service-label">Getir</span></div>
+                <div class="service-item" onclick="openApp('https://getir.com')"><i class="fa-solid fa-basket-shopping" style="color:#5D3EBD"></i><span class="service-label">Getir</span></div>
                 <div class="service-item" onclick="openApp('https://muze.gov.tr')"><i class="fa-solid fa-landmark" style="color:#607D8B"></i><span class="service-label">Museum</span></div>
                 <div class="service-item" onclick="openApp('https://mobiett.istanbul')"><i class="fa-solid fa-bus" style="color:#2196F3"></i><span class="service-label">Mobiett</span></div>
                 <div class="service-item" onclick="openApp('https://www.metro.istanbul')"><i class="fa-solid fa-train-subway" style="color:var(--turkish-red)"></i><span class="service-label">Metro</span></div>
@@ -142,18 +154,17 @@
         <section id="wallet" class="screen">
             <h2 style="margin-bottom: 20px; font-weight: 800;">Lale Pay</h2>
             <div class="wallet-card-premium">
-                <p style="opacity: 0.7; font-size: 14px;">Toplam Bakiye</p>
-                <p style="font-size: 36px; font-weight: 800; margin: 10px 0;">₺ 1.450,00</p>
+                <p style="opacity: 0.9; font-size: 18px; font-weight: 700;">Lale Pay</p>
                 <button onclick="handlePayment('QR')" class="btn-pay-qr">ÖDEME YAP (QR)</button>
             </div>
 
             <div class="wallet-actions" style="margin-top: 20px;">
-                <div class="wallet-btn" onclick="handlePayment('Papara')">
-                    <i class="fa-solid fa-p" style="color:#BBFF00; font-size:20px; margin-bottom:5px;"></i>
+                <div class="wallet-btn-row" onclick="handlePayment('Papara')">
+                    <i class="fa-solid fa-p" style="color:#BBFF00; font-size:22px; width:30px;"></i>
                     <span>Papara Connect</span>
                 </div>
-                <div class="wallet-btn" onclick="handlePayment('Oldubil')">
-                    <i class="fa-solid fa-wallet" style="color:#005C92; font-size:20px; margin-bottom:5px;"></i>
+                <div class="wallet-btn-row" onclick="handlePayment('Oldubil')">
+                    <i class="fa-solid fa-wallet" style="color:#005C92; font-size:20px; width:30px;"></i>
                     <span>Oldubil Pay</span>
                 </div>
             </div>
@@ -180,7 +191,7 @@
     // 1. Splash Screen
     setTimeout(() => { document.getElementById('splash').style.transform = 'translateY(-100%)'; }, 3000);
 
-    // 2. Saludo Automático
+    // 2. Saludo
     function updateGreeting() {
         const hour = new Date().getHours();
         let greeting = hour >= 5 && hour < 12 ? "Günaydın" : hour >= 12 && hour < 18 ? "İyi Günler" : "İyi Akşamlar";
@@ -197,32 +208,23 @@
         if(id === 'wallet') navBtns[2].classList.add('active');
     }
 
-    // 4. Nueva Función: Lógica de la Hora del Té (Encuentra lugares reales en Turquía)
     function openCayMap() {
-        const query = "Çay Bahçesi";
-        const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
-        window.location.href = mapUrl;
+        window.location.href = `https://www.google.com/maps/search/Çay+Bahçesi`;
     }
 
-    // 5. Clima Real
     async function getTurkeyWeather() {
         try {
             const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=41.0082&longitude=28.9784&current_weather=true');
             const data = await res.json();
             document.getElementById('temp-val').innerText = `${Math.round(data.current_weather.temperature)}°C`;
-        } catch (e) { console.log("Hava durumu hatası"); }
+        } catch (e) { console.log("Weather error"); }
     }
 
-    // 6. BiTaksi / Uber Inteligente
     function handleBiTaksiPress() {
-        const start = Date.now();
         window.location.href = 'bitaksi://';
-        setTimeout(() => {
-            if (Date.now() - start < 1500) window.location.href = 'uber://';
-        }, 500);
+        setTimeout(() => { window.location.href = 'uber://'; }, 500);
     }
 
-    // 7. Lale Pay
     function handlePayment(provider) {
         if (provider === 'Papara') window.location.href = 'papara://';
         else if (provider === 'Oldubil') window.location.href = 'oldubil://';
@@ -238,7 +240,6 @@
 
     updateGreeting();
     getTurkeyWeather();
-    setTimeout(showPush, 5000);
 </script>
 
 </body>
