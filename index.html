@@ -5,18 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Lale Super App - Premium Edition</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --turkish-red: #E30A17; --bosphorus-blue: #005C92; --bizantine-gold: #FFD700;
-            --bg-light: #F8FAFC; --white: #FFFFFF; --dark: #0F172A; --gray: #64748B;
+            --bg-light: #F1F5F9; --white: #FFFFFF; --dark: #0F172A; --gray: #64748B;
+            --glass: rgba(255, 255, 255, 0.85);
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background-color: #111; display: flex; justify-content: center; height: 100vh; overflow: hidden; }
         
         .app-shell { width: 100%; max-width: 414px; height: 100%; background: var(--bg-light); position: relative; overflow: hidden; display: flex; flex-direction: column; }
 
-        /* Splash Screen con Logo Lale */
+        /* Splash Screen */
         #splash {
             position: absolute; inset: 0; background: var(--dark); z-index: 5000;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
@@ -25,51 +26,56 @@
         .tulip-logo { font-size: 100px; filter: drop-shadow(0 0 20px var(--turkish-red)); animation: pulse 2s infinite; }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
 
-        /* Notificación Push */
+        /* Notificación Push Stylized */
         #push-notification {
             position: absolute; top: -120px; left: 15px; right: 15px;
-            background: rgba(15, 23, 42, 0.98); color: white; padding: 18px;
+            background: var(--dark); color: white; padding: 18px;
             border-radius: 24px; z-index: 3000; display: flex; align-items: center; gap: 15px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.4); transition: top 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
             backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1);
         }
 
-        header { padding: 60px 20px 20px; background: var(--white); display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9; }
-        .brand { color: var(--turkish-red); font-weight: 900; font-size: 28px; letter-spacing: -1px; }
+        header { padding: 55px 24px 15px; background: var(--white); display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(0,0,0,0.03); }
+        .brand { color: var(--turkish-red); font-weight: 900; font-size: 28px; letter-spacing: -1.5px; }
 
-        .screen-container { flex: 1; overflow-y: auto; padding-bottom: 100px; }
-        .screen { display: none; padding: 20px; animation: fadeIn 0.4s ease; }
+        .screen-container { flex: 1; overflow-y: auto; padding: 20px 20px 120px; }
+        .screen { display: none; animation: fadeIn 0.4s ease; }
         .screen.active { display: block; }
 
-        /* Saludo y Clima */
-        .welcome-section { margin-bottom: 25px; }
-        .greeting-text { font-size: 28px; font-weight: 800; color: var(--dark); margin-bottom: 5px; }
-        
+        /* NUEVA FUNCIÓN: ÇAY SAATİ CARD (Diseño Enamorador) */
+        .cay-card {
+            background: linear-gradient(135deg, #FF6B6B, var(--turkish-red));
+            border-radius: 30px; padding: 25px; color: white; margin-bottom: 25px;
+            display: flex; align-items: center; gap: 20px; cursor: pointer;
+            box-shadow: 0 12px 25px rgba(227, 10, 23, 0.25); position: relative; overflow: hidden;
+            transition: transform 0.2s;
+        }
+        .cay-card:active { transform: scale(0.96); }
+        .cay-card div h3 { font-size: 19px; font-weight: 800; margin-bottom: 4px; }
+        .cay-card div p { font-size: 13px; opacity: 0.9; font-weight: 500; }
+        .cay-btn { background: white; color: var(--turkish-red); border: none; padding: 8px 15px; border-radius: 12px; font-weight: 800; font-size: 12px; margin-top: 10px; cursor: pointer; }
+
         .weather-card { 
             background: linear-gradient(135deg, var(--bosphorus-blue), #002d4d); 
             border-radius: 28px; padding: 22px; color: white; display: flex; 
-            justify-content: space-between; align-items: center;
+            justify-content: space-between; align-items: center; margin-bottom: 25px;
             box-shadow: 0 10px 20px rgba(0,92,146,0.15); 
         }
 
-        /* Grid de Servicios */
         .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 20px; }
-        .service-item { background: white; padding: 18px 10px; border-radius: 22px; text-align: center; border: 1px solid #edf2f7; cursor: pointer; transition: 0.2s; }
+        .service-item { background: white; padding: 18px 10px; border-radius: 24px; text-align: center; border: 1px solid rgba(0,0,0,0.03); cursor: pointer; transition: 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.01); }
         .service-item:active { transform: scale(0.92); }
         .service-item i { font-size: 24px; margin-bottom: 10px; display: block; }
-        .service-label { font-size: 11px; font-weight: 700; }
+        .service-label { font-size: 11px; font-weight: 700; color: var(--text-dark); }
 
-        /* Estilos Billetera Virtual */
-        .wallet-actions { margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .wallet-btn { background: var(--white); border: 1px solid #eee; padding: 15px; border-radius: 18px; text-align: center; cursor: pointer; }
-        .wallet-btn img { height: 25px; margin-bottom: 8px; display: block; margin-inline: auto; }
-        .wallet-btn span { font-size: 12px; font-weight: 700; color: var(--dark); }
+        /* Lale Pay Style Upgraded */
+        .wallet-card-premium { background: var(--dark); padding: 25px; border-radius: 30px; color: white; box-shadow: 0 15px 30px rgba(0,0,0,0.2); }
+        .btn-pay-qr { width: 100%; padding: 16px; border-radius: 18px; border: none; background: var(--bizantine-gold); font-weight: 800; margin-top: 15px; color: var(--dark); font-size: 15px; cursor: pointer; }
 
-        /* Navbar Corregido */
-        nav { position: absolute; bottom: 0; width: 100%; height: 90px; background: rgba(255,255,255,0.98); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #eee; padding-bottom: 20px; }
-        .nav-btn { display: flex; flex-direction: column; align-items: center; color: var(--gray); font-size: 11px; font-weight: 600; cursor: pointer; text-decoration: none; border: none; background: none; }
+        nav { position: absolute; bottom: 25px; left: 20px; right: 20px; height: 80px; background: var(--glass); backdrop-filter: blur(20px); border-radius: 28px; display: flex; justify-content: space-around; align-items: center; box-shadow: 0 15px 35px rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,0.4); }
+        .nav-btn { display: flex; flex-direction: column; align-items: center; color: var(--gray); font-size: 11px; font-weight: 700; cursor: pointer; border: none; background: none; }
         .nav-btn.active { color: var(--turkish-red); }
-        .nav-btn i { font-size: 22px; margin-bottom: 5px; }
+        .nav-btn i { font-size: 22px; margin-bottom: 4px; }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
@@ -99,8 +105,17 @@
     <main class="screen-container">
         <section id="home" class="screen active">
             <div class="welcome-section">
-                <p id="auto-greeting" class="greeting-text">Merhaba</p>
-                <p style="color: var(--gray); font-size: 14px;">Bugün Türkiye'de harika bir gün.</p>
+                <p id="auto-greeting" style="font-size: 30px; font-weight: 800; color: var(--dark);">Merhaba</p>
+                <p style="color: var(--gray); font-size: 14px; font-weight: 500;">Türkiye'de harika bir gün keşfedilmeyi bekliyor.</p>
+            </div>
+
+            <div class="cay-card" onclick="openCayMap()">
+                <div style="font-size: 40px;">☕</div>
+                <div>
+                    <h3>Çay Saati Geldi!</h3>
+                    <p>En yakın çay bahçesini ve en iyi manzarayı bul.</p>
+                    <button class="cay-btn">YERLERİ GÖR</button>
+                </div>
             </div>
 
             <div class="weather-card">
@@ -125,14 +140,14 @@
         </section>
 
         <section id="wallet" class="screen">
-            <h2 style="margin-bottom: 20px;">Lale Pay</h2>
-            <div style="background: var(--dark); padding: 25px; border-radius: 25px; color: white;">
-                <p style="opacity: 0.7;">Toplam Bakiye</p>
-                <p style="font-size: 32px; font-weight: 800; margin: 10px 0;">₺ 1.450,00</p>
-                <button onclick="handlePayment('QR')" style="width: 100%; padding: 15px; border-radius: 15px; border: none; background: var(--bizantine-gold); font-weight: 800; margin-top: 10px; color: var(--dark);">ÖDEME YAP (QR)</button>
+            <h2 style="margin-bottom: 20px; font-weight: 800;">Lale Pay</h2>
+            <div class="wallet-card-premium">
+                <p style="opacity: 0.7; font-size: 14px;">Toplam Bakiye</p>
+                <p style="font-size: 36px; font-weight: 800; margin: 10px 0;">₺ 1.450,00</p>
+                <button onclick="handlePayment('QR')" class="btn-pay-qr">ÖDEME YAP (QR)</button>
             </div>
 
-            <div class="wallet-actions">
+            <div class="wallet-actions" style="margin-top: 20px;">
                 <div class="wallet-btn" onclick="handlePayment('Papara')">
                     <i class="fa-solid fa-p" style="color:#BBFF00; font-size:20px; margin-bottom:5px;"></i>
                     <span>Papara Connect</span>
@@ -145,35 +160,30 @@
         </section>
 
         <section id="profile" class="screen">
-            <h2>Profil Ayarları</h2>
-            <div style="margin-top: 20px; background: white; padding: 20px; border-radius: 20px; border: 1px solid #eee;">
-                <p style="font-weight: 700;">E-posta / Telefon</p>
-                <input type="text" placeholder="+90 5xx ..." style="width:100%; padding:15px; border-radius:12px; border:1px solid #eee; margin-top:10px;">
-                <button style="width:100%; background:var(--turkish-red); color:white; padding:15px; border-radius:12px; border:none; margin-top:15px; font-weight:700;">Kaydet</button>
+            <h2 style="font-weight: 800;">Profil Ayarları</h2>
+            <div style="margin-top: 20px; background: white; padding: 25px; border-radius: 28px; border: 1px solid rgba(0,0,0,0.04);">
+                <p style="font-weight: 700; color: var(--gray); font-size: 14px;">E-posta / Telefon</p>
+                <input type="text" placeholder="+90 5xx ..." style="width:100%; padding:16px; border-radius:16px; border:1px solid #eee; margin-top:10px; font-size: 15px;">
+                <button style="width:100%; background:var(--turkish-red); color:white; padding:16px; border-radius:16px; border:none; margin-top:15px; font-weight:800; font-size: 15px;">Kaydet</button>
             </div>
         </section>
     </main>
 
     <nav>
-        <button class="nav-btn active" onclick="navigate('home')"><i class="fa-solid fa-house"></i><span>Anasayfa</span></button>
-        <button class="nav-btn" onclick="showPush()"><i class="fa-solid fa-bell"></i><span>Bildirimler</span></button>
+        <button class="nav-btn active" onclick="navigate('home')"><i class="fa-solid fa-compass"></i><span>Keşfet</span></button>
+        <button class="nav-btn" onclick="showPush()"><i class="fa-solid fa-bell"></i><span>Bildirim</span></button>
         <button class="nav-btn" onclick="navigate('wallet')"><i class="fa-solid fa-wallet"></i><span>Lale Pay</span></button>
     </nav>
 </div>
 
 <script>
-    // 1. Splash Screen Logic
-    setTimeout(() => {
-        document.getElementById('splash').style.transform = 'translateY(-100%)';
-    }, 3000);
+    // 1. Splash Screen
+    setTimeout(() => { document.getElementById('splash').style.transform = 'translateY(-100%)'; }, 3000);
 
-    // 2. Saludo Automático según la hora de Turquía
+    // 2. Saludo Automático
     function updateGreeting() {
         const hour = new Date().getHours();
-        let greeting = "";
-        if (hour >= 5 && hour < 12) greeting = "Günaydın";
-        else if (hour >= 12 && hour < 18) greeting = "İyi Günler";
-        else greeting = "İyi Akşamlar";
+        let greeting = hour >= 5 && hour < 12 ? "Günaydın" : hour >= 12 && hour < 18 ? "İyi Günler" : "İyi Akşamlar";
         document.getElementById('auto-greeting').innerText = greeting;
     }
 
@@ -182,18 +192,16 @@
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         document.querySelectorAll('.nav-btn').forEach(n => n.classList.remove('active'));
         document.getElementById(id).classList.add('active');
-        
-        // Corrección: Asegurar que el botón del nav se resalte correctamente
         const navBtns = document.querySelectorAll('.nav-btn');
         if(id === 'home') navBtns[0].classList.add('active');
         if(id === 'wallet') navBtns[2].classList.add('active');
     }
 
-    // 4. Notificaciones Push
-    function showPush() {
-        const push = document.getElementById('push-notification');
-        push.style.top = '20px';
-        setTimeout(() => { push.style.top = '-120px'; }, 5000);
+    // 4. Nueva Función: Lógica de la Hora del Té (Encuentra lugares reales en Turquía)
+    function openCayMap() {
+        const query = "Çay Bahçesi";
+        const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+        window.location.href = mapUrl;
     }
 
     // 5. Clima Real
@@ -205,47 +213,29 @@
         } catch (e) { console.log("Hava durumu hatası"); }
     }
 
-    // 6. BLOQUE CORREGIDO: BiTaksi / Uber Inteligente
+    // 6. BiTaksi / Uber Inteligente
     function handleBiTaksiPress() {
-        const bitaksiUrl = 'bitaksi://';
-        const uberUrl = 'uber://';
-        
-        // Intentamos abrir BiTaksi, si falla después de 500ms, intentamos Uber o Web
         const start = Date.now();
-        window.location.href = bitaksiUrl;
-        
+        window.location.href = 'bitaksi://';
         setTimeout(() => {
-            if (Date.now() - start < 1000) {
-                // Si seguimos aquí, BiTaksi no abrió. Intentamos Uber.
-                window.location.href = uberUrl;
-                setTimeout(() => {
-                    if (Date.now() - start < 2000) {
-                        // Si falla Uber, vamos a la web de BiTaksi
-                        window.location.href = 'https://www.bitaksi.com';
-                    }
-                }, 500);
-            }
+            if (Date.now() - start < 1500) window.location.href = 'uber://';
         }, 500);
     }
 
-    // 7. BLOQUE CORREGIDO: Lale Pay (Conexión Billeteras)
+    // 7. Lale Pay
     function handlePayment(provider) {
-        if (provider === 'Papara') {
-            window.location.href = 'papara://';
-            setTimeout(() => { window.location.href = 'https://www.papara.com'; }, 1000);
-        } else if (provider === 'Oldubil') {
-            window.location.href = 'oldubil://';
-            setTimeout(() => { window.location.href = 'https://www.oldubil.com.tr'; }, 1000);
-        } else {
-            alert('QR Okuyucu Hazırlanıyor... Lütfen bekleyin.');
-        }
+        if (provider === 'Papara') window.location.href = 'papara://';
+        else if (provider === 'Oldubil') window.location.href = 'oldubil://';
+        else alert('QR Okuyucu Hazırlanıyor...');
     }
 
-    function openApp(url) {
-        window.location.href = url;
+    function openApp(url) { window.location.href = url; }
+    function showPush() {
+        const push = document.getElementById('push-notification');
+        push.style.top = '20px';
+        setTimeout(() => { push.style.top = '-120px'; }, 5000);
     }
 
-    // Inicialización
     updateGreeting();
     getTurkeyWeather();
     setTimeout(showPush, 5000);
