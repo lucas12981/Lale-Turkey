@@ -11,6 +11,7 @@
             --turkish-red: #E30A17; --bosphorus-blue: #005C92; --bizantine-gold: #FFD700;
             --bg-light: #F1F5F9; --white: #FFFFFF; --dark: #0F172A; --gray: #64748B;
             --glass: rgba(255, 255, 255, 0.85);
+            --emergency-red: #ff4757;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background-color: #111; display: flex; justify-content: center; height: 100vh; overflow: hidden; }
@@ -41,6 +42,15 @@
         .screen-container { flex: 1; overflow-y: auto; padding: 20px 20px 120px; }
         .screen { display: none; animation: fadeIn 0.4s ease; }
         .screen.active { display: block; }
+
+        /* EMERGENCY PHARMACY CARD (NEW) */
+        .emergency-card {
+            background: white; border-radius: 28px; padding: 20px; margin-bottom: 25px;
+            display: flex; align-items: center; gap: 15px; border: 2px solid var(--emergency-red);
+            cursor: pointer; transition: 0.2s;
+        }
+        .emergency-card:active { transform: scale(0.98); background: #fff5f5; }
+        .emergency-icon { background: var(--emergency-red); color: white; width: 50px; height: 50px; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
 
         /* ÇAY SAATİ CARD */
         .cay-card {
@@ -118,7 +128,15 @@
         <section id="home" class="screen active">
             <div class="welcome-section">
                 <p id="auto-greeting" style="font-size: 30px; font-weight: 800; color: var(--dark);">Merhaba</p>
-                <p style="color: var(--gray); font-size: 14px; font-weight: 500;">Türkiye'de harika bir día keşfedilmeyi bekliyor.</p>
+                <p style="color: var(--gray); font-size: 14px; font-weight: 500; margin-bottom: 20px;">Türkiye'de harika bir día keşfedilmeyi bekliyor.</p>
+            </div>
+
+            <div class="emergency-card" onclick="findPharmacy()">
+                <div class="emergency-icon"><i class="fa-solid fa-house-medical"></i></div>
+                <div>
+                    <h3 style="font-size: 16px; font-weight: 800; color: var(--dark);">Eczane Bul</h3>
+                    <p style="font-size: 12px; color: var(--gray); font-weight: 600;">En yakın nöbetçi eczaneyi bul.</p>
+                </div>
             </div>
 
             <div class="cay-card" onclick="openCayMap()">
@@ -209,7 +227,24 @@
     }
 
     function openCayMap() {
-        window.location.href = `https://www.google.com/maps/search/Çay+Bahçesi`;
+        window.location.href = `https://www.google.com/maps/search/çay+bahçesi/`;
+    }
+
+    // FUNCIÓN INTELIGENTE DE FARMACIAS
+    function findPharmacy() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((position) => {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+                // Abre Google Maps buscando farmacias cerca de la ubicación actual
+                window.location.href = `https://www.google.com/maps/search/Eczane/@${lat},${lon},15z`;
+            }, () => {
+                // Si el usuario niega el permiso, busca farmacias generales en Turquía
+                window.location.href = `https://www.google.com/maps/search/Nöbetçi+Eczane/`;
+            });
+        } else {
+            window.location.href = `https://www.google.com/maps/search/Nöbetçi+Eczane/`;
+        }
     }
 
     async function getTurkeyWeather() {
