@@ -27,7 +27,7 @@
         .tulip-logo { font-size: 100px; filter: drop-shadow(0 0 20px var(--turkish-red)); animation: pulse 2s infinite; }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
 
-        /* Notificación Push Stylized */
+        /* Notificación Push */
         #push-notification {
             position: absolute; top: -120px; left: 15px; right: 15px;
             background: var(--dark); color: white; padding: 18px;
@@ -43,14 +43,18 @@
         .screen { display: none; animation: fadeIn 0.4s ease; }
         .screen.active { display: block; }
 
-        /* EMERGENCY PHARMACY CARD (NEW) */
+        /* SECCIÓN DE EMERGENCIA MEJORADA */
+        .emergency-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 25px; }
         .emergency-card {
-            background: white; border-radius: 28px; padding: 20px; margin-bottom: 25px;
-            display: flex; align-items: center; gap: 15px; border: 2px solid var(--emergency-red);
-            cursor: pointer; transition: 0.2s;
+            background: white; border-radius: 24px; padding: 15px;
+            display: flex; flex-direction: column; align-items: center; gap: 8px; 
+            border: 2px solid #eee; cursor: pointer; transition: 0.2s; text-align: center;
         }
-        .emergency-card:active { transform: scale(0.98); background: #fff5f5; }
-        .emergency-icon { background: var(--emergency-red); color: white; width: 50px; height: 50px; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+        .emergency-card.pharmacy { border-color: var(--emergency-red); }
+        .emergency-card.call { border-color: var(--dark); background: var(--dark); color: white; }
+        .emergency-icon-circle { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+        .pharmacy .emergency-icon-circle { background: #fff5f5; color: var(--emergency-red); }
+        .call .emergency-icon-circle { background: rgba(255,255,255,0.1); color: white; }
 
         /* ÇAY SAATİ CARD */
         .cay-card {
@@ -58,46 +62,24 @@
             border-radius: 30px; padding: 25px; color: white; margin-bottom: 25px;
             display: flex; align-items: center; gap: 20px; cursor: pointer;
             box-shadow: 0 12px 25px rgba(227, 10, 23, 0.25); position: relative; overflow: hidden;
-            transition: transform 0.2s;
         }
-        .cay-card:active { transform: scale(0.96); }
-        .cay-card div h3 { font-size: 19px; font-weight: 800; margin-bottom: 4px; }
-        .cay-card div p { font-size: 13px; opacity: 0.9; font-weight: 500; }
-        .cay-btn { background: white; color: var(--turkish-red); border: none; padding: 8px 15px; border-radius: 12px; font-weight: 800; font-size: 12px; margin-top: 10px; cursor: pointer; }
 
         .weather-card { 
             background: linear-gradient(135deg, var(--bosphorus-blue), #002d4d); 
             border-radius: 28px; padding: 22px; color: white; display: flex; 
             justify-content: space-between; align-items: center; margin-bottom: 25px;
-            box-shadow: 0 10px 20px rgba(0,92,146,0.15); 
         }
 
         .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 20px; }
-        .service-item { background: white; padding: 18px 10px; border-radius: 24px; text-align: center; border: 1px solid rgba(0,0,0,0.03); cursor: pointer; transition: 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.01); }
-        .service-item:active { transform: scale(0.92); }
-        .service-item i { font-size: 24px; margin-bottom: 10px; display: block; }
-        .service-label { font-size: 11px; font-weight: 700; }
+        .service-item { background: white; padding: 18px 10px; border-radius: 24px; text-align: center; border: 1px solid rgba(0,0,0,0.03); cursor: pointer; }
 
-        /* Lale Pay Estilo Original */
-        .wallet-card-premium { background: var(--dark); padding: 25px; border-radius: 30px; color: white; box-shadow: 0 15px 30px rgba(0,0,0,0.2); }
-        .btn-pay-qr { width: 100%; padding: 16px; border-radius: 18px; border: none; background: var(--bizantine-gold); font-weight: 800; margin-top: 15px; color: var(--dark); font-size: 15px; cursor: pointer; }
-
-        /* Estilo para los botones de las billeteras */
-        .wallet-btn-row {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-top: 20px;
-            cursor: pointer;
-            transition: opacity 0.2s;
-        }
-        .wallet-btn-row:active { opacity: 0.6; }
-        .wallet-btn-row span { font-weight: 700; color: var(--dark); font-size: 16px; }
+        .wallet-card-premium { background: var(--dark); padding: 25px; border-radius: 30px; color: white; }
+        .btn-pay-qr { width: 100%; padding: 16px; border-radius: 18px; border: none; background: var(--bizantine-gold); font-weight: 800; margin-top: 15px; color: var(--dark); }
+        .wallet-btn-row { display: flex; align-items: center; gap: 12px; margin-top: 20px; cursor: pointer; }
 
         nav { position: absolute; bottom: 25px; left: 20px; right: 20px; height: 80px; background: var(--glass); backdrop-filter: blur(20px); border-radius: 28px; display: flex; justify-content: space-around; align-items: center; box-shadow: 0 15px 35px rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,0.4); }
         .nav-btn { display: flex; flex-direction: column; align-items: center; color: var(--gray); font-size: 11px; font-weight: 700; cursor: pointer; border: none; background: none; }
         .nav-btn.active { color: var(--turkish-red); }
-        .nav-btn i { font-size: 22px; margin-bottom: 4px; }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
@@ -131,11 +113,14 @@
                 <p style="color: var(--gray); font-size: 14px; font-weight: 500; margin-bottom: 20px;">Türkiye'de harika bir día keşfedilmeyi bekliyor.</p>
             </div>
 
-            <div class="emergency-card" onclick="findPharmacy()">
-                <div class="emergency-icon"><i class="fa-solid fa-house-medical"></i></div>
-                <div>
-                    <h3 style="font-size: 16px; font-weight: 800; color: var(--dark);">Eczane Bul</h3>
-                    <p style="font-size: 12px; color: var(--gray); font-weight: 600;">En yakın nöbetçi eczaneyi bul.</p>
+            <div class="emergency-grid">
+                <div class="emergency-card pharmacy" onclick="findPharmacy()">
+                    <div class="emergency-icon-circle"><i class="fa-solid fa-mortar-pestle"></i></div>
+                    <span style="font-size: 13px; font-weight: 800;">Eczane Bul</span>
+                </div>
+                <div class="emergency-card call" onclick="window.location.href='tel:112'">
+                    <div class="emergency-icon-circle"><i class="fa-solid fa-phone-flip"></i></div>
+                    <span style="font-size: 13px; font-weight: 800;">Acil Çağrı (112)</span>
                 </div>
             </div>
 
@@ -144,19 +129,13 @@
                 <div>
                     <h3>Çay Saati Geldi!</h3>
                     <p>En yakın çay bahçesini ve en iyi manzarayı bul.</p>
-                    <button class="cay-btn">YERLERİ GÖR</button>
+                    <button class="cay-btn" style="background: white; color: var(--turkish-red); border: none; padding: 8px 15px; border-radius: 12px; font-weight: 800; font-size: 12px; margin-top: 10px;">YERLERİ GÖR</button>
                 </div>
             </div>
 
             <div class="weather-card">
-                <div>
-                    <h3 id="city-name">İstanbul</h3>
-                    <p id="weather-desc" style="font-size: 14px; opacity: 0.9;">Parçalı Bulutlu</p>
-                </div>
-                <div style="text-align: right;">
-                    <i class="fa-solid fa-cloud-sun-rain" style="font-size: 38px; color: var(--bizantine-gold);"></i>
-                    <p id="temp-val" style="font-size: 26px; font-weight: 800;">19°C</p>
-                </div>
+                <div><h3 id="city-name">İstanbul</h3><p style="font-size: 14px; opacity: 0.9;">Parçalı Bulutlu</p></div>
+                <div style="text-align: right;"><i class="fa-solid fa-cloud-sun-rain" style="font-size: 38px; color: var(--bizantine-gold);"></i><p id="temp-val" style="font-size: 26px; font-weight: 800;">19°C</p></div>
             </div>
 
             <div class="services-grid">
@@ -175,16 +154,9 @@
                 <p style="opacity: 0.9; font-size: 18px; font-weight: 700;">Lale Pay</p>
                 <button onclick="handlePayment('QR')" class="btn-pay-qr">ÖDEME YAP (QR)</button>
             </div>
-
             <div class="wallet-actions" style="margin-top: 20px;">
-                <div class="wallet-btn-row" onclick="handlePayment('Papara')">
-                    <i class="fa-solid fa-p" style="color:#BBFF00; font-size:22px; width:30px;"></i>
-                    <span>Papara Connect</span>
-                </div>
-                <div class="wallet-btn-row" onclick="handlePayment('Oldubil')">
-                    <i class="fa-solid fa-wallet" style="color:#005C92; font-size:20px; width:30px;"></i>
-                    <span>Oldubil Pay</span>
-                </div>
+                <div class="wallet-btn-row" onclick="handlePayment('Papara')"><i class="fa-solid fa-p" style="color:#BBFF00; font-size:22px; width:30px;"></i><span>Papara Connect</span></div>
+                <div class="wallet-btn-row" onclick="handlePayment('Oldubil')"><i class="fa-solid fa-wallet" style="color:#005C92; font-size:20px; width:30px;"></i><span>Oldubil Pay</span></div>
             </div>
         </section>
 
@@ -206,17 +178,14 @@
 </div>
 
 <script>
-    // 1. Splash Screen
     setTimeout(() => { document.getElementById('splash').style.transform = 'translateY(-100%)'; }, 3000);
 
-    // 2. Saludo
     function updateGreeting() {
         const hour = new Date().getHours();
         let greeting = hour >= 5 && hour < 12 ? "Günaydın" : hour >= 12 && hour < 18 ? "İyi Günler" : "İyi Akşamlar";
         document.getElementById('auto-greeting').innerText = greeting;
     }
 
-    // 3. Navegación
     function navigate(id) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         document.querySelectorAll('.nav-btn').forEach(n => n.classList.remove('active'));
@@ -227,23 +196,24 @@
     }
 
     function openCayMap() {
-        window.location.href = `https://www.google.com/maps/search/çay+bahçesi/`;
+        window.open('https://www.google.com/maps/search/Çay+Bahçesi', '_blank');
     }
 
-    // FUNCIÓN INTELIGENTE DE FARMACIAS
+    // MEJORA: FUNCIÓN DE FARMACIA DE GUARDIA (NÖBETÇİ ECZANE)
     function findPharmacy() {
+        const query = "Nöbetçi Eczane";
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition((position) => {
                 const lat = position.coords.latitude;
                 const lon = position.coords.longitude;
-                // Abre Google Maps buscando farmacias cerca de la ubicación actual
-                window.location.href = `https://www.google.com/maps/search/Eczane/@${lat},${lon},15z`;
+                // Busca específicamente farmacias de guardia cerca de las coordenadas
+                window.open(`https://www.google.com/maps/search/${query}/@${lat},${lon},14z`, '_blank');
             }, () => {
-                // Si el usuario niega el permiso, busca farmacias generales en Turquía
-                window.location.href = `https://www.google.com/maps/search/Nöbetçi+Eczane/`;
+                // Respaldo si falla el GPS: búsqueda general en Turquía
+                window.open(`https://www.google.com/maps/search/${query}+Turkiye`, '_blank');
             });
         } else {
-            window.location.href = `https://www.google.com/maps/search/Nöbetçi+Eczane/`;
+            window.open(`https://www.google.com/maps/search/${query}+Turkiye`, '_blank');
         }
     }
 
@@ -266,7 +236,7 @@
         else alert('QR Okuyucu Hazırlanıyor...');
     }
 
-    function openApp(url) { window.location.href = url; }
+    function openApp(url) { window.open(url, '_blank'); }
     function showPush() {
         const push = document.getElementById('push-notification');
         push.style.top = '20px';
