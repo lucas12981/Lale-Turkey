@@ -22,13 +22,7 @@
             --success-green: #10B981;
         }
 
-        * { 
-            margin: 0; 
-            padding: 0; 
-            box-sizing: border-box; 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            -webkit-tap-highlight-color: transparent; 
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
         
         body { background-color: #000; display: flex; justify-content: center; height: 100vh; overflow: hidden; }
         
@@ -46,7 +40,7 @@
         .tulip-svg { font-size: 80px; filter: drop-shadow(0 0 15px var(--bizantine-gold)); animation: pulse 2s infinite; }
         @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.1); opacity: 1; } }
 
-        /* --- PUSH NOTIFICATION --- */
+        /* --- NOTIFICACIONES --- */
         #push-notification { 
             position: absolute; top: -120px; left: 20px; right: 20px; background: white; 
             padding: 18px; border-radius: 22px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); 
@@ -63,27 +57,26 @@
         .screen.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .section-title { font-size: 12px; font-weight: 800; color: var(--gray-text); text-transform: uppercase; letter-spacing: 1.2px; margin: 25px 0 15px; }
+        .section-title { font-size: 11px; font-weight: 800; color: var(--gray-text); text-transform: uppercase; letter-spacing: 1.2px; margin: 25px 0 15px; }
 
-        /* --- COMPONENTES UI --- */
-        .emergency-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .emergency-btn { padding: 18px; border-radius: 20px; border: none; display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 800; font-size: 14px; cursor: pointer; transition: 0.2s; }
-        
+        /* --- COMPONENTES --- */
         .category-card { 
-            background: white; border-radius: var(--radius-premium); padding: 20px; 
+            background: white; border-radius: 20px; padding: 18px; 
             margin-bottom: 12px; box-shadow: var(--shadow-soft); 
             display: flex; align-items: center; gap: 15px; cursor: pointer; transition: 0.2s;
         }
+        .category-card:active { transform: scale(0.97); }
 
-        .balance-card {
-            background: var(--dark); border-radius: 28px; padding: 25px; color: white;
-            margin-bottom: 25px; position: relative; overflow: hidden;
+        .settings-item {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 18px; background: white; border-radius: 20px; margin-bottom: 10px;
+            box-shadow: var(--shadow-soft); cursor: pointer;
         }
 
-        .companion-banner {
-            background: linear-gradient(rgba(0,48,73,0.6), rgba(0,48,73,0.7)), url('https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?q=80&w=400&auto=format&fit=crop');
-            background-size: cover; border-radius: var(--radius-premium); padding: 25px; color: white; margin-top: 10px;
-        }
+        .profile-header { text-align: center; padding: 20px 0; }
+        .profile-pic-container { position: relative; display: inline-block; margin-bottom: 15px; }
+        .profile-pic { width: 95px; height: 95px; border-radius: 50%; border: 4px solid white; box-shadow: var(--shadow-soft); }
+        .verify-badge { position: absolute; bottom: 8px; right: 5px; background: var(--success-green); color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border: 3px solid white; font-size: 10px; }
 
         /* --- NAVIGATION --- */
         nav { 
@@ -104,11 +97,10 @@
     <div id="splash">
         <span class="tulip-svg">🌷</span>
         <h1 style="color: white; margin-top: 15px; font-weight: 800; letter-spacing: 4px;">LALE</h1>
-        <p style="color: var(--bizantine-gold); font-size: 12px; font-weight: 600; margin-top: 5px;">Şehrin Anahtarı</p>
     </div>
 
     <div id="push-notification">
-        <div id="notif-color" style="width: 12px; height: 12px; border-radius: 50%; background: var(--turkish-red);"></div>
+        <div id="notif-color" style="width: 12px; height: 12px; border-radius: 50%;"></div>
         <div style="flex: 1;">
             <p id="notif-title" style="font-weight: 800; font-size: 14px; color: var(--dark);"></p>
             <p id="notif-text" style="font-size: 12px; color: var(--gray-text);"></p>
@@ -118,7 +110,7 @@
     <header>
         <div class="brand">LALE</div>
         <div class="user-status">
-            <i class="fa-solid fa-gem" style="color: var(--bizantine-gold);"></i>
+            <i class="fa-solid fa-crown" style="color: var(--bizantine-gold);"></i>
             <span>PREMIUM</span>
         </div>
     </header>
@@ -126,85 +118,105 @@
     <main class="screen-container">
         <section id="home" class="screen active">
             <h2 id="greeting" style="font-size: 32px; font-weight: 800; color: var(--dark); margin-top: 10px;">Merhaba</h2>
-            <p style="color: var(--gray-text); font-weight: 500; font-size: 15px;">İstanbul seni bekliyor.</p>
+            <p style="color: var(--gray-text); font-weight: 500; font-size: 15px; margin-bottom: 20px;">İstanbul seni bekliyor.</p>
 
-            <div class="section-title">Hızlı Servis</div>
-            <div class="emergency-grid">
-                <button class="emergency-btn" style="background: #FFE4E6; color: var(--turkish-red);" onclick="findPharmacy()">
+            <div class="section-title">Acil Durum</div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <button onclick="findPharmacy()" style="padding: 18px; border-radius: 20px; border: none; background: #FFE4E6; color: var(--turkish-red); font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 8px;">
                     <i class="fa-solid fa-house-medical"></i> Eczane
                 </button>
-                <button class="emergency-btn" style="background: var(--dark); color: white;" onclick="window.location.href='tel:112'">
-                    <i class="fa-solid fa-phone"></i> Acil 112
+                <button onclick="window.location.href='tel:112'" style="padding: 18px; border-radius: 20px; border: none; background: var(--dark); color: white; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    <i class="fa-solid fa-phone"></i> 112 Acil
                 </button>
             </div>
 
-            <div class="section-title">Yaşam Tarzı</div>
+            <div class="section-title">Şehir Servisleri</div>
             <div class="category-card" onclick="openService('https://www.bitaksi.com', 'bitaksi://')">
-                <div style="width: 48px; height: 48px; background: #FFF9C4; color: #FBC02D; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 22px;"><i class="fa-solid fa-taxi"></i></div>
-                <div style="flex:1;">
-                    <p style="font-weight: 800; font-size: 15px;">Ulaşım</p>
-                    <p style="font-size: 11px; color: var(--gray-text);">BiTaksi, Martı ve iSBike</p>
-                </div>
-                <i class="fa-solid fa-chevron-right" style="color: #CBD5E1; font-size: 12px;"></i>
+                <div style="width: 48px; height: 48px; background: #FFF9C4; color: #FBC02D; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 20px;"><i class="fa-solid fa-taxi"></i></div>
+                <div style="flex:1;"><p style="font-weight: 800; font-size: 15px;">BiTaksi</p><p style="font-size: 11px; color: var(--gray-text);">Hızlı ve güvenli taksi çağır</p></div>
+                <i class="fa-solid fa-chevron-right" style="color: #CBD5E1;"></i>
             </div>
 
             <div class="category-card" onclick="openService('https://getir.com', 'getir://')">
-                <div style="width: 48px; height: 48px; background: #EDE7F6; color: #5D3EBD; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 22px;"><i class="fa-solid fa-bag-shopping"></i></div>
-                <div style="flex:1;">
-                    <p style="font-weight: 800; font-size: 15px;">Teslimat</p>
-                    <p style="font-size: 11px; color: var(--gray-text);">Getir, Yemeksepeti y Trendyol</p>
-                </div>
-                <i class="fa-solid fa-chevron-right" style="color: #CBD5E1; font-size: 12px;"></i>
-            </div>
-
-            <div class="companion-banner">
-                <h4 style="font-weight: 800; font-size: 20px;">Refakatçi'ye Sor</h4>
-                <p style="font-size: 13px; margin: 8px 0 18px; opacity: 0.9; line-height: 1.4;">"Boğaz'ın en güzel çay bahçesi hangisi?"</p>
-                <button style="padding: 12px 24px; border-radius: 50px; border: none; background: white; color: var(--dark); font-weight: 800; font-size: 12px;" onclick="showPush('Kültür Rehberi', 'Moda Sahili çay için harika bir seçim!', '#D4AF37')">Sohbeti Başlat</button>
+                <div style="width: 48px; height: 48px; background: #EDE7F6; color: #5D3EBD; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 20px;"><i class="fa-solid fa-bag-shopping"></i></div>
+                <div style="flex:1;"><p style="font-weight: 800; font-size: 15px;">Getir</p><p style="font-size: 11px; color: var(--gray-text);">Dakikalar içinde market teslimatı</p></div>
+                <i class="fa-solid fa-chevron-right" style="color: #CBD5E1;"></i>
             </div>
         </section>
 
         <section id="wallet" class="screen">
-            <h2 style="font-size: 30px; font-weight: 800; margin-bottom: 5px;">Lale Pay</h2>
-            <p style="color: var(--gray-text); margin-bottom: 25px;">Dijital Cüzdan ve Ödemeler</p>
+            <h2 style="font-size: 28px; font-weight: 800;">Lale Pay</h2>
+            <p style="color: var(--gray-text); margin-bottom: 25px;">Dijital cüzdanlarınıza hızlı erişim sağlayın.</p>
             
-            <div class="balance-card">
-                <p style="font-size: 11px; opacity: 0.7; text-transform: uppercase;">Toplam Bakiye</p>
-                <h3 style="font-size: 34px; font-weight: 800; margin: 8px 0;">₺1.250,50</h3>
-                <div style="display: flex; gap: 10px; margin-top: 15px;">
-                    <button style="flex: 1; padding: 12px; border-radius: 14px; border: none; background: var(--bizantine-gold); color: var(--dark); font-weight: 800; font-size: 12px;">YÜKLE</button>
-                    <button style="flex: 1; padding: 12px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.3); background: transparent; color: white; font-weight: 800; font-size: 12px;">TRANSFER</button>
-                </div>
-            </div>
-
             <div class="section-title">Entegre Cüzdanlar</div>
             
             <div class="category-card" onclick="openService('https://www.papara.com', 'papara://')">
-                <div style="width: 45px; height: 45px; background: #000; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #BBFF00; font-weight: 900; font-size: 20px;">P</div>
-                <div style="flex:1;"><p style="font-weight: 800;">Papara</p><p style="font-size: 11px; color: var(--gray-text);">7/24 Para Transferi</p></div>
+                <div style="width: 45px; height: 45px; background: #000; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #BBFF00; font-weight: 900; font-size: 18px;">P</div>
+                <div style="flex:1;"><p style="font-weight: 800;">Papara</p><p style="font-size: 11px; color: var(--gray-text);">Para gönder ve harca</p></div>
                 <i class="fa-solid fa-arrow-up-right-from-square" style="color: #cbd5e1; font-size: 12px;"></i>
             </div>
 
             <div class="category-card" onclick="openService('https://tosla.com', 'tosla://')">
                 <div style="width: 45px; height: 45px; background: #7131FF; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white;"><i class="fa-solid fa-bolt-lightning"></i></div>
-                <div style="flex:1;"><p style="font-weight: 800;">Tosla</p><p style="font-size: 11px; color: var(--gray-text);">Hızlı Ödeme</p></div>
+                <div style="flex:1;"><p style="font-weight: 800;">Tosla</p><p style="font-size: 11px; color: var(--gray-text);">Gençlerin favori cüzdanı</p></div>
                 <i class="fa-solid fa-arrow-up-right-from-square" style="color: #cbd5e1; font-size: 12px;"></i>
             </div>
 
             <div class="category-card" onclick="window.open('https://www.istanbulkart.istanbul/', '_blank')">
                 <div style="width: 45px; height: 45px; background: #FF6200; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white;"><i class="fa-solid fa-id-card"></i></div>
-                <div style="flex:1;"><p style="font-weight: 800;">İstanbulkart</p><p style="font-size: 11px; color: var(--gray-text);">NFC Bakiye Yükle</p></div>
-                <span style="background: #FFF0E6; color: #FF6200; font-size: 10px; font-weight: 800; padding: 4px 8px; border-radius: 8px;">NFC</span>
+                <div style="flex:1;"><p style="font-weight: 800;">İstanbulkart</p><p style="font-size: 11px; color: var(--gray-text);">Ulaşım kartı bakiye yükleme</p></div>
+                <span style="background: #FFF0E6; color: #FF6200; font-size: 10px; font-weight: 800; padding: 4px 8px; border-radius: 8px;">TOP-UP</span>
             </div>
         </section>
 
         <section id="profile" class="screen">
-            <h2 style="font-size: 28px; font-weight: 800;">Profil ve Ayarlar</h2>
-            <div style="margin-top: 30px; text-align: center;">
-                <div style="width: 100px; height: 100px; background: #e2e8f0; border-radius: 50%; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; font-size: 40px; color: #64748B;"><i class="fa-solid fa-user"></i></div>
-                <p style="font-weight: 800; font-size: 20px;">Lucas Guzman</p>
-                <p style="color: var(--gray-text); font-size: 14px;">Founder - Lale App</p>
+            <div class="profile-header">
+                <div class="profile-pic-container">
+                    <img src="https://ui-avatars.com/api/?name=Lucas+Guzman&background=003049&color=fff" class="profile-pic">
+                    <div class="verify-badge"><i class="fa-solid fa-check"></i></div>
+                </div>
+                <h2 style="font-weight: 800;">Lucas Guzmán</h2>
+                <p style="color: var(--bizantine-gold); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">İstanbul Sakini (Verified)</p>
             </div>
+
+            <div class="section-title">Resmi İşlemler</div>
+            
+            <div class="settings-item" onclick="window.open('https://www.turkiye.gov.tr/', '_blank')">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <div style="width: 40px; height: 40px; background: #f1f5f9; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #E30A17;"><i class="fa-solid fa-landmark"></i></div>
+                    <div>
+                        <p style="font-weight: 800; font-size: 14px;">e-Devlet Kapısı</p>
+                        <p style="font-size: 11px; color: var(--gray-text);">Resmi Kimlik & Belgeler</p>
+                    </div>
+                </div>
+                <i class="fa-solid fa-arrow-up-right-from-square" style="color: #cbd5e1; font-size: 12px;"></i>
+            </div>
+
+            <div class="settings-item" onclick="window.open('https://www.sigortam.net/seyahat-saglik-sigortasi', '_blank')">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <div style="width: 40px; height: 40px; background: #f1f5f9; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--bosphorus-blue);"><i class="fa-solid fa-shield-heart"></i></div>
+                    <div>
+                        <p style="font-weight: 800; font-size: 14px;">Seyahat Sigortası</p>
+                        <p style="font-size: 11px; color: var(--gray-text);">Poliçe Yönetimi ve Bilgi</p>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-right" style="color: #cbd5e1;"></i>
+            </div>
+
+            <div class="section-title">Uygulama Ayarları</div>
+            <div class="settings-item">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <i class="fa-solid fa-bell" style="color: var(--gray-text);"></i>
+                    <span style="font-weight: 700; font-size: 14px;">Bildirimler</span>
+                </div>
+                <div style="width: 34px; height: 18px; background: var(--success-green); border-radius: 20px; position: relative;">
+                    <div style="width: 14px; height: 14px; background: white; border-radius: 50%; position: absolute; right: 2px; top: 2px;"></div>
+                </div>
+            </div>
+
+            <button style="width: 100%; margin-top: 20px; padding: 18px; border-radius: 20px; border: none; background: #fee2e2; color: #dc2626; font-weight: 800; font-size: 14px;">
+                Oturumu Kapat
+            </button>
         </section>
     </main>
 
@@ -220,29 +232,24 @@
 </div>
 
 <script>
-    // --- DATOS Y CONFIG ---
+    // --- DATOS ---
     const ferryTerminals = [
         { name: "Eminönü", lat: 41.0175, lon: 28.9714 },
-        { name: "Karaköy", lat: 41.0221, lon: 28.9752 },
         { name: "Beşiktaş", lat: 41.0422, lon: 29.0074 },
-        { name: "Üsküdar", lat: 41.0272, lon: 29.0152 },
         { name: "Kadıköy", lat: 40.9911, lon: 29.0222 }
     ];
 
-    // --- UX INICIAL (SPLASH & GREETING) ---
+    // --- UX INICIAL ---
     setTimeout(() => {
         const splash = document.getElementById('splash');
         splash.style.opacity = '0';
         setTimeout(() => splash.style.display = 'none', 1000);
-    }, 2500);
+    }, 2000);
 
     const hour = new Date().getHours();
-    const greetElement = document.getElementById('greeting');
-    if (hour < 12) greetElement.innerText = "Günaydın";
-    else if (hour < 18) greetElement.innerText = "İyi Günler";
-    else greetElement.innerText = "İyi Akşamlar";
+    document.getElementById('greeting').innerText = hour < 12 ? "Günaydın" : hour < 18 ? "İyi Günler" : "İyi Akşamlar";
 
-    // --- SISTEMA DE NAVEGACIÓN ---
+    // --- LÓGICA NAVEGACIÓN ---
     function navigate(screenId, element) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -257,62 +264,29 @@
         document.getElementById('notif-text').innerText = text;
         document.getElementById('notif-color').style.background = color;
         push.style.top = '25px';
-        setTimeout(() => { push.style.top = '-120px'; }, 4500);
+        setTimeout(() => { push.style.top = '-120px'; }, 4000);
     }
 
-    // --- FUNCIONES INTELIGENTES ---
-
-    // 1. Buscador de Farmacia Inteligente
+    // --- FUNCIONES CORE ---
     function findPharmacy() {
-        showPush("Aranıyor...", "En yakın nöbetçi eczaneler bulunuyor", "#E30A17");
+        showPush("Eczane Aranıyor", "Size en yakın nöbetçi eczaneler listeleniyor...", "#E30A17");
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition((position) => {
-                const lat = position.coords.latitude;
-                const lon = position.coords.longitude;
-                // Query: Farmacias de turno cercanas
-                const mapUrl = `https://www.google.com/maps/search/nöbetçi+eczane/@${lat},${lon},14z`;
-                setTimeout(() => window.open(mapUrl, '_blank'), 1000);
-            }, () => {
-                window.open('https://www.google.com/maps/search/nöbetçi+eczane+istanbul', '_blank');
+            navigator.geolocation.getCurrentPosition(pos => {
+                window.open(`https://www.google.com/maps/search/nöbetçi+eczane/@${pos.coords.latitude},${pos.coords.longitude},14z`, '_blank');
             });
         }
     }
 
-    // 2. Asistente de Ferry con GPS
     function checkFerry() {
-        showPush("Vapur Bilgisi", "En yakın iskele ve seferler kontrol ediliyor...", "#003049");
+        showPush("Vapur Durumu", "İskeleler kontrol ediliyor...", "#003049");
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition((position) => {
-                const uLat = position.coords.latitude;
-                const uLon = position.coords.longitude;
-                let closest = ferryTerminals[0];
-                let minDist = Infinity;
-
-                ferryTerminals.forEach(t => {
-                    const d = Math.sqrt(Math.pow(t.lat - uLat, 2) + Math.pow(t.lon - uLon, 2));
-                    if (d < minDist) { minDist = d; closest = t; }
-                });
-
-                // Alerta de Clima Aleatoria (Simulación)
-                const isFoggy = Math.random() > 0.8;
-                if (isFoggy) {
-                    document.getElementById('ferry-dot').style.background = "#E30A17";
-                    showPush("⚠️ İPTAL UYARISI", `${closest.name} iskelesinde seferlerde aksama olabilir.`, "#E30A17");
-                } else {
-                    document.getElementById('ferry-dot').style.background = "#10B981";
-                    showPush("🚢 " + closest.name, "Tüm seferler zamanında yapılıyor.", "#10B981");
-                }
-                
-                setTimeout(() => {
-                    window.open(`https://www.sehirhatlari.istanbul/tr/seferleri/${closest.name.toLowerCase()}-iskeleleri`, '_blank');
-                }, 2000);
-            }, () => {
-                window.open('https://www.sehirhatlari.istanbul/tr/sefer-tarifeleri', '_blank');
+            navigator.geolocation.getCurrentPosition(pos => {
+                showPush("⚓ Şehir Hatları", "Seferler şu an aktif ve zamanında.", "#10B981");
+                setTimeout(() => window.open('https://www.sehirhatlari.istanbul/tr/sefer-tarifeleri', '_blank'), 1500);
             });
         }
     }
 
-    // 3. Redirección Universal (App o Web)
     function openService(webUrl, appScheme) {
         const start = Date.now();
         window.location.href = appScheme;
