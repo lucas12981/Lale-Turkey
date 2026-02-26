@@ -13,9 +13,10 @@
             --turkish-red: #E30A17;
             --bosphorus-blue: #003049;
             --bizantine-gold: #D4AF37;
-            --white-glass: rgba(255, 255, 255, 0.9);
-            --dark-glass: rgba(15, 23, 42, 0.85);
+            --white-glass: rgba(255, 255, 255, 0.96);
+            --dark-glass: rgba(15, 23, 42, 0.9);
             --success: #10B981;
+            --shadow: 0 10px 30px rgba(0,0,0,0.15);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
@@ -25,259 +26,282 @@
         .app-shell { 
             width: 100%; max-width: 414px; height: 100%; position: relative; 
             overflow: hidden; display: flex; flex-direction: column;
-            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            background: #f8fafc;
         }
 
-        /* FONDO DE VIDEO REALISTA */
-        .bg-video {
+        /* FONDO DE VIDEO (MEZQUITAS) */
+        .video-bg {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1; object-fit: cover; filter: brightness(0.5) contrast(1.1);
+            z-index: 1; object-fit: cover; filter: brightness(0.5);
         }
 
-        /* SPLASH SCREEN PROFESIONAL */
+        /* SPLASH SCREEN INICIAL */
         #splash { 
             position: absolute; inset: 0; background: var(--bosphorus-blue); z-index: 9999; 
             display: flex; flex-direction: column; justify-content: center; align-items: center; 
             transition: 0.8s cubic-bezier(0.85, 0, 0.15, 1); 
         }
-        .tulip-anim { font-size: 90px; filter: drop-shadow(0 0 20px var(--bizantine-gold)); animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); opacity: 0.8; } }
+        .tulip-logo { font-size: 85px; filter: drop-shadow(0 0 15px var(--bizantine-gold)); animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.1); opacity: 1; } }
+
+        /* NOTIFICACIÓN PUSH SUPERIOR */
+        #push-notif { 
+            position: absolute; top: -150px; left: 20px; right: 20px; background: white; 
+            padding: 20px; border-radius: 25px; z-index: 8000; 
+            transition: 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55); 
+            display: flex; align-items: center; gap: 15px; box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
 
         /* HEADER */
-        header { padding: 50px 24px 15px; display: flex; justify-content: space-between; align-items: center; z-index: 100; }
-        .logo-text { font-size: 26px; font-weight: 800; color: white; letter-spacing: -1px; }
-        .premium-tag { background: rgba(212, 175, 55, 0.2); border: 1px solid var(--bizantine-gold); color: var(--bizantine-gold); padding: 6px 14px; border-radius: 50px; font-size: 10px; font-weight: 800; text-transform: uppercase; }
+        header { padding: 50px 24px 15px; display: flex; justify-content: space-between; align-items: center; z-index: 100; position: relative; }
+        .logo { font-size: 26px; font-weight: 800; color: white; letter-spacing: -1px; }
+        .badge-premium { background: rgba(212, 175, 55, 0.2); border: 1px solid var(--bizantine-gold); color: var(--bizantine-gold); padding: 6px 14px; border-radius: 50px; font-size: 10px; font-weight: 800; }
 
         /* CONTENEDOR DE PANTALLAS */
-        .screen-container { flex: 1; overflow-y: auto; padding: 0 20px 140px; z-index: 50; scrollbar-width: none; }
-        .screen-container::-webkit-scrollbar { display: none; }
+        .main-content { flex: 1; overflow-y: auto; padding: 0 20px 140px; z-index: 100; position: relative; scrollbar-width: none; }
+        .main-content::-webkit-scrollbar { display: none; }
         .screen { display: none; animation: slideUp 0.4s ease-out; }
         .screen.active { display: block; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
-        .section-label { font-size: 11px; font-weight: 800; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 1.5px; margin: 25px 0 15px; }
+        /* TÍTULOS DE SECCIÓN */
+        .label { font-size: 11px; font-weight: 800; color: rgba(255,255,255,0.7); text-transform: uppercase; letter-spacing: 1.5px; margin: 25px 0 15px; display: block; }
 
-        /* CARDS Y BOTONES */
-        .card { 
-            background: var(--white-glass); border-radius: 24px; padding: 20px; 
-            margin-bottom: 12px; display: flex; align-items: center; gap: 16px; 
-            cursor: pointer; transition: 0.3s; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.3);
+        /* TARJETAS (CARDS) */
+        .item-card { 
+            background: var(--white-glass); border-radius: 24px; padding: 18px; 
+            margin-bottom: 15px; display: flex; align-items: center; gap: 16px; 
+            cursor: pointer; transition: 0.3s; box-shadow: var(--shadow);
+            border: 1px solid rgba(255,255,255,0.3);
         }
-        .card:active { transform: scale(0.96); background: white; }
+        .item-card:active { transform: scale(0.96); }
 
-        .btn-emergency { padding: 20px; border-radius: 22px; border: none; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.2s; }
-        .btn-red { background: var(--turkish-red); color: white; box-shadow: 0 10px 20px rgba(227, 10, 23, 0.3); }
+        /* BANNER ESPECIAL (ÇAY SAATİ) */
+        .special-banner {
+            background: linear-gradient(135deg, #ff5f6d, #ffc371);
+            border-radius: 28px; padding: 25px; margin: 15px 0; color: white;
+            position: relative; overflow: hidden; box-shadow: 0 15px 30px rgba(255, 95, 109, 0.3);
+        }
+
+        /* BOTONES DE EMERGENCIA */
+        .grid-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 5px; }
+        .btn-action { padding: 18px; border-radius: 22px; border: none; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 14px; cursor: pointer; transition: 0.2s; }
+        .btn-red { background: var(--turkish-red); color: white; box-shadow: 0 8px 20px rgba(227, 10, 23, 0.3); }
         .btn-dark { background: var(--dark-glass); color: white; border: 1px solid rgba(255,255,255,0.1); }
 
-        /* PERFIL DETALLADO */
-        .profile-card { text-align: center; padding: 20px 0; }
-        .avatar-frame { position: relative; display: inline-block; margin-bottom: 15px; }
-        .avatar-img { width: 100px; height: 100px; border-radius: 50%; border: 4px solid var(--bizantine-gold); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
-        .verified-check { position: absolute; bottom: 5px; right: 5px; background: var(--success); color: white; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border: 3px solid white; font-size: 12px; }
+        /* BILLETERA (WALLET) */
+        .wallet-balance { background: var(--dark-glass); padding: 30px; border-radius: 28px; color: white; margin-bottom: 25px; border: 1px solid rgba(255,255,255,0.1); }
+        .balance-amount { font-size: 36px; font-weight: 800; margin: 10px 0; }
 
-        /* BARRA DE NAVEGACIÓN */
+        /* NAVEGACIÓN INFERIOR */
         nav { 
             position: absolute; bottom: 30px; left: 20px; right: 20px; height: 80px; 
-            background: var(--dark-glass); backdrop-filter: blur(20px); border-radius: 28px; 
-            display: flex; justify-content: space-around; align-items: center; z-index: 1000;
-            border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            background: var(--dark-glass); backdrop-filter: blur(25px); border-radius: 30px; 
+            display: flex; justify-content: space-around; align-items: center; z-index: 2000;
+            border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 20px 40px rgba(0,0,0,0.5);
         }
-        .nav-link { color: #64748B; display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; flex: 1; transition: 0.3s; }
-        .nav-link.active { color: var(--bizantine-gold); }
-        .nav-link i { font-size: 24px; }
-        .nav-link span { font-size: 10px; font-weight: 800; }
-
-        /* NOTIFICACIÓN PUSH */
-        #notification { 
-            position: absolute; top: -150px; left: 20px; right: 20px; background: white; 
-            padding: 20px; border-radius: 24px; z-index: 10000; 
-            transition: 0.7s cubic-bezier(0.68, -0.55, 0.265, 1.55); 
-            display: flex; align-items: center; gap: 15px; box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-        }
+        .nav-item { color: #64748B; display: flex; flex-direction: column; align-items: center; gap: 5px; cursor: pointer; flex: 1; transition: 0.3s; }
+        .nav-item.active { color: var(--bizantine-gold); }
+        .nav-item i { font-size: 24px; }
+        .nav-item span { font-size: 10px; font-weight: 800; }
     </style>
 </head>
 <body>
 
 <div class="app-shell">
-    <video class="bg-video" autoplay muted loop playsinline poster="https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?auto=format&fit=crop&q=80">
+    <video class="video-bg" autoplay muted loop playsinline>
         <source src="https://assets.mixkit.co/videos/preview/mixkit-mosque-of-istanbul-at-sunset-20235-large.mp4" type="video/mp4">
     </video>
 
     <div id="splash">
-        <div class="tulip-anim">🌷</div>
-        <h1 style="color: white; margin-top: 20px; font-weight: 800; letter-spacing: 6px; font-size: 32px;">LALE</h1>
-        <p style="color: var(--bizantine-gold); font-size: 13px; font-weight: 600; letter-spacing: 2px;">İSTANBUL'UN KALBİ</p>
+        <div class="tulip-logo">🌷</div>
+        <h1 style="color: white; margin-top: 15px; font-weight: 800; letter-spacing: 6px; font-size: 32px;">LALE</h1>
+        <p style="color: var(--bizantine-gold); font-size: 12px; font-weight: 700; letter-spacing: 2px;">İSTANBUL'UN KALBİ</p>
     </div>
 
-    <div id="notification">
-        <div id="notif-icon" style="width: 45px; height: 45px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px;"></div>
+    <div id="push-notif">
+        <div id="notif-img" style="width: 45px; height: 45px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 20px;"></div>
         <div style="flex: 1;">
-            <p id="notif-title" style="font-weight: 800; font-size: 15px; color: var(--bosphorus-blue);"></p>
-            <p id="notif-text" style="font-size: 12px; color: #64748B;"></p>
+            <p id="notif-head" style="font-weight: 800; font-size: 15px; color: var(--bosphorus-blue);"></p>
+            <p id="notif-body" style="font-size: 12px; color: #64748B;"></p>
         </div>
     </div>
 
     <header>
-        <div class="logo-text">LALE</div>
-        <div class="premium-tag"><i class="fa-solid fa-gem"></i> Premium Member</div>
+        <div class="logo">LALE</div>
+        <div class="badge-premium"><i class="fa-solid fa-crown"></i> PREMIUM MEMBER</div>
     </header>
 
-    <main class="screen-container">
+    <main class="main-content">
         <section id="home" class="screen active">
-            <h2 id="welcome-text" style="font-size: 34px; font-weight: 800; color: white; margin-bottom: 5px;">Merhaba</h2>
-            <p style="color: rgba(255,255,255,0.7); font-size: 16px; margin-bottom: 25px;">Estambul está en tus manos hoy.</p>
+            <h2 id="greeting" style="font-size: 34px; font-weight: 800; color: white; margin-top: 5px;">Merhaba</h2>
+            <p style="color: rgba(255,255,255,0.7); font-size: 16px;">Estambul está en tus manos hoy.</p>
 
-            <div class="section-label">Acil Yardım (Emergencia)</div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                <button onclick="triggerAction('Pharmacy')" class="btn-emergency btn-red">
-                    <i class="fa-solid fa-house-medical"></i> Eczane
-                </button>
-                <button onclick="window.location.href='tel:112'" class="btn-emergency btn-dark">
-                    <i class="fa-solid fa-phone-volume"></i> 112 Acil
-                </button>
+            <span class="label">Acil Yardım (Emergencia)</span>
+            <div class="grid-buttons">
+                <button onclick="runAction('Pharmacy')" class="btn-action btn-red"><i class="fa-solid fa-house-medical"></i> Eczane</button>
+                <button onclick="window.location.href='tel:112'" class="btn-action btn-dark"><i class="fa-solid fa-phone"></i> 112 Acil</button>
             </div>
 
-            <div class="section-label">Şehir Servisleri (Servicios)</div>
-            <div class="card" onclick="openApp('https://www.bitaksi.com', 'bitaksi://')">
-                <div style="width: 50px; height: 50px; background: #FFD600; color: #000; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 22px;"><i class="fa-solid fa-taxi"></i></div>
-                <div style="flex:1;"><p style="font-weight: 800;">BiTaksi</p><p style="font-size: 12px; color: var(--gray-text);">Hızlı Taksi Çağır</p></div>
+            <div class="special-banner">
+                <p style="font-size: 11px; font-weight: 800; opacity: 0.9; text-transform: uppercase;">Önerilİ</p>
+                <h3 style="font-size: 24px; font-weight: 800; margin: 5px 0;">Çay Saati Geldi!</h3>
+                <p style="font-size: 13px; opacity: 0.9; margin-bottom: 15px;">Descubre las mejores vistas del Bósforo con un té tradicional.</p>
+                <div style="display: flex; gap: 10px;">
+                    <button style="padding: 10px 18px; border-radius: 12px; border: none; background: white; color: #ff5f6d; font-weight: 800; font-size: 12px;">Bahçe Bul</button>
+                    <button style="padding: 10px 18px; border-radius: 12px; border: none; background: rgba(255,255,255,0.2); color: white; font-weight: 800; font-size: 12px;">Refakatçi</button>
+                </div>
+            </div>
+
+            <span class="label">Şehir Servisleri (Servicios)</span>
+            <div class="item-card" onclick="openExt('https://www.bitaksi.com', 'bitaksi://')">
+                <div style="width: 50px; height: 50px; background: #FFD600; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 22px;"><i class="fa-solid fa-taxi"></i></div>
+                <div style="flex:1;"><p style="font-weight: 800;">BiTaksi</p><p style="font-size: 12px; color: #64748B;">Hızlı ve güvenli taksi çağır</p></div>
                 <i class="fa-solid fa-chevron-right" style="color: #cbd5e1;"></i>
             </div>
 
-            <div class="card" onclick="openApp('https://getir.com', 'getir://')">
-                <div style="width: 50px; height: 50px; background: #5D3EBD; color: #fff; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 22px;"><i class="fa-solid fa-cart-shopping"></i></div>
-                <div style="flex:1;"><p style="font-weight: 800;">Getir</p><p style="font-size: 12px; color: var(--gray-text);">Dakikalar İçinde Kapında</p></div>
+            <div class="item-card" onclick="openExt('https://getir.com', 'getir://')">
+                <div style="width: 50px; height: 50px; background: #5D3EBD; color: white; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 22px;"><i class="fa-solid fa-shopping-bag"></i></div>
+                <div style="flex:1;"><p style="font-weight: 800;">Getir</p><p style="font-size: 12px; color: #64748B;">Market ve yemek teslimatı</p></div>
                 <i class="fa-solid fa-chevron-right" style="color: #cbd5e1;"></i>
             </div>
 
-            <div class="card" onclick="window.open('https://muze.gov.tr', '_blank')">
-                <div style="width: 50px; height: 50px; background: #0284c7; color: #fff; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 22px;"><i class="fa-solid fa-landmark"></i></div>
-                <div style="flex:1;"><p style="font-weight: 800;">Müze Girişi</p><p style="font-size: 12px; color: var(--gray-text);">Müzekart & Bilet Al</p></div>
+            <div class="item-card" onclick="window.open('https://muze.gov.tr', '_blank')">
+                <div style="width: 50px; height: 50px; background: #0284c7; color: white; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 22px;"><i class="fa-solid fa-landmark-flag"></i></div>
+                <div style="flex:1;"><p style="font-weight: 800;">Müze Girişi</p><p style="font-size: 12px; color: #64748B;">Bilet al ve sırayı atla</p></div>
                 <i class="fa-solid fa-chevron-right" style="color: #cbd5e1;"></i>
             </div>
         </section>
 
         <section id="wallet" class="screen">
             <h2 style="font-size: 28px; font-weight: 800; color: white;">Lale Pay</h2>
-            <p style="color: rgba(255,255,255,0.7); margin-bottom: 25px;">Gestión de pagos locales y transporte.</p>
+            <p style="color: rgba(255,255,255,0.7); margin-bottom: 20px;">Dijital Cüzdan ve Ödemeler</p>
 
-            <div class="section-label">Entegre Cüzdanlar</div>
-            <div class="card" onclick="openApp('https://www.papara.com', 'papara://')">
-                <div style="width: 48px; height: 48px; background: #000; border-radius: 14px; display: flex; align-items: center; justify-content: center; color: #BBFF00; font-weight: 900; font-size: 20px;">P</div>
-                <div style="flex:1;"><p style="font-weight: 800;">Papara</p><p style="font-size: 12px; color: var(--gray-text);">7/24 Para Transferi</p></div>
+            <div class="wallet-balance">
+                <p style="font-size: 12px; font-weight: 700; opacity: 0.8; text-transform: uppercase;">Toplam Bakiye</p>
+                <p class="balance-amount">₺1.250,50</p>
+                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                    <button style="flex: 1; padding: 12px; border-radius: 14px; border: none; background: var(--bizantine-gold); color: var(--bosphorus-blue); font-weight: 800;">YÜKLE</button>
+                    <button style="flex: 1; padding: 12px; border-radius: 14px; border: 1px solid white; background: transparent; color: white; font-weight: 800;">TRANSFER</button>
+                </div>
+            </div>
+
+            <span class="label">Entegre Cüzdanlar</span>
+            <div class="item-card" onclick="openExt('https://www.papara.com', 'papara://')">
+                <div style="width: 48px; height: 48px; background: black; color: #BBFF00; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 20px;">P</div>
+                <div style="flex:1;"><p style="font-weight: 800;">Papara</p><p style="font-size: 12px; color: #64748B;">7/24 Para Transferi</p></div>
                 <i class="fa-solid fa-arrow-up-right-from-square" style="color: #cbd5e1; font-size: 14px;"></i>
             </div>
 
-            <div class="card" onclick="window.open('https://www.istanbulkart.istanbul/', '_blank')">
-                <div style="width: 48px; height: 48px; background: #FF6200; border-radius: 14px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 20px;"><i class="fa-solid fa-id-card"></i></div>
-                <div style="flex:1;"><p style="font-weight: 800;">İstanbulkart</p><p style="font-size: 12px; color: var(--gray-text);">Bakiye Yükle & QR Öde</p></div>
-                <span style="background: #FFF0E6; color: #FF6200; font-size: 10px; font-weight: 800; padding: 4px 10px; border-radius: 8px;">TOP-UP</span>
+            <div class="item-card" onclick="window.open('https://www.istanbulkart.istanbul/', '_blank')">
+                <div style="width: 48px; height: 48px; background: #FF6200; color: white; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 22px;"><i class="fa-solid fa-id-card"></i></div>
+                <div style="flex:1;"><p style="font-weight: 800;">İstanbulkart</p><p style="font-size: 12px; color: #64748B;">Bakiye Yükle & QR Öde</p></div>
+                <span style="background: #FFF0E6; color: #FF6200; font-size: 10px; font-weight: 800; padding: 5px 10px; border-radius: 8px;">TOP-UP</span>
             </div>
         </section>
 
         <section id="profile" class="screen">
-            <div class="profile-card">
-                <div class="avatar-frame">
-                    <img src="https://ui-avatars.com/api/?name=Lucas+Guzman&background=003049&color=fff" class="avatar-img">
-                    <div class="verified-check"><i class="fa-solid fa-check"></i></div>
+            <div style="text-align: center; padding: 20px 0;">
+                <div style="position: relative; display: inline-block;">
+                    <img src="https://ui-avatars.com/api/?name=Lucas+Guzman&background=003049&color=fff" style="width: 100px; height: 100px; border-radius: 50%; border: 4px solid var(--bizantine-gold); box-shadow: 0 10px 25px rgba(0,0,0,0.5);">
+                    <div style="position: absolute; bottom: 5px; right: 5px; background: var(--success); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 3px solid #003049; font-size: 12px;"><i class="fa-solid fa-check"></i></div>
                 </div>
-                <h2 style="color: white; font-weight: 800; font-size: 24px;">Lucas Guzmán</h2>
-                <p style="color: var(--bizantine-gold); font-size: 12px; font-weight: 700; letter-spacing: 1px;">İSTANBUL SAKİNİ (VERIFIED)</p>
-                <p style="color: rgba(255,255,255,0.5); font-size: 11px; margin-top: 4px;">Lale App Co-Founder</p>
+                <h2 style="color: white; font-weight: 800; margin-top: 15px; font-size: 24px;">Lucas Guzmán</h2>
+                <p style="color: var(--bizantine-gold); font-size: 11px; font-weight: 700; letter-spacing: 1px;">İSTANBUL SAKİNİ (VERIFIED)</p>
+                <p style="color: rgba(255,255,255,0.5); font-size: 12px;">Fundador - Lale App</p>
             </div>
 
-            <div class="section-label">Resmi İşlemler (Legal)</div>
-            <div class="card" onclick="window.open('https://www.turkiye.gov.tr/', '_blank')" style="background: white;">
-                <div style="width: 42px; height: 42px; background: #f8fafc; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--turkish-red);"><i class="fa-solid fa-landmark-dome"></i></div>
-                <div style="flex:1;"><p style="font-weight: 800; color: var(--bosphorus-blue);">e-Devlet Kapısı</p><p style="font-size: 11px; color: var(--gray-text);">Digital Identity & Local ID</p></div>
+            <span class="label">Resmi İşlemler (Legal)</span>
+            <div class="item-card" onclick="window.open('https://www.turkiye.gov.tr/', '_blank')">
+                <div style="width: 42px; height: 42px; background: #f1f5f9; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--turkish-red);"><i class="fa-solid fa-landmark"></i></div>
+                <div style="flex:1;"><p style="font-weight: 800;">e-Devlet Kapısı</p><p style="font-size: 11px; color: #64748B;">Identity & Residence Docs</p></div>
                 <i class="fa-solid fa-chevron-right" style="color: #cbd5e1;"></i>
             </div>
 
-            <div class="card" onclick="window.open('https://www.sigortam.net/seyahat-saglik-sigortasi', '_blank')" style="background: white;">
-                <div style="width: 42px; height: 42px; background: #f8fafc; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--bosphorus-blue);"><i class="fa-solid fa-shield-halved"></i></div>
-                <div style="flex:1;"><p style="font-weight: 800; color: var(--bosphorus-blue);">Seyahat Sigortası</p><p style="font-size: 11px; color: var(--gray-text);">Travel Insurance Policy</p></div>
+            <div class="item-card" onclick="window.open('https://www.sigortam.net', '_blank')">
+                <div style="width: 42px; height: 42px; background: #f1f5f9; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--bosphorus-blue);"><i class="fa-solid fa-shield-halved"></i></div>
+                <div style="flex:1;"><p style="font-weight: 800;">Seyahat Sigortası</p><p style="font-size: 11px; color: #64748B;">Travel Insurance Policy</p></div>
                 <i class="fa-solid fa-chevron-right" style="color: #cbd5e1;"></i>
             </div>
 
-            <button style="width: 100%; margin-top: 10px; padding: 20px; border-radius: 20px; border: none; background: rgba(254, 226, 226, 0.9); color: #dc2626; font-weight: 800; cursor: pointer;">
-                <i class="fa-solid fa-power-off" style="margin-right: 8px;"></i> Oturumu Kapat
+            <button onclick="systemExit()" style="width: 100%; margin-top: 20px; padding: 20px; border-radius: 22px; border: none; background: rgba(227, 10, 23, 0.15); color: #ff4d4d; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px;">
+                <i class="fa-solid fa-power-off"></i> Oturumu Kapat
             </button>
         </section>
     </main>
 
     <nav>
-        <div class="nav-link active" onclick="showScreen('home', this)"><i class="fa-solid fa-compass"></i><span>Keşfet</span></div>
-        <div class="nav-link" onclick="triggerAction('Ferry')"><i class="fa-solid fa-ship"></i><span>Vapur</span></div>
-        <div class="nav-link" onclick="showScreen('wallet', this)"><i class="fa-solid fa-wallet"></i><span>Lale Pay</span></div>
-        <div class="nav-link" onclick="showScreen('profile', this)"><i class="fa-solid fa-circle-user"></i><span>Profil</span></div>
+        <div class="nav-item active" onclick="changeScreen('home', this)"><i class="fa-solid fa-compass"></i><span>Keşfet</span></div>
+        <div class="nav-item" onclick="runAction('Ferry')"><i class="fa-solid fa-ship"></i><span>Vapur</span></div>
+        <div class="nav-item" onclick="changeScreen('wallet', this)"><i class="fa-solid fa-wallet"></i><span>Lale Pay</span></div>
+        <div class="nav-item" onclick="changeScreen('profile', this)"><i class="fa-solid fa-user-circle"></i><span>Profil</span></div>
     </nav>
 </div>
 
 <script>
-    // 1. Gestión del Splash Screen
-    window.addEventListener('load', () => {
+    // 1. Manejo del Splash
+    window.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             const splash = document.getElementById('splash');
             splash.style.opacity = '0';
             splash.style.transform = 'translateY(-100%)';
             setTimeout(() => splash.style.display = 'none', 800);
-        }, 2500);
+        }, 2600);
     });
 
-    // 2. Saludo según la hora
-    const hours = new Date().getHours();
-    const greet = hours < 12 ? "Günaydın" : hours < 18 ? "İyi Günler" : "İyi Akşamlar";
-    document.getElementById('welcome-text').innerText = greet;
+    // 2. Saludo Dinámico
+    const hour = new Date().getHours();
+    const greetStr = hour < 12 ? "Günaydın" : hour < 18 ? "İyi Günler" : "İyi Akşamlar";
+    document.getElementById('greeting').innerText = greetStr;
 
-    // 3. Sistema de Navegación de Pantallas
-    function showScreen(screenId, element) {
-        // Ocultar todas las pantallas
+    // 3. Sistema de Pantallas
+    function changeScreen(id, el) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        // Quitar estado activo de nav
-        document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
-        
-        // Activar seleccionada
-        document.getElementById(screenId).classList.add('active');
-        element.classList.add('active');
-        
-        // Feedback háptico visual (notificación suave)
-        console.log(`Navigating to ${screenId}`);
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        el.classList.add('active');
     }
 
-    // 4. Lógica de Notificaciones Push
-    function notify(title, msg, icon, color) {
-        const n = document.getElementById('notification');
-        const iconBox = document.getElementById('notif-icon');
-        
-        document.getElementById('notif-title').innerText = title;
-        document.getElementById('notif-text').innerText = msg;
-        iconBox.innerHTML = `<i class="fa-solid ${icon}"></i>`;
-        iconBox.style.background = color + '20';
-        iconBox.style.color = color;
-        
-        n.style.top = '25px';
-        setTimeout(() => { n.style.top = '-150px'; }, 4000);
+    // 4. Notificaciones Push
+    function sendPush(title, msg, icon, color) {
+        const p = document.getElementById('push-notif');
+        const i = document.getElementById('notif-img');
+        document.getElementById('notif-head').innerText = title;
+        document.getElementById('notif-body').innerText = msg;
+        i.innerHTML = `<i class="fa-solid ${icon}"></i>`;
+        i.style.background = color + '20';
+        i.style.color = color;
+        p.style.top = '25px';
+        setTimeout(() => p.style.top = '-150px', 4000);
     }
 
-    // 5. Acciones Reales de la App
-    function triggerAction(type) {
+    // 5. Acciones y Emergencias
+    function runAction(type) {
         if(type === 'Pharmacy') {
-            notify("Eczane Bulucu", "En yakın nöbetçi eczaneler listeleniyor...", "fa-house-medical", "#E30A17");
-            setTimeout(() => window.open('https://www.istanbuleczaciodasi.org.tr/nobetci-ezcaneler/', '_blank'), 1200);
+            sendPush("Eczane Bulucu", "En yakın nöbetçi eczaneler listeleniyor...", "fa-house-medical", "#E30A17");
+            setTimeout(() => window.open('https://www.istanbuleczaciodasi.org.tr/nobetci-ezcaneler/', '_blank'), 1500);
         }
         if(type === 'Ferry') {
-            notify("Şehir Hatları", "Vapur seferleri ve iskele yoğunluğu kontrol ediliyor...", "fa-ship", "#003049");
-            setTimeout(() => window.open('https://www.sehirhatlari.istanbul/tr/sefer-tarifeleri', '_blank'), 1200);
+            sendPush("Vapur Seferleri", "Şehir Hatları güncel saatler kontrol ediliyor...", "fa-ship", "#003049");
+            setTimeout(() => window.open('https://www.sehirhatlari.istanbul/tr/sefer-tarifeleri', '_blank'), 1500);
         }
     }
 
-    // 6. Deep Linking (Intento de abrir app local, si no abre web)
-    function openApp(webUrl, scheme) {
-        const start = Date.now();
+    // 6. Botón de Apagado Real
+    function systemExit() {
+        sendPush("Oturum Kapatılıyor", "Lale güvenli bir şekilde kapatılıyor...", "fa-power-off", "#E30A17");
+        setTimeout(() => {
+            location.reload(); // Reinicia la app al splash inicial
+        }, 1500);
+    }
+
+    // 7. Deep Linking
+    function openExt(url, scheme) {
+        const s = Date.now();
         window.location.href = scheme;
         setTimeout(() => {
-            if (Date.now() - start < 1500) window.open(webUrl, '_blank');
-        }, 500);
+            if (Date.now() - s < 1500) window.open(url, '_blank');
+        }, 600);
     }
 </script>
 
