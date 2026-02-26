@@ -20,7 +20,7 @@
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
         
-        body { background-color: #000; color: white; height: 100vh; overflow: hidden; }
+        body { background-color: #000; color: white; height: 100vh; overflow: hidden; transition: background 0.5s; }
 
         /* VIDEO DE FONDO REAL */
         .video-bg {
@@ -93,6 +93,7 @@
             display: flex; align-items: center; justify-content: center; gap: 12px;
             width: 100%; border: none; cursor: pointer; font-size: 16px;
             box-shadow: 0 12px 24px rgba(212, 175, 55, 0.4); margin: 10px 0;
+            transition: all 0.3s ease;
         }
 
         /* NAVBAR */
@@ -149,7 +150,7 @@
             <h2 id="dynamic-greeting" style="font-size: 36px; font-weight: 800; margin-top: 5px;">Merhaba</h2>
             <p style="color: rgba(255,255,255,0.8); margin-bottom: 25px;">Bugün İstanbul'u birlikte keşfedelim.</p>
 
-            <button class="btn-jam" onclick="initLaleJam()">
+            <button class="btn-jam" id="laleJamBtn" onclick="initLaleJam()">
                 <i class="fa-solid fa-wand-magic-sparkles"></i> LALE JAM BAŞLAT
             </button>
             <p style="text-align: center; font-size: 10px; color: var(--bizantine-gold); margin-top: 8px; font-weight: 700;">ARKADAŞLARINLA SENKRONİZE OL</p>
@@ -243,21 +244,13 @@
     // 2. SALUDO DINÁMICO TURCO
     function updateGreeting() {
         const h = new Date().getHours();
-        let g = "Merhaba";
-        if(h >= 5 && h < 12) g = "Günaydın";
-        else if(h >= 12 && h < 18) g = "İyi Günler";
-        else g = "İyi Akşamlar";
+        let g = h >= 5 && h < 12 ? "Günaydın" : h >= 12 && h < 18 ? "İyi Günler" : "İyi Akşamlar";
         document.getElementById('dynamic-greeting').innerText = g;
     }
 
-    // 3. MUHTAR DIGITAL: Noticias Reales Estambul
+    // 3. MUHTAR DIGITAL
     function startMuhtarFeed() {
-        const alerts = [
-            "Beşiktaş'ta sular 22:00'de kesilecektir.",
-            "Kadıköy Pazar alanında etkinlik var.",
-            "Metrobüs hattında bakım çalışması mevcut.",
-            "Vapur seferleri hava muhalefeti nedeniyle iptal olabilir."
-        ];
+        const alerts = ["Beşiktaş'ta sular 22:00'de kesilecek.", "Kadıköy Pazarında etkinlik var.", "Metrobüs hattında çalışma mevcut."];
         let i = 0;
         setInterval(() => {
             document.getElementById('muhtar-text').innerText = alerts[i];
@@ -265,12 +258,12 @@
         }, 5000);
     }
 
-    // 4. LALE JAM: LÓGICA DE GPS Y SINCRONIZACIÓN SOCIAL
+    // 4. LALE JAM: CONEXIÓN REAL "LUCAS JAM"
     let jamActive = false;
     function initLaleJam() {
         jamActive = !jamActive;
         const body = document.getElementById('mainBody');
-        const btn = document.querySelector('.btn-jam');
+        const btn = document.getElementById('laleJamBtn');
         
         if(jamActive) {
             body.classList.add('jam-mode');
@@ -278,11 +271,18 @@
             btn.style.background = 'linear-gradient(135deg, #E30A17, #8b0000)';
             btn.style.color = '#fff';
             
-            // ACCESO REAL GPS
+            showPush("LALE JAM AKTİF", "Lucas Jam odası hazırlanıyor...", "fa-wand-magic-sparkles", "#D4AF37");
+
+            // LOGICA REAL: GEOLOCALIZACION + SALA DE VIDEO
             navigator.geolocation.getCurrentPosition(pos => {
-                const { latitude, longitude } = pos.coords;
-                showPush("LALE JAM BAŞLADI", "Konumun gruptakilerle paylaşılıyor. GPS Aktif.", "fa-wand-magic-sparkles", "#D4AF37");
-                console.log(`JAM GPS: ${latitude}, ${longitude}`);
+                const roomId = "Lucas-Jam-" + Math.floor(Math.random() * 9999);
+                const meetUrl = `https://meet.jit.si/${roomId}#config.startWithVideoMuted=true`;
+                
+                setTimeout(() => {
+                    if(confirm("Lucas Jam hazır! Arkadaşlarınla canlı videollamada buluşmak ve konum paylaşmak için odaya girmek ister misin?")) {
+                        window.open(meetUrl, '_blank');
+                    }
+                }, 1000);
             }, err => {
                 showPush("HATA", "GPS izni verilmedi.", "fa-triangle-exclamation", "#E30A17");
             });
@@ -290,13 +290,13 @@
             body.classList.remove('jam-mode');
             btn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> LALE JAM BAŞLAT';
             btn.style.background = ''; btn.style.color = '';
-            showPush("JAM KAPATILDI", "Oturum sona erdi.", "fa-lock", "#64748B");
+            showPush("JAM KAPATILDI", "Bağlantı kesildi.", "fa-lock", "#64748B");
         }
     }
 
-    // 5. VAPUR REAL (TRÁFICO EN VIVO)
+    // 5. VAPUR REAL
     function realVapurTrack() {
-        showPush("VAPUR TAKİBİ", "Şehir Hatları canlı gemi trafiği açılıyor...", "fa-ship", "#003049");
+        showPush("VAPUR TAKİBİ", "Canlı gemi trafiği açılıyor...", "fa-ship", "#003049");
         setTimeout(() => window.open('https://www.sehirhatlari.istanbul/tr/gemilerimiz', '_blank'), 1500);
     }
 
@@ -324,13 +324,11 @@
     function openService(scheme, web) {
         const start = Date.now();
         window.location.href = scheme;
-        setTimeout(() => {
-            if (Date.now() - start < 1500) window.open(web, '_blank');
-        }, 600);
+        setTimeout(() => { if (Date.now() - start < 1500) window.open(web, '_blank'); }, 600);
     }
 
     function systemShutdown() {
-        showPush("HOŞÇA KAL", "Oturum güvenli şekilde kapatıldı.", "fa-power-off", "#E30A17");
+        showPush("HOŞÇA KAL", "Oturum kapatıldı.", "fa-power-off", "#E30A17");
         setTimeout(() => location.reload(), 1500);
     }
 </script>
