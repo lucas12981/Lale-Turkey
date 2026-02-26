@@ -22,7 +22,13 @@
             --success-green: #10B981;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            -webkit-tap-highlight-color: transparent; 
+        }
         
         body { background-color: #000; display: flex; justify-content: center; height: 100vh; overflow: hidden; }
         
@@ -35,7 +41,7 @@
         #splash { 
             position: absolute; inset: 0; background: var(--bosphorus-blue); z-index: 5000; 
             display: flex; flex-direction: column; justify-content: center; align-items: center; 
-            transition: 1s ease-in-out; 
+            transition: 1s cubic-bezier(0.85, 0, 0.15, 1); 
         }
         .tulip-svg { font-size: 80px; filter: drop-shadow(0 0 15px var(--bizantine-gold)); animation: pulse 2s infinite; }
         @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.1); opacity: 1; } }
@@ -52,25 +58,31 @@
         .brand { font-size: 24px; font-weight: 800; color: var(--bosphorus-blue); letter-spacing: -1px; }
         .user-status { background: white; padding: 8px 15px; border-radius: 50px; box-shadow: var(--shadow-soft); display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 800; }
 
-        .screen-container { flex: 1; overflow-y: auto; padding: 0 20px 140px; }
+        .screen-container { flex: 1; overflow-y: auto; padding: 0 20px 140px; scroll-behavior: smooth; }
+        .screen { display: none; animation: fadeIn 0.4s ease; }
+        .screen.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
         .section-title { font-size: 12px; font-weight: 800; color: var(--gray-text); text-transform: uppercase; letter-spacing: 1.2px; margin: 25px 0 15px; }
 
-        /* --- BUTTONS & CARDS --- */
+        /* --- COMPONENTES UI --- */
         .emergency-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .emergency-btn { padding: 18px; border-radius: 20px; border: none; display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 800; font-size: 14px; cursor: pointer; transition: 0.2s; }
-        .emergency-btn:active { transform: scale(0.96); }
-
+        
         .category-card { 
             background: white; border-radius: var(--radius-premium); padding: 20px; 
             margin-bottom: 12px; box-shadow: var(--shadow-soft); 
             display: flex; align-items: center; gap: 15px; cursor: pointer; transition: 0.2s;
         }
-        .category-card:active { transform: scale(0.98); background: #f1f5f9; }
-        .icon-box { width: 48px; height: 48px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+
+        .balance-card {
+            background: var(--dark); border-radius: 28px; padding: 25px; color: white;
+            margin-bottom: 25px; position: relative; overflow: hidden;
+        }
 
         .companion-banner {
             background: linear-gradient(rgba(0,48,73,0.6), rgba(0,48,73,0.7)), url('https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?q=80&w=400&auto=format&fit=crop');
-            background-size: cover; border-radius: var(--radius-premium); padding: 25px; color: white; margin-top: 10px; box-shadow: 0 10px 20px rgba(0,48,73,0.2);
+            background-size: cover; border-radius: var(--radius-premium); padding: 25px; color: white; margin-top: 10px;
         }
 
         /* --- NAVIGATION --- */
@@ -112,69 +124,103 @@
     </header>
 
     <main class="screen-container">
-        <h2 id="greeting" style="font-size: 32px; font-weight: 800; color: var(--dark); margin-top: 10px;">Merhaba</h2>
-        <p style="color: var(--gray-text); font-weight: 500; font-size: 15px;">İstanbul seni bekliyor.</p>
+        <section id="home" class="screen active">
+            <h2 id="greeting" style="font-size: 32px; font-weight: 800; color: var(--dark); margin-top: 10px;">Merhaba</h2>
+            <p style="color: var(--gray-text); font-weight: 500; font-size: 15px;">İstanbul seni bekliyor.</p>
 
-        <div class="section-title">Hızlı Servis</div>
-        <div class="emergency-grid">
-            <button class="emergency-btn" style="background: #FFE4E6; color: var(--turkish-red);" onclick="findPharmacy()">
-                <i class="fa-solid fa-house-medical"></i> Eczane
-            </button>
-            <button class="emergency-btn" style="background: var(--dark); color: white;" onclick="window.location.href='tel:112'">
-                <i class="fa-solid fa-phone"></i> Acil 112
-            </button>
-        </div>
-
-        <div class="section-title">Yaşam Tarzı</div>
-        
-        <div class="category-card" onclick="openApp('https://www.bitaksi.com', 'bitaksi://')">
-            <div class="icon-box" style="background: #FFF9C4; color: #FBC02D;"><i class="fa-solid fa-taxi"></i></div>
-            <div style="flex:1;">
-                <p style="font-weight: 800; font-size: 15px;">Ulaşım</p>
-                <p style="font-size: 11px; color: var(--gray-text);">BiTaksi, Martı ve iSBike</p>
+            <div class="section-title">Hızlı Servis</div>
+            <div class="emergency-grid">
+                <button class="emergency-btn" style="background: #FFE4E6; color: var(--turkish-red);" onclick="findPharmacy()">
+                    <i class="fa-solid fa-house-medical"></i> Eczane
+                </button>
+                <button class="emergency-btn" style="background: var(--dark); color: white;" onclick="window.location.href='tel:112'">
+                    <i class="fa-solid fa-phone"></i> Acil 112
+                </button>
             </div>
-            <i class="fa-solid fa-chevron-right" style="color: #CBD5E1; font-size: 12px;"></i>
-        </div>
 
-        <div class="category-card" onclick="openApp('https://getir.com', 'getir://')">
-            <div class="icon-box" style="background: #EDE7F6; color: #5D3EBD;"><i class="fa-solid fa-bag-shopping"></i></div>
-            <div style="flex:1;">
-                <p style="font-weight: 800; font-size: 15px;">Teslimat</p>
-                <p style="font-size: 11px; color: var(--gray-text);">Getir, Yemeksepeti y Trendyol</p>
+            <div class="section-title">Yaşam Tarzı</div>
+            <div class="category-card" onclick="openService('https://www.bitaksi.com', 'bitaksi://')">
+                <div style="width: 48px; height: 48px; background: #FFF9C4; color: #FBC02D; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 22px;"><i class="fa-solid fa-taxi"></i></div>
+                <div style="flex:1;">
+                    <p style="font-weight: 800; font-size: 15px;">Ulaşım</p>
+                    <p style="font-size: 11px; color: var(--gray-text);">BiTaksi, Martı ve iSBike</p>
+                </div>
+                <i class="fa-solid fa-chevron-right" style="color: #CBD5E1; font-size: 12px;"></i>
             </div>
-            <i class="fa-solid fa-chevron-right" style="color: #CBD5E1; font-size: 12px;"></i>
-        </div>
 
-        <div class="companion-banner">
-            <h4 style="font-weight: 800; font-size: 20px;">Refakatçi'ye Sor</h4>
-            <p style="font-size: 13px; margin: 8px 0 18px; opacity: 0.9; line-height: 1.4;">"Boğaz'ın en güzel çay bahçesi hangisi?"</p>
-            <button style="padding: 12px 24px; border-radius: 50px; border: none; background: white; color: var(--dark); font-weight: 800; font-size: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);" onclick="showPush('Kültür Rehberi', 'Moda Sahili çay için harika bir seçim!', '#D4AF37')">Sohbeti Başlat</button>
-        </div>
+            <div class="category-card" onclick="openService('https://getir.com', 'getir://')">
+                <div style="width: 48px; height: 48px; background: #EDE7F6; color: #5D3EBD; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 22px;"><i class="fa-solid fa-bag-shopping"></i></div>
+                <div style="flex:1;">
+                    <p style="font-weight: 800; font-size: 15px;">Teslimat</p>
+                    <p style="font-size: 11px; color: var(--gray-text);">Getir, Yemeksepeti y Trendyol</p>
+                </div>
+                <i class="fa-solid fa-chevron-right" style="color: #CBD5E1; font-size: 12px;"></i>
+            </div>
 
-        <div class="section-title">Popüler Destinasyonlar</div>
-        <div style="display: flex; gap: 15px; overflow-x: auto; padding-bottom: 10px;">
-            <div style="min-width: 160px; height: 200px; background: linear-gradient(to top, rgba(0,0,0,0.6), transparent), url('https://muze.gov.tr/s3/Mys_Content/1/Ayasofya-Camii-v8.jpg') center/cover; border-radius: 22px; padding: 15px; display: flex; align-items: flex-end;">
-                <p style="color: white; font-weight: 800; font-size: 13px;">Ayasofya</p>
+            <div class="companion-banner">
+                <h4 style="font-weight: 800; font-size: 20px;">Refakatçi'ye Sor</h4>
+                <p style="font-size: 13px; margin: 8px 0 18px; opacity: 0.9; line-height: 1.4;">"Boğaz'ın en güzel çay bahçesi hangisi?"</p>
+                <button style="padding: 12px 24px; border-radius: 50px; border: none; background: white; color: var(--dark); font-weight: 800; font-size: 12px;" onclick="showPush('Kültür Rehberi', 'Moda Sahili çay için harika bir seçim!', '#D4AF37')">Sohbeti Başlat</button>
             </div>
-            <div style="min-width: 160px; height: 200px; background: linear-gradient(to top, rgba(0,0,0,0.6), transparent), url('https://images.unsplash.com/photo-1541432901042-2d8bd64b4a9b?q=80&w=400') center/cover; border-radius: 22px; padding: 15px; display: flex; align-items: flex-end;">
-                <p style="color: white; font-weight: 800; font-size: 13px;">Galata</p>
+        </section>
+
+        <section id="wallet" class="screen">
+            <h2 style="font-size: 30px; font-weight: 800; margin-bottom: 5px;">Lale Pay</h2>
+            <p style="color: var(--gray-text); margin-bottom: 25px;">Dijital Cüzdan ve Ödemeler</p>
+            
+            <div class="balance-card">
+                <p style="font-size: 11px; opacity: 0.7; text-transform: uppercase;">Toplam Bakiye</p>
+                <h3 style="font-size: 34px; font-weight: 800; margin: 8px 0;">₺1.250,50</h3>
+                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                    <button style="flex: 1; padding: 12px; border-radius: 14px; border: none; background: var(--bizantine-gold); color: var(--dark); font-weight: 800; font-size: 12px;">YÜKLE</button>
+                    <button style="flex: 1; padding: 12px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.3); background: transparent; color: white; font-weight: 800; font-size: 12px;">TRANSFER</button>
+                </div>
             </div>
-        </div>
+
+            <div class="section-title">Entegre Cüzdanlar</div>
+            
+            <div class="category-card" onclick="openService('https://www.papara.com', 'papara://')">
+                <div style="width: 45px; height: 45px; background: #000; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #BBFF00; font-weight: 900; font-size: 20px;">P</div>
+                <div style="flex:1;"><p style="font-weight: 800;">Papara</p><p style="font-size: 11px; color: var(--gray-text);">7/24 Para Transferi</p></div>
+                <i class="fa-solid fa-arrow-up-right-from-square" style="color: #cbd5e1; font-size: 12px;"></i>
+            </div>
+
+            <div class="category-card" onclick="openService('https://tosla.com', 'tosla://')">
+                <div style="width: 45px; height: 45px; background: #7131FF; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white;"><i class="fa-solid fa-bolt-lightning"></i></div>
+                <div style="flex:1;"><p style="font-weight: 800;">Tosla</p><p style="font-size: 11px; color: var(--gray-text);">Hızlı Ödeme</p></div>
+                <i class="fa-solid fa-arrow-up-right-from-square" style="color: #cbd5e1; font-size: 12px;"></i>
+            </div>
+
+            <div class="category-card" onclick="window.open('https://www.istanbulkart.istanbul/', '_blank')">
+                <div style="width: 45px; height: 45px; background: #FF6200; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white;"><i class="fa-solid fa-id-card"></i></div>
+                <div style="flex:1;"><p style="font-weight: 800;">İstanbulkart</p><p style="font-size: 11px; color: var(--gray-text);">NFC Bakiye Yükle</p></div>
+                <span style="background: #FFF0E6; color: #FF6200; font-size: 10px; font-weight: 800; padding: 4px 8px; border-radius: 8px;">NFC</span>
+            </div>
+        </section>
+
+        <section id="profile" class="screen">
+            <h2 style="font-size: 28px; font-weight: 800;">Profil ve Ayarlar</h2>
+            <div style="margin-top: 30px; text-align: center;">
+                <div style="width: 100px; height: 100px; background: #e2e8f0; border-radius: 50%; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; font-size: 40px; color: #64748B;"><i class="fa-solid fa-user"></i></div>
+                <p style="font-weight: 800; font-size: 20px;">Lucas Guzman</p>
+                <p style="color: var(--gray-text); font-size: 14px;">Founder - Lale App</p>
+            </div>
+        </section>
     </main>
 
     <nav>
-        <div class="nav-item active"><i class="fa-solid fa-house"></i><span>Anasayfa</span></div>
+        <div class="nav-item active" onclick="navigate('home', this)"><i class="fa-solid fa-house"></i><span>Anasayfa</span></div>
         <div class="nav-item" onclick="checkFerry()">
             <div class="status-dot" id="ferry-dot"></div>
             <i class="fa-solid fa-ship"></i><span>Vapur</span>
         </div>
-        <div class="nav-item"><i class="fa-solid fa-wallet"></i><span>Lale Pay</span></div>
-        <div class="nav-item"><i class="fa-solid fa-user"></i><span>Profil</span></div>
+        <div class="nav-item" onclick="navigate('wallet', this)"><i class="fa-solid fa-wallet"></i><span>Lale Pay</span></div>
+        <div class="nav-item" onclick="navigate('profile', this)"><i class="fa-solid fa-user"></i><span>Profil</span></div>
     </nav>
 </div>
 
 <script>
-    // --- Configuración Global ---
+    // --- DATOS Y CONFIG ---
     const ferryTerminals = [
         { name: "Eminönü", lat: 41.0175, lon: 28.9714 },
         { name: "Karaköy", lat: 41.0221, lon: 28.9752 },
@@ -183,21 +229,28 @@
         { name: "Kadıköy", lat: 40.9911, lon: 29.0222 }
     ];
 
-    // Splash logic
+    // --- UX INICIAL (SPLASH & GREETING) ---
     setTimeout(() => {
         const splash = document.getElementById('splash');
         splash.style.opacity = '0';
         setTimeout(() => splash.style.display = 'none', 1000);
     }, 2500);
 
-    // Saludo Dinámico
     const hour = new Date().getHours();
     const greetElement = document.getElementById('greeting');
     if (hour < 12) greetElement.innerText = "Günaydın";
     else if (hour < 18) greetElement.innerText = "İyi Günler";
     else greetElement.innerText = "İyi Akşamlar";
 
-    // Notificaciones
+    // --- SISTEMA DE NAVEGACIÓN ---
+    function navigate(screenId, element) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        document.getElementById(screenId).classList.add('active');
+        element.classList.add('active');
+    }
+
+    // --- NOTIFICACIONES ---
     function showPush(title, text, color) {
         const push = document.getElementById('push-notification');
         document.getElementById('notif-title').innerText = title;
@@ -207,35 +260,31 @@
         setTimeout(() => { push.style.top = '-120px'; }, 4500);
     }
 
-    // --- FUNCIÓN FARMACIA INTELIGENTE ---
+    // --- FUNCIONES INTELIGENTES ---
+
+    // 1. Buscador de Farmacia Inteligente
     function findPharmacy() {
         showPush("Aranıyor...", "En yakın nöbetçi eczaneler bulunuyor", "#E30A17");
-        
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition((position) => {
                 const lat = position.coords.latitude;
                 const lon = position.coords.longitude;
-                // Query específica para farmacias de turno
+                // Query: Farmacias de turno cercanas
                 const mapUrl = `https://www.google.com/maps/search/nöbetçi+eczane/@${lat},${lon},14z`;
                 setTimeout(() => window.open(mapUrl, '_blank'), 1000);
             }, () => {
-                // Fallback si no hay GPS
-                window.open('https://www.google.com/maps/search/nöbetçi+eczane', '_blank');
+                window.open('https://www.google.com/maps/search/nöbetçi+eczane+istanbul', '_blank');
             });
-        } else {
-            window.open('https://www.google.com/maps/search/nöbetçi+eczane', '_blank');
         }
     }
 
-    // --- FUNCIÓN FERRY INTELIGENTE ---
+    // 2. Asistente de Ferry con GPS
     function checkFerry() {
-        showPush("Vapur Bilgisi", "İskele durumu kontrol ediliyor...", "#003049");
-
+        showPush("Vapur Bilgisi", "En yakın iskele ve seferler kontrol ediliyor...", "#003049");
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition((position) => {
                 const uLat = position.coords.latitude;
                 const uLon = position.coords.longitude;
-
                 let closest = ferryTerminals[0];
                 let minDist = Infinity;
 
@@ -244,27 +293,27 @@
                     if (d < minDist) { minDist = d; closest = t; }
                 });
 
-                // Simulación de alertas de clima
-                const isFoggy = Math.random() > 0.8; 
+                // Alerta de Clima Aleatoria (Simulación)
+                const isFoggy = Math.random() > 0.8;
                 if (isFoggy) {
                     document.getElementById('ferry-dot').style.background = "#E30A17";
-                    showPush("⚠️ İPTAL UYARISI", `Hava muhalefeti nedeniyle ${closest.name} seferlerinde aksama olabilir.`, "#E30A17");
+                    showPush("⚠️ İPTAL UYARISI", `${closest.name} iskelesinde seferlerde aksama olabilir.`, "#E30A17");
                 } else {
-                    showPush("🚢 " + closest.name, "Seferler normal. İyi yolculuklar!", "#10B981");
+                    document.getElementById('ferry-dot').style.background = "#10B981";
+                    showPush("🚢 " + closest.name, "Tüm seferler zamanında yapılıyor.", "#10B981");
                 }
-
+                
                 setTimeout(() => {
                     window.open(`https://www.sehirhatlari.istanbul/tr/seferleri/${closest.name.toLowerCase()}-iskeleleri`, '_blank');
-                }, 1500);
-
+                }, 2000);
             }, () => {
                 window.open('https://www.sehirhatlari.istanbul/tr/sefer-tarifeleri', '_blank');
             });
         }
     }
 
-    // Ayuda para abrir Apps o Web
-    function openApp(webUrl, appScheme) {
+    // 3. Redirección Universal (App o Web)
+    function openService(webUrl, appScheme) {
         const start = Date.now();
         window.location.href = appScheme;
         setTimeout(() => {
