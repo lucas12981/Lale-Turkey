@@ -3,355 +3,198 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Lale Super App - Turkish Premium UX</title>
+    <title>Lale - İstanbul'un Kalbi</title>
     
-    <link rel="manifest" href="manifest.json">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/1047/1047461.png">
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
         :root {
             --turkish-red: #E30A17;
-            --turkish-red-light: #fee2e2;
-            --bosphorus-blue: #005C92;
-            --bizantine-gold: #FFD700;
-            --bg-light: #FBFBFF;
+            --bosphorus-blue: #003049;
+            --bizantine-gold: #D4AF37;
+            --bg-light: #F8FAFC;
             --white: #FFFFFF;
             --dark: #0F172A;
             --gray-text: #64748B;
-            --radius-soft: 28px;
-            --shadow-premium: 0 10px 30px -5px rgba(0, 0, 0, 0.08);
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --radius-premium: 24px;
+            --shadow-soft: 0 10px 25px rgba(0,0,0,0.05);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
         
-        body { background-color: #f0f2f5; display: flex; justify-content: center; height: 100vh; overflow: hidden; color: var(--dark); }
+        body { background-color: #000; display: flex; justify-content: center; height: 100vh; overflow: hidden; }
         
         .app-shell { 
             width: 100%; max-width: 414px; height: 100%; background: var(--bg-light); 
             position: relative; overflow: hidden; display: flex; flex-direction: column;
-            box-shadow: 0 0 40px rgba(0,0,0,0.1);
         }
 
-        /* --- UX: Splash Premium --- */
+        /* --- SPLASH SCREEN CULTURAL --- */
         #splash { 
-            position: absolute; inset: 0; background: var(--dark); z-index: 5000; 
+            position: absolute; inset: 0; background: var(--bosphorus-blue); z-index: 5000; 
             display: flex; flex-direction: column; justify-content: center; align-items: center; 
-            transition: 0.8s cubic-bezier(0.85, 0, 0.15, 1); 
+            transition: 1s ease-in-out; 
         }
-        .tulip-logo { font-size: 90px; filter: drop-shadow(0 0 20px var(--turkish-red)); animation: float 3s infinite ease-in-out; }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        .tulip-svg { width: 100px; height: 100px; filter: drop-shadow(0 0 15px var(--bizantine-gold)); animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.05); opacity: 1; } 100% { transform: scale(1); opacity: 0.8; } }
 
-        /* --- UX: Notificaciones Estilo Trendyol --- */
-        #push-notification { 
-            position: absolute; top: -150px; left: 16px; right: 16px; 
-            background: rgba(255, 255, 255, 0.95); padding: 18px; border-radius: 22px; 
-            z-index: 4000; display: flex; align-items: center; gap: 15px; 
-            box-shadow: 0 15px 35px rgba(0,0,0,0.12); backdrop-filter: blur(15px);
-            border: 1px solid rgba(255,255,255,0.5); transition: var(--transition);
+        /* --- HEADER & GREETING --- */
+        header { padding: 50px 24px 10px; display: flex; justify-content: space-between; align-items: center; }
+        .brand { font-size: 24px; font-weight: 800; color: var(--bosphorus-blue); }
+        .user-status { background: white; padding: 8px 15px; border-radius: 50px; box-shadow: var(--shadow-soft); display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; }
+
+        .screen-container { flex: 1; overflow-y: auto; padding: 0 20px 120px; }
+
+        /* --- WIDGETS ORDENADOS --- */
+        .section-title { font-size: 13px; font-weight: 800; color: var(--gray-text); text-transform: uppercase; letter-spacing: 1px; margin: 25px 0 15px; }
+
+        .emergency-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .emergency-btn { padding: 15px; border-radius: 20px; border: none; display: flex; align-items: center; gap: 10px; font-weight: 700; cursor: pointer; }
+
+        /* --- CATEGORY CARDS --- */
+        .category-card { 
+            background: white; border-radius: var(--radius-premium); padding: 20px; 
+            margin-bottom: 12px; box-shadow: var(--shadow-soft); 
+            display: flex; align-items: center; gap: 15px; border: 1px solid rgba(0,0,0,0.02);
+        }
+        .icon-box { width: 45px; height: 45px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+
+        /* --- TEA COMPANION BANNER --- */
+        .companion-banner {
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?q=80&w=400&auto=format&fit=crop');
+            background-size: cover; border-radius: var(--radius-premium); padding: 25px; color: white; margin-top: 10px;
         }
 
-        /* --- UX: Header --- */
-        header { 
-            padding: 55px 24px 20px; background: transparent;
-            display: flex; justify-content: space-between; align-items: center; z-index: 1000; 
-        }
-        .brand { font-size: 28px; font-weight: 800; color: var(--turkish-red); letter-spacing: -1.5px; }
-        .user-badge { width: 45px; height: 45px; border-radius: 16px; background: var(--white); display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-premium); cursor: pointer; }
-
-        .screen-container { flex: 1; overflow-y: auto; padding: 0 24px 140px; scroll-behavior: smooth; }
-        .screen { display: none; animation: fadeIn 0.4s ease; }
-        .screen.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* --- UX: Tarjetas Estilo "Super App" --- */
-        .section-title { font-size: 14px; font-weight: 700; color: var(--gray-text); text-transform: uppercase; letter-spacing: 1px; margin: 25px 0 15px 5px; }
-
-        .promo-card { 
-            background: linear-gradient(135deg, #FF4B2B, #FF416C); 
-            border-radius: var(--radius-soft); padding: 25px; color: white; 
-            position: relative; overflow: hidden; box-shadow: 0 12px 25px rgba(227, 10, 23, 0.25);
-        }
-        .promo-card::after { content: '☕'; position: absolute; right: -10px; bottom: -10px; font-size: 100px; opacity: 0.15; transform: rotate(-15deg); }
-
-        .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px; }
-        .btn-secondary { 
-            background: rgba(255,255,255,0.25); border: none; padding: 14px; 
-            border-radius: 18px; color: white; font-weight: 700; font-size: 12px;
-            backdrop-filter: blur(5px); cursor: pointer; transition: var(--transition);
-        }
-        .btn-secondary:active { transform: scale(0.95); }
-
-        /* --- UX: Grid de Servicios --- */
-        .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
-        .service-item { 
-            background: var(--white); padding: 20px 10px; border-radius: 24px; 
-            display: flex; flex-direction: column; align-items: center; gap: 10px;
-            box-shadow: var(--shadow-premium); transition: var(--transition); cursor: pointer;
-        }
-        .service-item:active { transform: translateY(4px); box-shadow: none; }
-        .service-item i { font-size: 28px; }
-
-        /* --- UX: Wallet Premium --- */
-        .wallet-card { 
-            background: var(--white); border-radius: 24px; padding: 20px; 
-            display: flex; align-items: center; justify-content: space-between; 
-            margin-bottom: 15px; box-shadow: var(--shadow-premium); border: 1px solid transparent;
-        }
-        .wallet-card:hover { border-color: var(--turkish-red-light); }
-        .wallet-icon-box { width: 50px; height: 50px; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-weight: 800; color: white; }
-
-        /* --- UX: Chat Overlay --- */
-        #chat-overlay { 
-            position: absolute; bottom: -100%; left: 0; right: 0; height: 85%; 
-            background: var(--bg-light); z-index: 4500; border-radius: 35px 35px 0 0; 
-            box-shadow: 0 -15px 50px rgba(0,0,0,0.15); transition: 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex; flex-direction: column;
-        }
-        #chat-overlay.open { bottom: 0; }
-        .chat-msg { padding: 15px 20px; border-radius: 22px; max-width: 85%; font-size: 14px; margin-bottom: 10px; line-height: 1.5; }
-        .msg-bot { background: var(--white); align-self: flex-start; box-shadow: var(--shadow-sm); border-bottom-left-radius: 5px; }
-        .msg-user { background: var(--turkish-red); color: white; align-self: flex-end; border-bottom-right-radius: 5px; }
-
-        /* --- UX: Navbar Flotante --- */
+        /* --- NAVIGATION --- */
         nav { 
-            position: absolute; bottom: 30px; left: 24px; right: 24px; height: 80px; 
-            background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(20px);
-            border-radius: 28px; display: flex; justify-content: space-around; align-items: center; 
-            box-shadow: 0 20px 40px rgba(0,0,0,0.25); z-index: 1000;
+            position: absolute; bottom: 25px; left: 20px; right: 20px; height: 75px; 
+            background: var(--dark); border-radius: 22px; display: flex; justify-content: space-around; align-items: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
         }
-        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; color: #94a3b8; gap: 5px; transition: 0.3s; }
+        .nav-item { color: #64748B; display: flex; flex-direction: column; align-items: center; gap: 4px; text-decoration: none; font-size: 10px; font-weight: 700; }
         .nav-item.active { color: var(--bizantine-gold); }
-        .nav-item i { font-size: 22px; }
-        .nav-item span { font-size: 10px; font-weight: 700; }
+        .nav-item i { font-size: 20px; }
+
+        #push-notification { 
+            position: absolute; top: -100px; left: 20px; right: 20px; background: white; 
+            padding: 15px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+            z-index: 6000; transition: 0.5s; display: flex; align-items: center; gap: 12px;
+        }
     </style>
 </head>
 <body>
 
 <div class="app-shell">
     <div id="splash">
-        <div class="tulip-logo">🌷</div>
-        <h1 style="color: white; letter-spacing: 10px; font-weight: 800; margin-top: 20px; font-size: 18px;">LALE SUPER</h1>
+        <span class="tulip-svg">🌷</span>
+        <h1 style="color: white; margin-top: 15px; font-weight: 800; letter-spacing: 4px;">LALE</h1>
+        <p style="color: var(--bizantine-gold); font-size: 12px; font-weight: 600; margin-top: 5px;">Şehrin Anahtarı</p>
     </div>
 
     <div id="push-notification">
-        <div id="push-icon-bg" style="background: var(--turkish-red); width: 45px; height: 45px; border-radius: 14px; display: flex; align-items: center; justify-content: center;">
-            <i id="main-push-icon" class="fa-solid fa-ship" style="color: white; font-size: 20px;"></i>
-        </div>
+        <div id="notif-color" style="width: 12px; height: 12px; border-radius: 50%;"></div>
         <div style="flex: 1;">
-            <p id="alert-title" style="font-weight: 800; font-size: 14px; color: var(--dark);">Lale Bilgi</p>
-            <p id="alert-text" style="font-size: 12px; color: var(--gray-text);">Hoş geldiniz!</p>
-        </div>
-    </div>
-
-    <div id="chat-overlay">
-        <div style="padding: 25px; display: flex; justify-content: space-between; align-items: center;">
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <div style="width: 10px; height: 10px; background: var(--success-green); border-radius: 50%; box-shadow: 0 0 10px var(--success-green);"></div>
-                <p style="font-weight: 800; font-size: 18px;">Lale Refakatçi</p>
-            </div>
-            <i class="fa-solid fa-chevron-down" style="font-size: 20px; color: var(--gray-text);" onclick="toggleChat(false)"></i>
-        </div>
-        <div class="chat-body" id="chat-body" style="flex: 1; padding: 0 24px; overflow-y: auto;">
-            <div class="chat-msg msg-bot">Merhaba! Bugün hava harika. Çayını içerken sana İstanbul hakkında bir efsane anlatmamı ister misin?</div>
-        </div>
-        <div style="padding: 24px; background: var(--white); display: flex; gap: 12px; border-radius: 35px 35px 0 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.03);">
-            <input type="text" id="chat-input" placeholder="Mesajınızı yazın..." style="flex: 1; padding: 15px 20px; border-radius: 18px; border: 1px solid #edf2f7; background: #f8fafc; outline: none; font-weight: 500;">
-            <button onclick="sendMsg()" style="background: var(--dark); color: white; border: none; width: 50px; border-radius: 18px; cursor: pointer;"><i class="fa-solid fa-paper-plane"></i></button>
+            <p id="notif-title" style="font-weight: 800; font-size: 13px;"></p>
+            <p id="notif-text" style="font-size: 11px; color: var(--gray-text);"></p>
         </div>
     </div>
 
     <header>
         <div class="brand">LALE</div>
-        <div class="user-badge" onclick="navigate('profile')">
-            <i class="fa-solid fa-crown" style="color: var(--bizantine-gold);"></i>
+        <div class="user-status">
+            <i class="fa-solid fa-gem" style="color: var(--bizantine-gold);"></i>
+            <span>Premium Member</span>
         </div>
     </header>
 
     <main class="screen-container">
-        <section id="home" class="screen active">
-            <h2 id="auto-greeting" style="font-size: 34px; font-weight: 800; margin: 10px 0 5px;">Günaydın</h2>
-            <p style="color: var(--gray-text); font-weight: 500; font-size: 15px;">Bugün harika bir gün olacak.</p>
+        <h2 id="greeting" style="font-size: 32px; font-weight: 800; color: var(--dark); margin-top: 10px;">Merhaba</h2>
+        <p style="color: var(--gray-text); font-weight: 500;">İstanbul sizi bekliyor.</p>
 
-            <div class="section-title">Hızlı Erişim</div>
-            <div class="services-grid" style="grid-template-columns: 1fr 1fr; margin-bottom: 25px;">
-                <div class="service-item" onclick="findPharmacy()" style="background: var(--turkish-red-light); color: var(--turkish-red); border: 1px solid rgba(227, 10, 23, 0.1);">
-                    <i class="fa-solid fa-heart-pulse"></i>
-                    <span style="font-weight: 800; font-size: 13px;">Eczane</span>
-                </div>
-                <div class="service-item" onclick="window.location.href='tel:112'" style="background: var(--dark); color: white;">
-                    <i class="fa-solid fa-phone-flip"></i>
-                    <span style="font-weight: 800; font-size: 13px;">Acil 112</span>
-                </div>
-            </div>
-
-            <div class="promo-card">
-                <p style="font-size: 12px; font-weight: 800; text-transform: uppercase; opacity: 0.8;">Öneri</p>
-                <h3 style="font-size: 22px; font-weight: 800; margin: 5px 0 10px;">Çay Saati Geldi!</h3>
-                <p style="font-size: 14px; opacity: 0.9; line-height: 1.4;">İstanbul'un en iyi manzarasını keşfetmek için Refakatçi'ye danış.</p>
-                <div class="btn-group">
-                    <button class="btn-secondary" onclick="openCayMap()"><i class="fa-solid fa-map-location"></i> Bahçe Bul</button>
-                    <button class="btn-secondary" onclick="toggleChat(true)"><i class="fa-solid fa-face-smile"></i> Refakatçi</button>
-                </div>
-            </div>
-
-            <div class="section-title">Hizmetler</div>
-            <div class="services-grid">
-                <div class="service-item" onclick="openApp('bitaksi://')"><i class="fa-solid fa-taxi" style="color:#FFB300;"></i><span style="font-size:11px; font-weight:800;">BiTaksi</span></div>
-                <div class="service-item" onclick="openApp('https://getir.com')"><i class="fa-solid fa-cart-shopping" style="color:#5D3EBD;"></i><span style="font-size:11px; font-weight:800;">Getir</span></div>
-                <div class="service-item" onclick="openApp('https://muze.gov.tr')"><i class="fa-solid fa-landmark" style="color:#475569;"></i><span style="font-size:11px; font-weight:800;">Müze</span></div>
-            </div>
-        </section>
-
-        <section id="wallet" class="screen">
-            <h2 style="font-size: 30px; font-weight: 800; margin-bottom: 5px;">Lale Pay</h2>
-            <p style="color: var(--gray-text); margin-bottom: 30px;">Güvenli ödeme yöntemlerinizi yönetin.</p>
-            
-            <div class="wallet-card" onclick="openApp('papara://')">
-                <div style="display: flex; align-items: center; gap: 18px;">
-                    <div class="wallet-icon-box" style="background: #BBFF00; color: black; box-shadow: 0 5px 15px rgba(187,255,0,0.3);">P</div>
-                    <div><p style="font-weight: 800; font-size: 16px;">Papara</p><p style="font-size: 12px; color: var(--gray-text);">Dijital Cüzdan</p></div>
-                </div>
-                <i class="fa-solid fa-chevron-right" style="color: #cbd5e1;"></i>
-            </div>
-
-            <div class="wallet-card" onclick="openApp('https://param.com.tr')">
-                <div style="display: flex; align-items: center; gap: 18px;">
-                    <div class="wallet-icon-box" style="background: #0055FF; box-shadow: 0 5px 15px rgba(0,85,255,0.3);">Pm</div>
-                    <div><p style="font-weight: 800; font-size: 16px;">Param</p><p style="font-size: 12px; color: var(--gray-text);">Kurumsal Ödeme</p></div>
-                </div>
-                <i class="fa-solid fa-chevron-right" style="color: #cbd5e1;"></i>
-            </div>
-
-            <div class="wallet-card" onclick="openApp('https://www.oldubil.com.tr')">
-                <div style="display: flex; align-items: center; gap: 18px;">
-                    <div class="wallet-icon-box" style="background: #FF6200; box-shadow: 0 5px 15px rgba(255,98,0,0.3);">O</div>
-                    <div><p style="font-weight: 800; font-size: 16px;">Oldubil</p><p style="font-size: 12px; color: var(--gray-text);">Hızlı Ödeme</p></div>
-                </div>
-                <i class="fa-solid fa-chevron-right" style="color: #cbd5e1;"></i>
-            </div>
-            
-            <button style="width: 100%; padding: 22px; background: var(--dark); color: white; border-radius: 24px; font-weight: 800; margin-top: 25px; border: none; box-shadow: 0 10px 30px rgba(15,23,42,0.3);">
-                <i class="fa-solid fa-qrcode" style="margin-right: 10px;"></i> QR İLE ÖDE
+        <div class="section-title">Hızlı Servis</div>
+        <div class="emergency-grid">
+            <button class="emergency-btn" style="background: #FFE4E6; color: var(--turkish-red);" onclick="window.open('https://www.istanbuleczaneodasi.org.tr/nobetci-ezcaneler/')">
+                <i class="fa-solid fa-house-medical"></i> Eczane
             </button>
-        </section>
+            <button class="emergency-btn" style="background: var(--dark); color: white;" onclick="window.location.href='tel:112'">
+                <i class="fa-solid fa-phone"></i> Acil 112
+            </button>
+        </div>
 
-        <section id="profile" class="screen">
-            <h2 style="font-size: 28px; font-weight: 800; margin-bottom: 25px;">Ayarlar</h2>
-            <div style="background: white; padding: 25px; border-radius: 28px; box-shadow: var(--shadow-premium);">
-                <p style="font-weight: 800; margin-bottom: 10px;">Bildirim Ayarları</p>
-                <p style="font-size: 13px; color: var(--gray-text); margin-bottom: 20px;">Ferry iptalleri ve hava durumu uyarılarını kaçırmayın.</p>
-                <button onclick="requestFirebaseNotifications()" style="width: 100%; background: var(--turkish-red); color: white; border: none; padding: 18px; border-radius: 20px; font-weight: 800;">Bildirimleri Aç</button>
+        <div class="section-title">Yaşam Tarzı</div>
+        
+        <div class="category-card" onclick="window.open('https://www.bitaksi.com')">
+            <div class="icon-box" style="background: #FFF9C4; color: #FBC02D;"><i class="fa-solid fa-taxi"></i></div>
+            <div style="flex:1;">
+                <p style="font-weight: 800;">Ulaşım</p>
+                <p style="font-size: 11px; color: var(--gray-text);">BiTaksi, Martı ve iSBike</p>
             </div>
-        </section>
+            <i class="fa-solid fa-chevron-right" style="color: #CBD5E1;"></i>
+        </div>
+
+        <div class="category-card" onclick="window.open('https://getir.com')">
+            <div class="icon-box" style="background: #EDE7F6; color: #5D3EBD;"><i class="fa-solid fa-bag-shopping"></i></div>
+            <div style="flex:1;">
+                <p style="font-weight: 800;">Teslimat</p>
+                <p style="font-size: 11px; color: var(--gray-text);">Getir, Yemeksepeti ve Trendyol</p>
+            </div>
+            <i class="fa-solid fa-chevron-right" style="color: #CBD5E1;"></i>
+        </div>
+
+        <div class="companion-banner">
+            <h4 style="font-weight: 800; font-size: 20px;">Refakatçi'ye Sor</h4>
+            <p style="font-size: 12px; margin: 10px 0 15px; opacity: 0.9;">"Boğaz'ın en güzel çay bahçesi hangisi?"</p>
+            <button style="padding: 10px 20px; border-radius: 50px; border: none; background: white; color: var(--dark); font-weight: 800; font-size: 12px;" onclick="showPush('Kültür Rehberi', 'En iyi çay Moda Sahili\'nde içilir.', '#D4AF37')">Sohbeti Başlat</button>
+        </div>
+
+        <div class="section-title">Popüler Destinasyonlar</div>
+        <div style="display: flex; gap: 15px; overflow-x: auto; padding-bottom: 20px;">
+            <div style="min-width: 140px; height: 180px; background: url('https://muze.gov.tr/s3/Mys_Content/1/Ayasofya-Camii-v8.jpg') center/cover; border-radius: 20px; position: relative; padding: 15px; display: flex; align-items: flex-end;">
+                <p style="color: white; font-weight: 800; font-size: 12px;">Ayasofya</p>
+            </div>
+            <div style="min-width: 140px; height: 180px; background: url('https://images.unsplash.com/photo-1541432901042-2d8bd64b4a9b?q=80&w=400') center/cover; border-radius: 20px; position: relative; padding: 15px; display: flex; align-items: flex-end;">
+                <p style="color: white; font-weight: 800; font-size: 12px;">Galata</p>
+            </div>
+        </div>
     </main>
 
     <nav>
-        <div class="nav-item active" onclick="navigate('home', this)"><i class="fa-solid fa-compass"></i><span>Keşfet</span></div>
-        <div class="nav-item" onclick="checkFerryRealTime()"><i class="fa-solid fa-ship"></i><span>Ferry</span></div>
-        <div class="nav-item" onclick="navigate('wallet', this)"><i class="fa-solid fa-wallet"></i><span>Lale Pay</span></div>
+        <a href="#" class="nav-item active"><i class="fa-solid fa-house"></i><span>Anasayfa</span></a>
+        <a href="#" class="nav-item" onclick="checkFerry()"><i class="fa-solid fa-ship"></i><span>Vapur</span></a>
+        <a href="#" class="nav-item"><i class="fa-solid fa-wallet"></i><span>Lale Pay</span></a>
+        <a href="#" class="nav-item"><i class="fa-solid fa-user"></i><span>Profil</span></a>
     </nav>
 </div>
 
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
-    import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-messaging.js";
-
-    const firebaseConfig = {
-        apiKey: "AIzaSyBAxlK8shFQEcKdMiIjq9BTIb1cPUaVOno",
-        authDomain: "gen-lang-client-0899638282.firebaseapp.com",
-        projectId: "gen-lang-client-0899638282",
-        messagingSenderId: "837834829290",
-        appId: "1:837834829290:web:6d2b153ecf341824501693"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const messaging = getMessaging(app);
-
-    window.requestFirebaseNotifications = async () => {
-        const permission = await Notification.requestPermission();
-        if (permission === 'granted') {
-            showPush("Sistem Hazır", "Lale Super App bildirimleri başarıyla aktifleştirildi.", "#10B981");
-        }
-    };
-</script>
-
 <script>
-    // Splash con retardo para UX fluida
-    setTimeout(() => { 
-        document.getElementById('splash').style.opacity = '0';
-        document.getElementById('splash').style.transform = 'scale(1.2)';
-        setTimeout(() => document.getElementById('splash').style.display = 'none', 800);
-    }, 2800);
+    // Splash logic
+    setTimeout(() => {
+        const splash = document.getElementById('splash');
+        splash.style.opacity = '0';
+        setTimeout(() => splash.style.display = 'none', 1000);
+    }, 2500);
 
-    // Navegación
-    function navigate(id, el) {
-        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        if(el) el.classList.add('active');
-        if(window.navigator.vibrate) window.navigator.vibrate(8);
-    }
+    // Saludo según hora
+    const hour = new Date().getHours();
+    const greetElement = document.getElementById('greeting');
+    if (hour < 12) greetElement.innerText = "Günaydın";
+    else if (hour < 18) greetElement.innerText = "İyi Günler";
+    else greetElement.innerText = "İyi Akşamlar";
 
-    // Chat Acompañante UX Real
-    function toggleChat(show) {
-        document.getElementById('chat-overlay').classList.toggle('open', show);
-    }
-
-    function sendMsg() {
-        const inp = document.getElementById('chat-input');
-        const body = document.getElementById('chat-body');
-        if(!inp.value) return;
-
-        body.innerHTML += `<div class="chat-msg msg-user">${inp.value}</div>`;
-        const text = inp.value.toLowerCase();
-        inp.value = '';
-        
-        body.scrollTop = body.scrollHeight;
-
-        setTimeout(() => {
-            let reply = "Harika! Çayını yudumlarken sana eşlik etmek bir onur.";
-            if(text.includes("hikaye") || text.includes("anlat")) {
-                reply = "Biliyor muydun? Galata Kulesi, efsaneye göre Kız Kulesi'ne aşıktır ama Boğaz onları asla kavuşturmaz...";
-            } else if(text.includes("cay") || text.includes("nerede")) {
-                reply = "En iyi çay Moda Sahili veya Çengelköy'de içilir. Oraya gitmek için Ferry butonuna basabilirsin!";
-            }
-            body.innerHTML += `<div class="chat-msg msg-bot">${reply}</div>`;
-            body.scrollTop = body.scrollHeight;
-        }, 1000);
-    }
-
-    // Ferry Status UX
-    function checkFerryRealTime() {
-        const isFoggy = Math.random() > 0.5;
-        if(isFoggy) {
-            showPush("⚠️ SİS UYARISI", "Boğazda görüş mesafesi düştü. Bazı seferler iptal edilebilir.", "#EF4444");
-        } else {
-            showPush("🚢 Ferry Durumu", "Tüm seferler şu an zamanında yapılıyor. İyi yolculuklar!", "#10B981");
-        }
-    }
-
+    // Notificaciones Pro
     function showPush(title, text, color) {
         const push = document.getElementById('push-notification');
-        document.getElementById('alert-title').innerText = title;
-        document.getElementById('alert-text').innerText = text;
-        document.getElementById('push-icon-bg').style.background = color;
-        push.style.top = '20px';
-        setTimeout(() => { push.style.top = '-150px'; }, 4500);
+        document.getElementById('notif-title').innerText = title;
+        document.getElementById('notif-text').innerText = text;
+        document.getElementById('notif-color').style.background = color;
+        push.style.top = '25px';
+        setTimeout(() => { push.style.top = '-100px'; }, 4000);
     }
 
-    function openApp(url) { window.open(url, '_blank'); }
-    function openCayMap() { window.open('https://www.google.com/maps/search/$', '_blank'); }
-    function findPharmacy() { window.open('https://www.google.com/maps/search/$Nöbetçi+Eczane', '_blank'); }
-
-    // Saludo UX Dinámico
-    const hour = new Date().getHours();
-    document.getElementById('auto-greeting').innerText = hour < 12 ? "Günaydın" : hour < 18 ? "İyi Günler" : "İyi Akşamlar";
+    function checkFerry() {
+        showPush("Vapur Seferleri", "Tüm seferler şu an planlandığı gibi yapılıyor.", "#10B981");
+    }
 </script>
 
 </body>
