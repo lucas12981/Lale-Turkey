@@ -4,6 +4,7 @@
 [![Status](https://img.shields.io/badge/Status-Elite_Beta-D4AF37.svg)](#)
 [![Origin](https://img.shields.io/badge/Origin-Argentina-75AADB.svg)](#)
 [![Target](https://img.shields.io/badge/Target-Istanbul-E30A17.svg)](#)
+[![Live](https://img.shields.io/badge/Live-Demo-success.svg)](https://lucas12981.github.io/Lale-Turkey/)
 
 ---
 
@@ -15,9 +16,9 @@ Designed entirely in **Turkish**, LALE provides an immersive, high-end experienc
 ---
 
 ## 🚀 Experience the Future
-Ready to explore? You can launch the application or reach out to the founder directly for elite partnerships.
+Launch the application now or reach out to the founder directly for elite partnerships and development inquiries.
 
-[<img src="https://img.shields.io/badge/LAUNCH_LALE_APP-003049?style=for-the-badge&logo=rocket&logoColor=white">](index.html)
+[<img src="https://img.shields.io/badge/LAUNCH_LALE_APP-003049?style=for-the-badge&logo=rocket&logoColor=white">](https://lucas12981.github.io/Lale-Turkey/)
 [<img src="https://img.shields.io/badge/PRIORITY_WHATSAPP-25D366?style=for-the-badge&logo=whatsapp&logoColor=white">](https://wa.me/5491131070570)
 
 ---
@@ -46,7 +47,7 @@ Inspired by the traditional Turkish *Muhtar*, this AI-driven panel delivers crit
 ---
 
 ## 🇦🇷 About the Founder
-**Lucas Guzmán** An Argentinian developer redefining the Turkish digital landscape. By combining "Latino" passion with cutting-edge software architecture, Lucas has created LALE to be the definitive tool for the elite Istanbulite.
+**Lucas Guzmán** – An Argentinian developer redefining the Turkish digital landscape. By combining "Latino" passion with cutting-edge software architecture, Lucas has created LALE to be the definitive tool for the elite Istanbulite.
 
 ---
 
