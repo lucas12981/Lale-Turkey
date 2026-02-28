@@ -63,11 +63,12 @@
             background: rgba(227, 10, 23, 0.15); border: 1px solid rgba(227, 10, 23, 0.4);
             border-radius: 20px; padding: 12px 18px; margin: 10px 0 20px;
             display: flex; align-items: center; gap: 12px; backdrop-filter: blur(10px);
+            cursor: pointer; transition: transform 0.2s;
         }
+        .muhtar-panel:active { transform: scale(0.98); }
         .dot { width: 8px; height: 8px; background: #00ff00; border-radius: 50%; animation: blink 1.5s infinite; }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-        /* Mejora visual para el texto del Muhtar */
         #muhtar-text { transition: opacity 0.5s ease-in-out; }
 
         main { flex: 1; overflow-y: auto; padding: 0 22px 140px; scrollbar-width: none; }
@@ -139,12 +140,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     <main>
         <section id="home" class="screen active">
-            <div class="muhtar-panel">
+            <div class="muhtar-panel" onclick="findNearestPharmacy()">
                 <div class="dot"></div>
                 <div style="flex:1;">
-                    <b style="font-size: 11px; color: var(--turkish-red); display: block;">MAHALLE MUHTARI DUYURUSU</b>
+                    <b style="font-size: 11px; color: var(--turkish-red); display: block;">MAHALLE MUHTARI (ECZANE BUL)</b>
                     <p id="muhtar-text" style="font-size: 13px; font-weight: 600; color: white;">Beşiktaş'ta sular 22:00'de kesilecektir.</p>
                 </div>
+                <i class="fa-solid fa-map-location-dot" style="color: white; opacity: 0.7;"></i>
             </div>
 
             <h2 id="dynamic-greeting" style="font-size: 36px; font-weight: 800; margin-top: 5px;">Merhaba</h2>
@@ -230,7 +232,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 
 <script>
-    // 1. SPLASH SCREEN (2.5 Segundos)
+    // 1. SPLASH SCREEN
     window.onload = () => {
         setTimeout(() => {
             const s = document.getElementById('splash');
@@ -241,21 +243,20 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         startMuhtarFeed();
     };
 
-    // 2. SALUDO DINÁMICO TURCO
     function updateGreeting() {
         const h = new Date().getHours();
         let g = h >= 5 && h < 12 ? "Günaydın" : h >= 12 && h < 18 ? "İyi Günler" : "İyi Akşamlar";
         document.getElementById('dynamic-greeting').innerText = g;
     }
 
-    // 3. MUHTAR DIGITAL - Mejorado con información real y transiciones
+    // 2. MUHTAR DIGITAL - Información Real
     function startMuhtarFeed() {
         const alerts = [
             "İSKİ: Beşiktaş'ta planlı su kesintisi (22:00 - 02:00).",
-            "Marmaray: Teknik çalışma nedeniyle seferler 10 dk gecikmeli.",
+            "Nöbetçi Eczane: En yakın eczaneyi bulmak için tıklayın.",
             "AKOM: Yarın İstanbul genelinde kuvvetli lodos bekleniyor.",
             "İBB: Boğaz hattı vapur seferleri hava muhalefeti nedeniyle iptal.",
-            "Kültür Sanat: Atatürk Kültür Merkezi'nde bu akşam senfoni konseri var."
+            "Sağlık: Mevsimsel grip uyarısı, maske kullanımı önerilir."
         ];
         let i = 0;
         setInterval(() => {
@@ -269,7 +270,33 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         }, 6000); 
     }
 
-    // 4. LALE JAM: CONEXIÓN REAL "LUCAS JAM"
+    // 3. FUNCIÓN REAL: BUSCAR FARMACIAS EN GOOGLE MAPS
+    function findNearestPharmacy() {
+        showPush("ECZANE BULUCU", "Konumunuz alınıyor y farmacias en camino...", "fa-house-medical", "#E30A17");
+        
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((position) => {
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude;
+                
+                // Track GTM
+                window.dataLayer = window.dataLayer || [];
+                window.dataLayer.push({'event': 'pharmacy_search', 'lat': lat, 'lng': lng});
+
+                // URL de búsqueda de farmacias cercanas (Eczane)
+                const mapUrl = `https://www.google.com/maps/search/Eczane/@${lat},${lng},15z`;
+                setTimeout(() => window.open(mapUrl, '_blank'), 1000);
+                
+            }, () => {
+                // Fallback si no hay GPS
+                window.open('https://www.google.com/maps/search/Istanbul+Eczane', '_blank');
+            });
+        } else {
+            window.open('https://www.google.com/maps/search/Istanbul+Eczane', '_blank');
+        }
+    }
+
+    // 4. LALE JAM: LUCAS JAM
     let jamActive = false;
     function initLaleJam() {
         jamActive = !jamActive;
@@ -292,7 +319,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 window.dataLayer.push({'event': 'jam_started', 'room_id': roomId});
 
                 setTimeout(() => {
-                    if(confirm("Lucas Jam hazır! Arkadaşlarınla canlı videollamada buluşmak e konum paylaşmak için odaya girmek ister misin?")) {
+                    if(confirm("Lucas Jam hazır! Arkadaşlarınla canlı videollamada buluşmak için odaya girmek ister misin?")) {
                         window.open(meetUrl, '_blank');
                     }
                 }, 1000);
@@ -304,7 +331,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             btn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> LALE JAM BAŞLAT';
             btn.style.background = ''; btn.style.color = '';
             showPush("JAM KAPATILDI", "Bağlantı kesildi.", "fa-lock", "#64748B");
-            
             window.dataLayer = window.dataLayer || [];
             window.dataLayer.push({'event': 'jam_stopped'});
         }
@@ -313,10 +339,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     // 5. VAPUR REAL
     function realVapurTrack() {
         showPush("VAPUR TAKİBİ", "Canlı gemi trafiği açılıyor...", "fa-ship", "#003049");
-        
         window.dataLayer = window.dataLayer || [];
         window.dataLayer.push({'event': 'vapur_track_clicked'});
-
         setTimeout(() => window.open('https://www.sehirhatlari.istanbul/tr/gemilerimiz', '_blank'), 1500);
     }
 
@@ -338,7 +362,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
         document.getElementById(tabId).classList.add('active');
         el.classList.add('active');
-
         window.dataLayer = window.dataLayer || [];
         window.dataLayer.push({'event': 'tab_changed', 'tab_id': tabId});
     }
@@ -347,10 +370,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     function openService(scheme, web) {
         const start = Date.now();
         window.location.href = scheme;
-
         window.dataLayer = window.dataLayer || [];
         window.dataLayer.push({'event': 'service_opened', 'service': web});
-
         setTimeout(() => { if (Date.now() - start < 1500) window.open(web, '_blank'); }, 600);
     }
 
