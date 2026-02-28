@@ -27,13 +27,11 @@
         
         body { background-color: #000; color: white; height: 100vh; overflow: hidden; transition: background 0.5s; }
 
-        /* VIDEO DE FONDO REAL */
         .video-bg {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             z-index: 1; object-fit: cover; filter: brightness(0.35) contrast(1.1);
         }
 
-        /* EFECTO JAM ACTIVO (BORDE DORADO) */
         #jam-overlay {
             position: fixed; inset: 0; border: 0px solid var(--bizantine-gold);
             z-index: 9998; pointer-events: none; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
@@ -43,7 +41,6 @@
 
         .app-shell { position: relative; z-index: 10; height: 100vh; display: flex; flex-direction: column; }
 
-        /* SPLASH SCREEN */
         #splash {
             position: fixed; inset: 0; background: var(--bosphorus-blue);
             z-index: 10000; display: flex; flex-direction: column; justify-content: center; align-items: center;
@@ -52,7 +49,6 @@
         .tulip-logo { font-size: 85px; filter: drop-shadow(0 0 25px var(--bizantine-gold)); animation: pulse 2s infinite; }
         @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
 
-        /* NOTIFICACIONES PUSH */
         #push-notif {
             position: fixed; top: -120px; left: 20px; right: 20px; background: var(--white-glass);
             color: #1e293b; padding: 20px; border-radius: 28px; z-index: 9999;
@@ -60,11 +56,9 @@
             display: flex; align-items: center; gap: 15px; backdrop-filter: blur(15px);
         }
 
-        /* HEADER */
         header { padding: 55px 25px 15px; display: flex; justify-content: space-between; align-items: center; }
         .app-title { font-size: 34px; font-weight: 800; letter-spacing: -1.5px; color: white; text-shadow: 0 4px 12px rgba(0,0,0,0.5); }
 
-        /* MUHTAR DIGITAL PANEL */
         .muhtar-panel {
             background: rgba(227, 10, 23, 0.15); border: 1px solid rgba(227, 10, 23, 0.4);
             border-radius: 20px; padding: 12px 18px; margin: 10px 0 20px;
@@ -73,14 +67,15 @@
         .dot { width: 8px; height: 8px; background: #00ff00; border-radius: 50%; animation: blink 1.5s infinite; }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-        /* MAIN VIEWPORT */
+        /* Mejora visual para el texto del Muhtar */
+        #muhtar-text { transition: opacity 0.5s ease-in-out; }
+
         main { flex: 1; overflow-y: auto; padding: 0 22px 140px; scrollbar-width: none; }
         main::-webkit-scrollbar { display: none; }
         .screen { display: none; animation: fadeIn 0.5s ease-out; }
         .screen.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* COMPONENTES UI */
         .label { font-size: 11px; font-weight: 800; color: rgba(255,255,255,0.6); text-transform: uppercase; margin: 25px 0 12px; letter-spacing: 1.5px; }
         
         .card-ui {
@@ -91,7 +86,6 @@
         }
         .card-ui:active { transform: scale(0.96); }
 
-        /* BOTÓN LALE JAM ESTRELLA */
         .btn-jam {
             background: linear-gradient(135deg, var(--bizantine-gold), #b8860b);
             color: #000; font-weight: 800; padding: 22px; border-radius: 26px;
@@ -101,7 +95,6 @@
             transition: all 0.3s ease;
         }
 
-        /* NAVBAR */
         nav {
             position: fixed; bottom: 30px; left: 22px; right: 22px; height: 85px;
             background: var(--dark-glass); backdrop-filter: blur(25px); border-radius: 32px;
@@ -255,14 +248,25 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         document.getElementById('dynamic-greeting').innerText = g;
     }
 
-    // 3. MUHTAR DIGITAL
+    // 3. MUHTAR DIGITAL - Mejorado con información real y transiciones
     function startMuhtarFeed() {
-        const alerts = ["Beşiktaş'ta sular 22:00'de kesilecek.", "Kadıköy Pazarında etkinlik var.", "Metrobüs hattında çalışma mevcut."];
+        const alerts = [
+            "İSKİ: Beşiktaş'ta planlı su kesintisi (22:00 - 02:00).",
+            "Marmaray: Teknik çalışma nedeniyle seferler 10 dk gecikmeli.",
+            "AKOM: Yarın İstanbul genelinde kuvvetli lodos bekleniyor.",
+            "İBB: Boğaz hattı vapur seferleri hava muhalefeti nedeniyle iptal.",
+            "Kültür Sanat: Atatürk Kültür Merkezi'nde bu akşam senfoni konseri var."
+        ];
         let i = 0;
         setInterval(() => {
-            document.getElementById('muhtar-text').innerText = alerts[i];
-            i = (i + 1) % alerts.length;
-        }, 5000);
+            const muhtarText = document.getElementById('muhtar-text');
+            muhtarText.style.opacity = 0;
+            setTimeout(() => {
+                muhtarText.innerText = alerts[i];
+                muhtarText.style.opacity = 1;
+                i = (i + 1) % alerts.length;
+            }, 500);
+        }, 6000); 
     }
 
     // 4. LALE JAM: CONEXIÓN REAL "LUCAS JAM"
@@ -280,17 +284,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             
             showPush("LALE JAM AKTİF", "Lucas Jam odası hazırlanıyor...", "fa-wand-magic-sparkles", "#D4AF37");
 
-            // LOGICA REAL: GEOLOCALIZACION + SALA DE VIDEO
             navigator.geolocation.getCurrentPosition(pos => {
                 const roomId = "Lucas-Jam-" + Math.floor(Math.random() * 9999);
                 const meetUrl = `https://meet.jit.si/${roomId}#config.startWithVideoMuted=true`;
                 
-                // DATA LAYER EVENT FOR GTM
                 window.dataLayer = window.dataLayer || [];
                 window.dataLayer.push({'event': 'jam_started', 'room_id': roomId});
 
                 setTimeout(() => {
-                    if(confirm("Lucas Jam hazır! Arkadaşlarınla canlı videollamada buluşmak ve konum paylaşmak için odaya girmek ister misin?")) {
+                    if(confirm("Lucas Jam hazır! Arkadaşlarınla canlı videollamada buluşmak e konum paylaşmak için odaya girmek ister misin?")) {
                         window.open(meetUrl, '_blank');
                     }
                 }, 1000);
