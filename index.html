@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-T47G2SRX');</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>LALE - İstanbul Digital Hub</title>
@@ -111,6 +116,8 @@
 </head>
 <body id="mainBody">
 
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-T47G2SRX"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <div id="jam-overlay"></div>
 
 <video class="video-bg" autoplay muted loop playsinline>
@@ -278,6 +285,10 @@
                 const roomId = "Lucas-Jam-" + Math.floor(Math.random() * 9999);
                 const meetUrl = `https://meet.jit.si/${roomId}#config.startWithVideoMuted=true`;
                 
+                // DATA LAYER EVENT FOR GTM
+                window.dataLayer = window.dataLayer || [];
+                window.dataLayer.push({'event': 'jam_started', 'room_id': roomId});
+
                 setTimeout(() => {
                     if(confirm("Lucas Jam hazır! Arkadaşlarınla canlı videollamada buluşmak ve konum paylaşmak için odaya girmek ister misin?")) {
                         window.open(meetUrl, '_blank');
@@ -291,12 +302,19 @@
             btn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> LALE JAM BAŞLAT';
             btn.style.background = ''; btn.style.color = '';
             showPush("JAM KAPATILDI", "Bağlantı kesildi.", "fa-lock", "#64748B");
+            
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push({'event': 'jam_stopped'});
         }
     }
 
     // 5. VAPUR REAL
     function realVapurTrack() {
         showPush("VAPUR TAKİBİ", "Canlı gemi trafiği açılıyor...", "fa-ship", "#003049");
+        
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({'event': 'vapur_track_clicked'});
+
         setTimeout(() => window.open('https://www.sehirhatlari.istanbul/tr/gemilerimiz', '_blank'), 1500);
     }
 
@@ -318,12 +336,19 @@
         document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
         document.getElementById(tabId).classList.add('active');
         el.classList.add('active');
+
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({'event': 'tab_changed', 'tab_id': tabId});
     }
 
     // 8. FUNCIONES DE SISTEMA
     function openService(scheme, web) {
         const start = Date.now();
         window.location.href = scheme;
+
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({'event': 'service_opened', 'service': web});
+
         setTimeout(() => { if (Date.now() - start < 1500) window.open(web, '_blank'); }, 600);
     }
 
