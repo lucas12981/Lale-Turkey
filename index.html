@@ -212,8 +212,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
         <section id="profile" class="screen">
             <div style="text-align: center; padding: 40px 0;">
-                <div style="width: 110px; height: 110px; border-radius: 50%; border: 4px solid var(--bizantine-gold); margin: 0 auto; overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.5);">
-                    <img src="https://ui-avatars.com/api/?name=Lucas+Guzman&background=003049&color=fff" style="width: 100%; height: 100%;">
+                <div style="width: 120px; height: 120px; border-radius: 50%; border: 4px solid var(--bizantine-gold); margin: 0 auto; overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.5); background: #003049; display: flex; align-items: center; justify-content: center;">
+                    <img src="https://ui-avatars.com/api/?name=Lucas+Guzman&background=003049&color=fff&size=256" alt="Lucas Guzman" style="width: 100%; height: 100%; object-fit: cover;">
                 </div>
                 <h3 style="margin-top: 20px; font-size: 26px; font-weight: 800;">Lucas Guzmán</h3>
                 <p style="color: var(--bizantine-gold); font-size: 12px; font-weight: 800; letter-spacing: 2px;">KURUCU ÜYE</p>
@@ -305,16 +305,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 const lat = position.coords.latitude;
                 const lng = position.coords.longitude;
                 
-                // Track GTM
                 window.dataLayer = window.dataLayer || [];
                 window.dataLayer.push({'event': 'pharmacy_search', 'lat': lat, 'lng': lng});
 
-                // URL de búsqueda de farmacias cercanas (Eczane)
                 const mapUrl = `https://www.google.com/maps/search/Eczane/@${lat},${lng},15z`;
                 setTimeout(() => window.open(mapUrl, '_blank'), 1000);
                 
             }, () => {
-                // Fallback si no hay GPS
                 window.open('https://www.google.com/maps/search/Istanbul+Eczane', '_blank');
             });
         } else {
