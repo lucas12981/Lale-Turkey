@@ -6,9 +6,16 @@
     j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
     })(window,document,'script','dataLayer','GTM-T47G2SRX');</script>
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>LALE - İstanbul Digital Hub</title>
+
+    <meta name="theme-color" content="#003049">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="https://ui-avatars.com/api/?name=L&background=D4AF37&color=000&size=192">
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkxBTEUgLSDEsHN0YW5idWwiLAogICJzaG9ydF9uYW1lIjogIkxBTEUiLAogICJzdGFydF91cmwiOiAiLiIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzAwMDAwMCIsCiAgInRoZW1lX2NvbG9yIjogIiMwMDMwNDkiLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJodHRwczovL3VpLWF2YXRhcnMuY29tL2FwaS8/bmFtZT1MJmJhY2tncm91bmQ9RDRARjM3JmNvbG9yPTAwMCZzaXplPTE5MiIsCiAgICAgICJzaXplcyI6ICIxOTJ4MTkyIiwKICAgICAgInR5cGUiOiAiaW1hZ2UvcG5nIgogICAgfQogIF0KfQ==">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -232,6 +239,25 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 
 <script>
+    // GESTIÓN DE INSTALACIÓN PWA
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        setTimeout(() => {
+            showPush("LALE'Yİ YÜKLE", "Hızlı erişim için ana ekrana ekle.", "fa-download", "#D4AF37");
+            document.getElementById('push-notif').onclick = () => {
+                if(deferredPrompt) {
+                    deferredPrompt.prompt();
+                    deferredPrompt.userChoice.then((choice) => {
+                        if (choice.outcome === 'accepted') console.log('Lale instalada');
+                        deferredPrompt = null;
+                    });
+                }
+            };
+        }, 5000);
+    });
+
     // 1. SPLASH SCREEN
     window.onload = () => {
         setTimeout(() => {
