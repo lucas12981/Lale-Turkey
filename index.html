@@ -11,11 +11,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>LALE - İstanbul Digital Hub</title>
 
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
     <meta name="theme-color" content="#003049">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="https://ui-avatars.com/api/?name=L&background=D4AF37&color=000&size=192">
-    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkxBTEUgLSDEsHN0YW5idWwiLAogICJzaG9ydF9uYW1lIjogIkxBTEUiLAogICJzdGFydF91cmwiOiAiLiIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzAwMDAwMCIsCiAgInRoZW1lX2NvbG9yIjogIiMwMDMwNDkiLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJodHRwczovL3VpLWF2YXRhcnMuY29tL2FwaS8/bmFtZT1MJmJhY2tncm91bmQ9RDRARjM3JmNvbG9yPTAwMCZzaXplPTE5MiIsCiAgICAgICJzaXplcyI6ICIxOTJ4MTkyIiwKICAgICAgInR5cGUiOiAiaW1hZ2UvcG5nIgogICAgfQogIF0KfQ==">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -26,25 +28,28 @@
             --bosphorus-blue: #003049;
             --bizantine-gold: #D4AF37;
             --white-glass: rgba(255, 255, 255, 0.95);
-            --dark-glass: rgba(15, 23, 42, 0.96);
-            --jam-glow: 0 0 20px rgba(212, 175, 55, 0.6);
+            --dark-glass: rgba(15, 23, 42, 0.98);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
         
-        body { background-color: #000; color: white; height: 100vh; overflow: hidden; transition: background 0.5s; }
+        body { background-color: #000; color: white; height: 100vh; overflow: hidden; }
 
         .video-bg {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             z-index: 1; object-fit: cover; filter: brightness(0.35) contrast(1.1);
         }
 
-        #jam-overlay {
-            position: fixed; inset: 0; border: 0px solid var(--bizantine-gold);
-            z-index: 9998; pointer-events: none; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: inset 0 0 0px var(--bizantine-gold);
+        /* NATIVE JAM PANEL */
+        #jam-panel {
+            position: fixed; bottom: -100%; left: 0; right: 0; height: 80vh;
+            background: var(--dark-glass); border-top: 3px solid var(--bizantine-gold);
+            border-radius: 40px 40px 0 0; z-index: 9995; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 25px; display: flex; flex-direction: column; backdrop-filter: blur(20px);
         }
-        body.jam-mode #jam-overlay { border-width: 5px; box-shadow: inset 0 0 60px rgba(212, 175, 55, 0.4); }
+        #jam-panel.active { bottom: 0; }
+        .jam-chat { flex: 1; overflow-y: auto; background: rgba(255,255,255,0.05); border-radius: 20px; padding: 15px; margin: 20px 0; display: flex; flex-direction: column; gap: 10px; }
+        .chat-msg { background: rgba(212, 175, 55, 0.15); padding: 12px 16px; border-radius: 18px; font-size: 13px; border-left: 3px solid var(--bizantine-gold); width: fit-content; max-width: 85%; }
 
         .app-shell { position: relative; z-index: 10; height: 100vh; display: flex; flex-direction: column; }
 
@@ -53,8 +58,6 @@
             z-index: 10000; display: flex; flex-direction: column; justify-content: center; align-items: center;
             transition: 1s ease-in-out;
         }
-        .tulip-logo { font-size: 85px; filter: drop-shadow(0 0 25px var(--bizantine-gold)); animation: pulse 2s infinite; }
-        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
 
         #push-notif {
             position: fixed; top: -120px; left: 20px; right: 20px; background: var(--white-glass);
@@ -64,78 +67,62 @@
         }
 
         header { padding: 55px 25px 15px; display: flex; justify-content: space-between; align-items: center; }
-        .app-title { font-size: 34px; font-weight: 800; letter-spacing: -1.5px; color: white; text-shadow: 0 4px 12px rgba(0,0,0,0.5); }
+        .app-title { font-size: 34px; font-weight: 800; letter-spacing: -1.5px; }
 
         .muhtar-panel {
             background: rgba(227, 10, 23, 0.15); border: 1px solid rgba(227, 10, 23, 0.4);
             border-radius: 20px; padding: 12px 18px; margin: 10px 0 20px;
             display: flex; align-items: center; gap: 12px; backdrop-filter: blur(10px);
-            cursor: pointer; transition: transform 0.2s;
-        }
-        .muhtar-panel:active { transform: scale(0.98); }
-        .dot { width: 8px; height: 8px; background: #00ff00; border-radius: 50%; animation: blink 1.5s infinite; }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-
-        #muhtar-text { transition: opacity 0.5s ease-in-out; }
-
-        main { flex: 1; overflow-y: auto; padding: 0 22px 140px; scrollbar-width: none; }
-        main::-webkit-scrollbar { display: none; }
-        .screen { display: none; animation: fadeIn 0.5s ease-out; }
-        .screen.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-
-        .label { font-size: 11px; font-weight: 800; color: rgba(255,255,255,0.6); text-transform: uppercase; margin: 25px 0 12px; letter-spacing: 1.5px; }
-        
-        .card-ui {
-            background: var(--white-glass); border-radius: 26px; padding: 18px; color: #0f172a;
-            display: flex; align-items: center; gap: 16px; margin-bottom: 14px;
-            cursor: pointer; transition: 0.2s; border: 1px solid rgba(255,255,255,0.3);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-        }
-        .card-ui:active { transform: scale(0.96); }
-
-        .btn-jam {
-            background: linear-gradient(135deg, var(--bizantine-gold), #b8860b);
-            color: #000; font-weight: 800; padding: 22px; border-radius: 26px;
-            display: flex; align-items: center; justify-content: center; gap: 12px;
-            width: 100%; border: none; cursor: pointer; font-size: 16px;
-            box-shadow: 0 12px 24px rgba(212, 175, 55, 0.4); margin: 10px 0;
-            transition: all 0.3s ease;
         }
 
-        nav {
-            position: fixed; bottom: 30px; left: 22px; right: 22px; height: 85px;
-            background: var(--dark-glass); backdrop-filter: blur(25px); border-radius: 32px;
-            display: flex; justify-content: space-around; align-items: center;
-            border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 20px 50px rgba(0,0,0,0.7);
-        }
-        .nav-link { color: #94a3b8; text-align: center; cursor: pointer; flex: 1; transition: 0.3s; }
+        main { flex: 1; overflow-y: auto; padding: 0 22px 140px; }
+        .screen { display: none; }
+        .screen.active { display: block; animation: fadeIn 0.5s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; } }
+
+        .card-ui { background: var(--white-glass); border-radius: 26px; padding: 18px; color: #0f172a; display: flex; align-items: center; gap: 16px; margin-bottom: 14px; }
+        .btn-jam { background: linear-gradient(135deg, var(--bizantine-gold), #b8860b); color: #000; font-weight: 800; padding: 22px; border-radius: 26px; width: 100%; border: none; font-size: 16px; margin: 10px 0; box-shadow: 0 12px 24px rgba(212, 175, 55, 0.4); }
+
+        nav { position: fixed; bottom: 30px; left: 22px; right: 22px; height: 85px; background: var(--dark-glass); border-radius: 32px; display: flex; justify-content: space-around; align-items: center; border: 1px solid rgba(255,255,255,0.1); }
+        .nav-link { color: #94a3b8; text-align: center; flex: 1; }
         .nav-link.active { color: var(--bizantine-gold); }
-        .nav-link i { font-size: 26px; margin-bottom: 5px; }
-        .nav-link span { font-size: 10px; display: block; font-weight: 800; text-transform: uppercase; }
+        .label { font-size: 11px; font-weight: 800; color: rgba(255,255,255,0.6); text-transform: uppercase; margin: 25px 0 12px; letter-spacing: 1.5px; display: block; }
     </style>
 </head>
 <body id="mainBody">
-
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-T47G2SRX"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<div id="jam-overlay"></div>
 
 <video class="video-bg" autoplay muted loop playsinline>
     <source src="https://assets.mixkit.co/videos/preview/mixkit-mosque-of-istanbul-at-sunset-20235-large.mp4" type="video/mp4">
 </video>
 
+<div id="jam-panel">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <h2 style="color: var(--bizantine-gold); font-size: 24px;">LALE JAM</h2>
+            <p id="jam-status" style="font-size: 11px; opacity: 0.6;">Canlı Sohbet Odası</p>
+        </div>
+        <button onclick="toggleJamPanel()" style="background: rgba(255,255,255,0.1); border: none; color: white; padding: 10px 18px; border-radius: 15px; font-weight: 800;">KAPAT</button>
+    </div>
+    
+    <div class="jam-chat" id="chat-box">
+        </div>
+    
+    <div style="display: flex; gap: 10px;">
+        <input type="text" id="chat-input" placeholder="Mesaj yazın..." style="flex:1; padding: 18px; border-radius: 20px; border: none; background: rgba(255,255,255,0.1); color: white;">
+        <button onclick="sendMessage()" style="background: var(--bizantine-gold); border: none; width: 60px; border-radius: 20px; color: black;"><i class="fa-solid fa-paper-plane"></i></button>
+    </div>
+</div>
+
 <div id="splash">
-    <div class="tulip-logo">🌷</div>
+    <div class="tulip-logo" style="font-size: 85px;">🌷</div>
     <h1 style="color: white; letter-spacing: 12px; margin-top: 25px; font-weight: 800;">LALE</h1>
-    <p style="color: var(--bizantine-gold); font-size: 12px; font-weight: 700; letter-spacing: 4px; margin-top: 10px;">İSTANBUL SUPER APP</p>
 </div>
 
 <div id="push-notif">
     <div id="ni" style="width: 48px; height: 48px; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 22px;"></div>
     <div style="flex:1;">
         <b id="nt" style="font-size: 15px; display: block;"></b>
-        <p id="nm" style="font-size: 12px; line-height: 1.4;"></p>
+        <p id="nm" style="font-size: 12px;"></p>
     </div>
 </div>
 
@@ -147,262 +134,142 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     <main>
         <section id="home" class="screen active">
-            <div class="muhtar-panel" onclick="findNearestPharmacy()">
-                <div class="dot"></div>
+            <div class="muhtar-panel">
+                <div style="width: 8px; height: 8px; background: #00ff00; border-radius: 50%;"></div>
                 <div style="flex:1;">
-                    <b style="font-size: 11px; color: var(--turkish-red); display: block;">MAHALLE MUHTARI (ECZANE BUL)</b>
-                    <p id="muhtar-text" style="font-size: 13px; font-weight: 600; color: white;">Beşiktaş'ta sular 22:00'de kesilecektir.</p>
+                    <b style="font-size: 11px; color: var(--turkish-red); display: block;">MAHALLE MUHTARI</b>
+                    <p id="muhtar-text" style="font-size: 13px; font-weight: 600;">Yükleniyor...</p>
                 </div>
-                <i class="fa-solid fa-map-location-dot" style="color: white; opacity: 0.7;"></i>
             </div>
 
-            <h2 id="dynamic-greeting" style="font-size: 36px; font-weight: 800; margin-top: 5px;">Merhaba</h2>
-            <p style="color: rgba(255,255,255,0.8); margin-bottom: 25px;">Bugün İstanbul'u birlikte keşfedelim.</p>
+            <h2 id="dynamic-greeting" style="font-size: 36px; font-weight: 800;">Merhaba</h2>
+            <p style="color: rgba(255,255,255,0.8); margin-bottom: 25px;">İstanbul'un dijital kalbi.</p>
 
-            <button class="btn-jam" id="laleJamBtn" onclick="initLaleJam()">
+            <button class="btn-jam" onclick="toggleJamPanel()">
                 <i class="fa-solid fa-wand-magic-sparkles"></i> LALE JAM BAŞLAT
             </button>
-            <p style="text-align: center; font-size: 10px; color: var(--bizantine-gold); margin-top: 8px; font-weight: 700;">ARKADAŞLARINLA SENKRONİZE OL</p>
 
-            <span class="label">Ulaşım (Real-Time)</span>
-            <div class="card-ui" onclick="openService('uber://', 'https://uber.com')">
-                <div style="width: 46px; height: 46px; background: #000; color: #fff; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 20px;"><i class="fa-brands fa-uber"></i></div>
-                <div style="flex:1;"><b>Uber İstanbul</b><p style="font-size: 11px; color: #64748B;">Hızlı ve güvenli yolculuk</p></div>
-                <i class="fa-solid fa-chevron-right" style="color: #cbd5e1;"></i>
+            <span class="label">Ulaşım</span>
+            <div class="card-ui" onclick="window.open('uber://', '_blank')">
+                <div style="width: 46px; height: 46px; background: #000; color: #fff; border-radius: 14px; display: flex; align-items: center; justify-content: center;"><i class="fa-brands fa-uber"></i></div>
+                <div style="flex:1;"><b>Uber İstanbul</b></div>
+                <i class="fa-solid fa-chevron-right"></i>
             </div>
-
-            <div class="card-ui" onclick="openService('bitaksi://', 'https://bitaksi.com')">
-                <div style="width: 46px; height: 46px; background: #FFD600; color: #000; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 20px;"><i class="fa-solid fa-taxi"></i></div>
-                <div style="flex:1;"><b>BiTaksi</b><p style="font-size: 11px; color: #64748B;">Resmi şehir taksisi</p></div>
-                <i class="fa-solid fa-chevron-right" style="color: #cbd5e1;"></i>
-            </div>
-
-            <div class="card-ui" onclick="window.open('https://iett.istanbul/', '_blank')">
-                <div style="width: 46px; height: 46px; background: #F39200; color: #fff; border-radius: 14px; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-bus-simple"></i></div>
-                <div style="flex:1;"><b>İETT Otobüs</b><p style="font-size: 11px; color: #64748B;">Canlı durak takibi</p></div>
-            </div>
-
-            <span class="label">Şehir Rehberi</span>
-            <div class="card-ui" onclick="window.open('https://muze.gov.tr/', '_blank')">
-                <div style="width: 46px; height: 46px; background: var(--bizantine-gold); color: #fff; border-radius: 14px; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-landmark"></i></div>
-                <div style="flex:1;"><b>Müzekart</b><p style="font-size: 11px; color: #64748B;">Müze ve Saray girişleri</p></div>
+            
+            <div class="card-ui" onclick="window.open('https://bitaksi.com', '_blank')">
+                <div style="width: 46px; height: 46px; background: #FFD600; color: #000; border-radius: 14px; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-taxi"></i></div>
+                <div style="flex:1;"><b>BiTaksi</b></div>
             </div>
         </section>
 
         <section id="wallet" class="screen">
             <h2 style="font-size: 30px; font-weight: 800;">Lale Pay</h2>
-            <p style="color: rgba(255,255,255,0.7); margin-bottom: 30px;">Türkiye'nin dijital cüzdanları.</p>
-
-            <div class="card-ui" onclick="openService('papara://', 'https://papara.com')">
-                <div style="width: 50px; height: 50px; background: #000; color: #BBFF00; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 22px;">P</div>
-                <div style="flex:1;"><b>Papara</b><p style="font-size: 11px; color: #64748B;">Anında para transferi</p></div>
-            </div>
-
-            <div class="card-ui" onclick="openService('tosla://', 'https://tosla.com')">
-                <div style="width: 50px; height: 50px; background: #7131FF; color: #fff; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 22px;"><i class="fa-solid fa-bolt-lightning"></i></div>
-                <div style="flex:1;"><b>Tosla</b><p style="font-size: 11px; color: #64748B;">Gençlerin favori cüzdanı</p></div>
-            </div>
-
-            <div class="card-ui" onclick="window.open('https://www.istanbulkart.istanbul/', '_blank')">
-                <div style="width: 50px; height: 50px; background: #FF6200; color: #fff; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 22px;"><i class="fa-solid fa-id-card"></i></div>
-                <div style="flex:1;"><b>İstanbulkart</b><p style="font-size: 11px; color: #64748B;">Bakiye yükle ve öde</p></div>
-                <span style="background: #FFF0E6; color: #FF6200; font-size: 10px; font-weight: 800; padding: 6px 12px; border-radius: 10px;">YÜKLE</span>
+            <div class="card-ui" style="margin-top: 20px;">
+                <div style="width: 50px; height: 50px; background: #FF6200; color: #fff; border-radius: 16px; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-id-card"></i></div>
+                <div style="flex:1;"><b>İstanbulkart</b><p style="font-size: 11px;">Bakiye: 45.50 TL</p></div>
             </div>
         </section>
 
         <section id="profile" class="screen">
             <div style="text-align: center; padding: 40px 0;">
-                <div style="width: 120px; height: 120px; border-radius: 50%; border: 4px solid var(--bizantine-gold); margin: 0 auto; overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.5); background: #003049; display: flex; align-items: center; justify-content: center;">
-                    <img src="https://ui-avatars.com/api/?name=Lucas+Guzman&background=003049&color=fff&size=256" alt="Lucas Guzman" style="width: 100%; height: 100%; object-fit: cover;">
-                </div>
-                <h3 style="margin-top: 20px; font-size: 26px; font-weight: 800;">Lucas Guzmán</h3>
-                <p style="color: var(--bizantine-gold); font-size: 12px; font-weight: 800; letter-spacing: 2px;">KURUCU ÜYE</p>
+                <img src="https://ui-avatars.com/api/?name=Lucas+Guzman&background=003049&color=fff" style="width: 120px; border-radius: 50%; border: 4px solid var(--bizantine-gold);">
+                <h3 style="margin-top: 15px; font-size: 26px;">Lucas Guzmán</h3>
+                <p style="color: var(--bizantine-gold); font-size: 12px; font-weight: 800;">KURUCU ÜYE</p>
             </div>
-
-            <div class="card-ui" onclick="window.open('https://www.turkiye.gov.tr/', '_blank')">
-                <div style="width: 44px; height: 44px; background: #f1f5f9; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--turkish-red);"><i class="fa-solid fa-landmark"></i></div>
-                <div style="flex:1;"><b>e-Devlet Kapısı</b><p style="font-size: 11px; color: #64748B;">Resmi işlemler</p></div>
-            </div>
-
-            <button onclick="systemShutdown()" style="width: 100%; background: rgba(227, 10, 23, 0.15); color: #ff4d4d; border: 1px solid rgba(227,10,23,0.3); padding: 22px; border-radius: 25px; margin-top: 30px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;">
-                <i class="fa-solid fa-power-off"></i> OTURUMU KAPAT
-            </button>
         </section>
     </main>
 
     <nav>
-        <div class="nav-link active" onclick="changeTab('home', this)"><i class="fa-solid fa-house-chimney"></i><span>KEŞFET</span></div>
-        <div class="nav-link" onclick="realVapurTrack()"><i class="fa-solid fa-ship"></i><span>VAPUR</span></div>
-        <div class="nav-link" onclick="changeTab('wallet', this)"><i class="fa-solid fa-wallet"></i><span>LALE PAY</span></div>
-        <div class="nav-link" onclick="changeTab('profile', this)"><i class="fa-solid fa-circle-user"></i><span>PROFİL</span></div>
+        <div class="nav-link active" onclick="changeTab('home', this)"><i class="fa-solid fa-house"></i></div>
+        <div class="nav-link" onclick="window.open('https://www.sehirhatlari.istanbul/', '_blank')"><i class="fa-solid fa-ship"></i></div>
+        <div class="nav-link" onclick="changeTab('wallet', this)"><i class="fa-solid fa-wallet"></i></div>
+        <div class="nav-link" onclick="changeTab('profile', this)"><i class="fa-solid fa-circle-user"></i></div>
     </nav>
 </div>
 
 <script>
-    // GESTIÓN DE INSTALACIÓN PWA
-    let deferredPrompt;
-    window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
-        setTimeout(() => {
-            showPush("LALE'Yİ YÜKLE", "Hızlı erişim için ana ekrana ekle.", "fa-download", "#D4AF37");
-            document.getElementById('push-notif').onclick = () => {
-                if(deferredPrompt) {
-                    deferredPrompt.prompt();
-                    deferredPrompt.userChoice.then((choice) => {
-                        if (choice.outcome === 'accepted') console.log('Lale instalada');
-                        deferredPrompt = null;
-                    });
-                }
-            };
-        }, 5000);
-    });
-
-    // 1. SPLASH SCREEN
-    window.onload = () => {
-        setTimeout(() => {
-            const s = document.getElementById('splash');
-            s.style.opacity = '0';
-            setTimeout(() => s.style.display = 'none', 1000);
-        }, 2500);
-        updateGreeting();
-        startMuhtarFeed();
+    // CONFIGURACIÓN FIREBASE (PROYECTO MENTEVIVA)
+    const firebaseConfig = {
+        apiKey: "AIzaSyBAxLK8shFQEcKdMiIjq9BTib1cPUaVOno",
+        authDomain: "gen-lang-client-0899638282.firebaseapp.com",
+        projectId: "gen-lang-client-0899638282",
+        storageBucket: "gen-lang-client-0899638282.firebasestorage.app",
+        messagingSenderId: "837834829290",
+        appId: "1:837834829290:web:6d2b153ecf341824501693"
     };
 
-    function updateGreeting() {
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // 1. CHAT EN TIEMPO REAL (LALE JAM)
+    function toggleJamPanel() {
+        document.getElementById('jam-panel').classList.toggle('active');
+        if(document.getElementById('jam-panel').classList.contains('active')) {
+            showPush("LALE JAM", "Canlı odaya bağlandınız.", "fa-wand-magic-sparkles", "#D4AF37");
+        }
+    }
+
+    function sendMessage() {
+        const input = document.getElementById('chat-input');
+        if(input.value.trim() !== "") {
+            db.collection("lalejam").add({
+                user: "Lucas", // Esto puede ser dinámico luego
+                text: input.value,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            input.value = "";
+        }
+    }
+
+    // Escuchar mensajes de Firebase
+    db.collection("lalejam").orderBy("timestamp", "asc").onSnapshot((snapshot) => {
+        const chatBox = document.getElementById('chat-box');
+        chatBox.innerHTML = "";
+        snapshot.forEach((doc) => {
+            const m = doc.data();
+            chatBox.innerHTML += `<div class="chat-msg"><b>${m.user}:</b> ${m.text}</div>`;
+        });
+        chatBox.scrollTop = chatBox.scrollHeight;
+        document.getElementById('jam-status').innerText = `${snapshot.size} Mesaj - Canlı`;
+    });
+
+    // 2. MUHTAR FEED DESDE FIREBASE
+    db.collection("settings").doc("muhtar").onSnapshot((doc) => {
+        if (doc.exists) {
+            document.getElementById('muhtar-text').innerText = doc.data().message;
+        } else {
+            document.getElementById('muhtar-text').innerText = "Beşiktaş'ta sular 22:00'de kesilecektir.";
+        }
+    });
+
+    // 3. LÓGICA DE UI (SPLASH, TABS, GREETING)
+    window.onload = () => {
+        setTimeout(() => {
+            document.getElementById('splash').style.opacity = '0';
+            setTimeout(() => document.getElementById('splash').style.display = 'none', 1000);
+        }, 2500);
+        
         const h = new Date().getHours();
-        let g = h >= 5 && h < 12 ? "Günaydın" : h >= 12 && h < 18 ? "İyi Günler" : "İyi Akşamlar";
-        document.getElementById('dynamic-greeting').innerText = g;
-    }
+        document.getElementById('dynamic-greeting').innerText = h < 12 ? "Günaydın" : h < 18 ? "İyi Günler" : "İyi Akşamlar";
+    };
 
-    // 2. MUHTAR DIGITAL - Información Real
-    function startMuhtarFeed() {
-        const alerts = [
-            "İSKİ: Beşiktaş'ta planlı su kesintisi (22:00 - 02:00).",
-            "Nöbetçi Eczane: En yakın eczaneyi bulmak için tıklayın.",
-            "AKOM: Yarın İstanbul genelinde kuvvetli lodos bekleniyor.",
-            "İBB: Boğaz hattı vapur seferleri hava muhalefeti nedeniyle iptal.",
-            "Sağlık: Mevsimsel grip uyarısı, maske kullanımı önerilir."
-        ];
-        let i = 0;
-        setInterval(() => {
-            const muhtarText = document.getElementById('muhtar-text');
-            muhtarText.style.opacity = 0;
-            setTimeout(() => {
-                muhtarText.innerText = alerts[i];
-                muhtarText.style.opacity = 1;
-                i = (i + 1) % alerts.length;
-            }, 500);
-        }, 6000); 
-    }
-
-    // 3. FUNCIÓN REAL: BUSCAR FARMACIAS EN GOOGLE MAPS
-    function findNearestPharmacy() {
-        showPush("ECZANE BULUCU", "Konumunuz alınıyor y farmacias en camino...", "fa-house-medical", "#E30A17");
-        
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition((position) => {
-                const lat = position.coords.latitude;
-                const lng = position.coords.longitude;
-                
-                window.dataLayer = window.dataLayer || [];
-                window.dataLayer.push({'event': 'pharmacy_search', 'lat': lat, 'lng': lng});
-
-                const mapUrl = `https://www.google.com/maps/search/Eczane/@${lat},${lng},15z`;
-                setTimeout(() => window.open(mapUrl, '_blank'), 1000);
-                
-            }, () => {
-                window.open('https://www.google.com/maps/search/Istanbul+Eczane', '_blank');
-            });
-        } else {
-            window.open('https://www.google.com/maps/search/Istanbul+Eczane', '_blank');
-        }
-    }
-
-    // 4. LALE JAM: LUCAS JAM
-    let jamActive = false;
-    function initLaleJam() {
-        jamActive = !jamActive;
-        const body = document.getElementById('mainBody');
-        const btn = document.getElementById('laleJamBtn');
-        
-        if(jamActive) {
-            body.classList.add('jam-mode');
-            btn.innerHTML = '<i class="fa-solid fa-circle-stop"></i> JAM DURDUR';
-            btn.style.background = 'linear-gradient(135deg, #E30A17, #8b0000)';
-            btn.style.color = '#fff';
-            
-            showPush("LALE JAM AKTİF", "Lucas Jam odası hazırlanıyor...", "fa-wand-magic-sparkles", "#D4AF37");
-
-            navigator.geolocation.getCurrentPosition(pos => {
-                const roomId = "Lucas-Jam-" + Math.floor(Math.random() * 9999);
-                const meetUrl = `https://meet.jit.si/${roomId}#config.startWithVideoMuted=true`;
-                
-                window.dataLayer = window.dataLayer || [];
-                window.dataLayer.push({'event': 'jam_started', 'room_id': roomId});
-
-                setTimeout(() => {
-                    if(confirm("Lucas Jam hazır! Arkadaşlarınla canlı videollamada buluşmak için odaya girmek ister misin?")) {
-                        window.open(meetUrl, '_blank');
-                    }
-                }, 1000);
-            }, err => {
-                showPush("HATA", "GPS izni verilmedi.", "fa-triangle-exclamation", "#E30A17");
-            });
-        } else {
-            body.classList.remove('jam-mode');
-            btn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> LALE JAM BAŞLAT';
-            btn.style.background = ''; btn.style.color = '';
-            showPush("JAM KAPATILDI", "Bağlantı kesildi.", "fa-lock", "#64748B");
-            window.dataLayer = window.dataLayer || [];
-            window.dataLayer.push({'event': 'jam_stopped'});
-        }
-    }
-
-    // 5. VAPUR REAL
-    function realVapurTrack() {
-        showPush("VAPUR TAKİBİ", "Canlı gemi trafiği açılıyor...", "fa-ship", "#003049");
-        window.dataLayer = window.dataLayer || [];
-        window.dataLayer.push({'event': 'vapur_track_clicked'});
-        setTimeout(() => window.open('https://www.sehirhatlari.istanbul/tr/gemilerimiz', '_blank'), 1500);
-    }
-
-    // 6. NOTIFICACIONES
-    function showPush(title, msg, icon, color) {
-        const p = document.getElementById('push-notif');
-        const i = document.getElementById('ni');
-        document.getElementById('nt').innerText = title;
-        document.getElementById('nm').innerText = msg;
-        i.innerHTML = `<i class="fa-solid ${icon}"></i>`;
-        i.style.background = color + '20'; i.style.color = color;
-        p.style.top = '25px';
-        setTimeout(() => p.style.top = '-120px', 4500);
-    }
-
-    // 7. NAVEGACIÓN
-    function changeTab(tabId, el) {
+    function changeTab(id, el) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
-        document.getElementById(tabId).classList.add('active');
+        document.getElementById(id).classList.add('active');
         el.classList.add('active');
-        window.dataLayer = window.dataLayer || [];
-        window.dataLayer.push({'event': 'tab_changed', 'tab_id': tabId});
     }
 
-    // 8. FUNCIONES DE SISTEMA
-    function openService(scheme, web) {
-        const start = Date.now();
-        window.location.href = scheme;
-        window.dataLayer = window.dataLayer || [];
-        window.dataLayer.push({'event': 'service_opened', 'service': web});
-        setTimeout(() => { if (Date.now() - start < 1500) window.open(web, '_blank'); }, 600);
-    }
-
-    function systemShutdown() {
-        showPush("HOŞÇA KAL", "Oturum kapatıldı.", "fa-power-off", "#E30A17");
-        setTimeout(() => location.reload(), 1500);
+    function showPush(title, msg, icon, color) {
+        const p = document.getElementById('push-notif');
+        document.getElementById('nt').innerText = title;
+        document.getElementById('nm').innerText = msg;
+        const i = document.getElementById('ni');
+        i.innerHTML = `<i class="fa-solid ${icon}"></i>`;
+        i.style.color = color; i.style.background = color + "20";
+        p.style.top = '25px';
+        setTimeout(() => p.style.top = '-120px', 4000);
     }
 </script>
-
 </body>
 </html>
