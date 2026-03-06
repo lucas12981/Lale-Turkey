@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>LALE ISTANBUL - Premium Experience</title>
+    <title>LALE - İstanbul Premium Hub</title>
 
     <script src='https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js'></script>
     <link href='https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css' rel='stylesheet' />
@@ -18,299 +18,313 @@
             --glass-white: rgba(255, 255, 255, 0.95);
             --glass-dark: rgba(10, 15, 25, 0.96);
             --gold-gradient: linear-gradient(145deg, #D4AF37 0%, #B8860B 100%);
+            --mosque-blue: #1a5e63;
         }
 
         /* RESET & BASE */
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; outline: none; }
         body, html { height: 100%; width: 100%; background: #000; color: #fff; overflow: hidden; position: fixed; }
 
-        /* SPLASH SCREEN (3D TULIP) */
-        #splash {
-            position: fixed; inset: 0; background: #000; z-index: 10000;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: opacity 1.5s cubic-bezier(0.7, 0, 0.3, 1);
-        }
-        .tulip-3d { 
-            width: 120px; height: 120px; color: var(--turkish-red); 
-            filter: drop-shadow(0 0 30px var(--turkish-red));
-            animation: tulipFloat 3s infinite ease-in-out;
-        }
-        @keyframes tulipFloat {
-            0%, 100% { transform: translateY(0) scale(1); opacity: 0.6; }
-            50% { transform: translateY(-15px) scale(1.1); opacity: 1; filter: drop-shadow(0 0 50px var(--turkish-red)); }
-        }
+        /* TULIP LOGO CSS (NO HEARTS) */
+        .tulip-wrap { width: 80px; height: 100px; position: relative; animation: tulipFloat 3s infinite ease-in-out; }
+        .petal { position: absolute; background: var(--turkish-red); border-radius: 50% 50% 15% 15%; box-shadow: 0 0 25px rgba(227, 10, 23, 0.6); }
+        .p-left { width: 35px; height: 60px; transform: rotate(-30deg); left: 5px; top: 10px; opacity: 0.8; }
+        .p-right { width: 35px; height: 60px; transform: rotate(30deg); right: 5px; top: 10px; opacity: 0.8; }
+        .p-center { width: 45px; height: 75px; left: 17px; z-index: 5; border-radius: 45% 45% 20% 20%; }
+        @keyframes tulipFloat { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-12px) scale(1.08); } }
 
-        /* BACKGROUND VIDEO */
-        .bg-video {
-            position: fixed; inset: 0; z-index: 1;
-            object-fit: cover; width: 100%; height: 100%;
-            filter: brightness(0.3) saturate(1.2);
-            transform: scale(1.1); animation: orbit 60s infinite linear;
-        }
-        @keyframes orbit { 0% { transform: scale(1.1); } 50% { transform: scale(1.3) translate(-2%, 1%); } 100% { transform: scale(1.1); } }
+        /* SPLASH & BACKGROUND */
+        #splash { position: fixed; inset: 0; background: #000; z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 1.2s; }
+        .bg-vid { position: fixed; inset: 0; z-index: 1; object-fit: cover; width: 100%; height: 100%; filter: brightness(0.28) saturate(1.1); transform: scale(1.1); animation: zoomIn 60s infinite; }
+        @keyframes zoomIn { 0%, 100% { transform: scale(1.1); } 50% { transform: scale(1.25); } }
 
-        /* APP SHELL */
-        .app-shell { position: relative; z-index: 100; height: 100vh; display: flex; flex-direction: column; opacity: 0; transition: 1.5s ease-out; }
-        .app-shell.loaded { opacity: 1; }
+        /* APP STRUCTURE */
+        .lale-app { position: relative; z-index: 100; height: 100vh; display: flex; flex-direction: column; opacity: 0; transition: 1.5s ease-in-out; }
+        .lale-app.ready { opacity: 1; }
 
-        header { padding: 60px 25px 20px; display: flex; justify-content: space-between; align-items: center; }
-        .user-meta h1 { font-size: 32px; font-weight: 900; letter-spacing: -1px; }
-        .user-meta p { font-size: 10px; font-weight: 800; color: var(--bizantine-gold); letter-spacing: 3px; text-transform: uppercase; }
+        header { padding: 60px 25px 20px; display: flex; justify-content: space-between; align-items: flex-end; }
+        .header-meta h1 { font-size: 32px; font-weight: 900; letter-spacing: -1.5px; }
+        .header-meta p { font-size: 10px; font-weight: 800; color: var(--bizantine-gold); letter-spacing: 4px; }
+        .profile-trigger { width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--bizantine-gold); overflow: hidden; box-shadow: 0 0 15px rgba(212,175,55,0.3); }
 
-        main { flex: 1; overflow-y: auto; padding: 10px 25px 150px; scrollbar-width: none; }
+        main { flex: 1; overflow-y: auto; padding: 10px 25px 150px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
         main::-webkit-scrollbar { display: none; }
 
-        .view { display: none; animation: slideUp 0.6s ease; }
-        .view.active { display: block; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        /* VIEW ENGINE */
+        .view { display: none; opacity: 0; transform: translateY(20px); transition: 0.5s ease; }
+        .view.active { display: block; opacity: 1; transform: translateY(0); }
 
-        /* PROFILE SECTION */
-        .profile-card {
-            text-align: center; background: rgba(255,255,255,0.05); padding: 30px; 
-            border-radius: 35px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 25px;
-        }
-        .avatar-wrapper {
-            width: 110px; height: 110px; border-radius: 50%; border: 3px solid var(--bizantine-gold);
-            margin: 0 auto 15px; position: relative; overflow: hidden; background: #222;
-        }
-        .avatar-wrapper img { width: 100%; height: 100%; object-fit: cover; }
-        .edit-btn { background: var(--bizantine-gold); border: none; padding: 10px 20px; border-radius: 15px; font-weight: 800; font-size: 12px; cursor: pointer; color: #000; }
+        /* UI CARDS */
+        .lale-card { background: var(--glass-white); border-radius: 28px; padding: 22px; color: #111; display: flex; align-items: center; gap: 18px; margin-bottom: 15px; box-shadow: 0 12px 30px rgba(0,0,0,0.3); cursor: pointer; transition: 0.2s; }
+        .lale-card:active { transform: scale(0.96); }
+        .icon-sq { width: 52px; height: 52px; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #fff; }
 
-        /* LALE CARDS */
-        .lale-item {
-            background: var(--glass-white); border-radius: 25px; padding: 20px; color: #111;
-            display: flex; align-items: center; gap: 15px; margin-bottom: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2); transition: 0.3s; cursor: pointer;
-        }
-        .lale-item:active { transform: scale(0.95); }
-        .icon-box { width: 50px; height: 50px; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+        /* REHBER & YOLCU PANELS */
+        .util-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0; }
+        .util-box { background: var(--glass-dark); border: 1px solid rgba(255,255,255,0.08); padding: 20px; border-radius: 25px; text-align: center; }
+        .util-box i { font-size: 24px; color: var(--bizantine-gold); margin-bottom: 10px; }
+        .util-box h4 { font-size: 13px; font-weight: 800; }
+        .util-box p { font-size: 10px; opacity: 0.5; margin-top: 4px; }
 
-        /* MAP AREA */
-        #map-box { width: 100%; height: 350px; border-radius: 30px; overflow: hidden; border: 1px solid var(--bizantine-gold); }
+        /* MAPBOX */
+        #radar-map { width: 100%; height: 360px; border-radius: 35px; border: 1.5px solid var(--bizantine-gold); overflow: hidden; }
 
-        /* NAVIGATION */
-        nav {
-            position: fixed; bottom: 30px; left: 20px; right: 20px; height: 80px;
-            background: var(--glass-dark); border-radius: 40px; display: flex;
-            align-items: center; backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1);
-        }
-        .nav-link { flex: 1; text-align: center; color: #555; font-size: 24px; transition: 0.3s; }
-        .nav-link.active { color: var(--bizantine-gold); transform: translateY(-5px); }
+        /* NAV BAR */
+        nav { position: fixed; bottom: 30px; left: 20px; right: 20px; height: 85px; background: var(--glass-dark); border-radius: 42px; display: flex; align-items: center; backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 25px 50px rgba(0,0,0,0.6); }
+        .n-link { flex: 1; text-align: center; color: #555; font-size: 26px; transition: 0.4s; position: relative; }
+        .n-link.active { color: var(--bizantine-gold); transform: translateY(-8px); }
+        .n-link.active::after { content: ''; position: absolute; bottom: -12px; left: 50%; transform: translateX(-50%); width: 5px; height: 5px; background: var(--bizantine-gold); border-radius: 50%; }
 
-        /* MODAL EDIT */
-        #edit-modal {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 20000;
-            display: none; flex-direction: column; padding: 50px 30px; align-items: center;
-        }
-        input { width: 100%; padding: 18px; border-radius: 15px; border: 1px solid #444; background: #111; color: #fff; margin-bottom: 20px; font-size: 16px; }
+        /* MODALS & OVERLAYS */
+        .lale-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 20000; display: none; flex-direction: column; padding: 60px 30px; }
+        .lale-input { width: 100%; padding: 20px; border-radius: 18px; border: 1px solid #333; background: #111; color: #fff; margin-bottom: 20px; font-size: 16px; font-weight: 600; }
+        .btn-gold { background: var(--gold-gradient); color: #000; border: none; padding: 20px; border-radius: 20px; font-weight: 900; font-size: 16px; width: 100%; cursor: pointer; }
 
-        /* TOAST & LOGOUT */
-        #toast { position: fixed; top: -100px; left: 20px; right: 20px; background: var(--glass-white); color: #000; padding: 20px; border-radius: 20px; z-index: 30000; font-weight: 800; transition: 0.6s; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
-        #toast.active { top: 50px; }
+        /* NOTIFICATIONS */
+        #toast-bar { position: fixed; top: -100px; left: 20px; right: 20px; background: var(--glass-white); color: #000; padding: 20px; border-radius: 22px; z-index: 50000; display: flex; align-items: center; gap: 15px; font-weight: 800; transition: 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        #toast-bar.active { top: 50px; }
 
-        .logout-screen {
-            position: fixed; inset: 0; background: #000; z-index: 50000;
-            display: none; flex-direction: column; align-items: center; justify-content: center;
-            opacity: 0; transition: 2s;
-        }
-
+        /* EXIT */
+        #exit-view { position: fixed; inset: 0; background: #000; z-index: 60000; display: none; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transition: 2.5s ease-in-out; }
     </style>
 </head>
 <body>
 
-    <video class="bg-video" autoplay muted loop playsinline>
+    <video class="bg-vid" autoplay muted loop playsinline>
         <source src="https://assets.mixkit.co/videos/preview/mixkit-mosque-of-istanbul-at-sunset-20235-large.mp4" type="video/mp4">
     </video>
 
     <div id="splash">
-        <svg class="tulip-3d" viewBox="0 0 100 100" fill="currentColor">
-            <path d="M50 95C50 95 20 70 20 40C20 25 35 15 50 30C65 15 80 25 80 40C80 70 50 95 50 95Z"/>
-        </svg>
-        <h2 style="margin-top:20px; letter-spacing:8px; font-weight:800; font-size:14px;">LALE ISTANBUL</h2>
+        <div class="tulip-wrap">
+            <div class="petal p-left"></div>
+            <div class="petal p-center"></div>
+            <div class="petal p-right"></div>
+        </div>
+        <h2 style="margin-top:40px; letter-spacing:12px; font-weight:900; font-size:18px;">LALE ISTANBUL</h2>
+        <p style="margin-top:10px; font-size:10px; opacity:0.4; font-weight:800; letter-spacing:2px;">PREMIUM HUB BY LUCAS GUZMÁN</p>
     </div>
 
-    <div class="app-shell" id="app">
+    <div class="lale-app" id="app">
         <header>
-            <div class="user-meta">
-                <p id="greet-txt">İYİ GÜNLER</p>
-                <h1 id="display-name">Lucas Guzmán</h1>
+            <div class="header-meta">
+                <p id="time-txt">HOS GELDINIZ</p>
+                <h1 id="user-display">Lucas Guzmán</h1>
             </div>
-            <div onclick="showView('profile', this)" style="width: 50px; height: 50px; border-radius: 50%; overflow: hidden; border: 2px solid var(--bizantine-gold);">
-                <img id="header-avatar" src="https://ui-avatars.com/api/?name=Lucas+Guzman&background=D4AF37&color=fff" style="width: 100%; height: 100%; object-fit: cover;">
+            <div class="profile-trigger" onclick="showView('profile', this)">
+                <img id="avatar-h" src="https://ui-avatars.com/api/?name=Lucas+Guzman&background=D4AF37&color=fff" style="width:100%; height:100%; object-fit:cover;">
             </div>
         </header>
 
-        <main>
+        <main id="main-scroll">
+            
             <section id="home" class="view active">
-                <div style="background:var(--gold-gradient); padding:25px; border-radius:30px; color:#000; margin-bottom:20px;">
-                    <h3 style="font-weight:900; font-size:24px;">Hoş Geldiniz</h3>
-                    <p style="font-size:13px; font-weight:600; opacity:0.8;">Şehri keşfetmeye hazır mısınız?</p>
+                <div style="background:var(--gold-gradient); padding:30px; border-radius:35px; color:#000; margin-bottom:25px; box-shadow: 0 15px 30px rgba(212,175,55,0.25);">
+                    <h2 style="font-weight:900; font-size:28px;">Merhaba, Lucas!</h2>
+                    <p style="font-weight:700; opacity:0.8; font-size:14px; margin-top:5px;">Estambul está a tus pies hoy.</p>
                 </div>
 
-                <div class="lale-item" onclick="showView('radar')">
-                    <div class="icon-box" style="background:var(--turkish-red); color:#fff;"><i class="fa-solid fa-location-crosshairs"></i></div>
-                    <div style="flex:1;"><b>Lale Radar</b><br><small>Canlı İstanbul haritası</small></div>
+                <div class="lale-card" onclick="showView('rehber')">
+                    <div class="icon-sq" style="background:var(--mosque-blue);"><i class="fa-solid fa-kaaba"></i></div>
+                    <div style="flex:1;"><b>Lale Rehber</b><br><small>Mezquitas y Wi-Fi Gratis</small></div>
                 </div>
 
-                <div class="lale-item" onclick="window.open('bitaksi://')">
-                    <div class="icon-box" style="background:#FFD600;"><i class="fa-solid fa-taxi"></i></div>
-                    <div style="flex:1;"><b>BiTaksi</b><br><small>Hızlı ulaşım</small></div>
+                <div class="lale-card" onclick="showView('yolcu')">
+                    <div class="icon-sq" style="background:var(--turkish-red);"><i class="fa-solid fa-ferry"></i></div>
+                    <div style="flex:1;"><b>Lale Yolcu</b><br><small>Tránsito y Movilidad en Vivo</small></div>
                 </div>
 
-                <div class="lale-item" onclick="showView('wallet')">
-                    <div class="icon-box" style="background:#000; color:var(--bizantine-gold);"><i class="fa-solid fa-wallet"></i></div>
-                    <div style="flex:1;"><b>Ley Pay</b><br><small>Cüzdan ve Ödemeler</small></div>
+                <div class="lale-card" onclick="window.open('bitaksi://')">
+                    <div class="icon-sq" style="background:#FFD600; color:#000;"><i class="fa-solid fa-taxi"></i></div>
+                    <div style="flex:1;"><b>BiTaksi</b><br><small>Solicitar transporte oficial</small></div>
+                </div>
+            </section>
+
+            <section id="rehber" class="view">
+                <h2 style="font-weight:900; margin-bottom:10px;">Lale Rehber</h2>
+                <p style="font-size:13px; opacity:0.6; margin-bottom:20px;">Servicios esenciales gratuitos en la ciudad.</p>
+                
+                <div class="util-grid">
+                    <div class="util-box" onclick="notify('Buscando İBB Wi-Fi más cercano...')">
+                        <i class="fa-solid fa-wifi"></i>
+                        <h4>Ücretsiz Wi-Fi</h4>
+                        <p>Puntos Públicos</p>
+                    </div>
+                    <div class="util-box" onclick="notify('Calculando tiempo para el próximo Ezan...')">
+                        <i class="fa-solid fa-moon"></i>
+                        <h4>Ezan Vakti</h4>
+                        <p>Horarios de Rezo</p>
+                    </div>
+                </div>
+
+                <div class="lale-card" onclick="notify('Abriendo buscador de mezquitas...')">
+                    <div class="icon-sq" style="background:#2c3e50;"><i class="fa-solid fa-mosque"></i></div>
+                    <div style="flex:1;"><b>Cami Bulucu</b><br><small>Mezquitas cercanas a tu ubicación</small></div>
+                </div>
+                
+                <div class="lale-card" onclick="notify('Directorio de emergencias turcas activado')">
+                    <div class="icon-sq" style="background:#c0392b;"><i class="fa-solid fa-phone-flip"></i></div>
+                    <div style="flex:1;"><b>Acil Servis</b><br><small>Números de Emergencia (112)</small></div>
+                </div>
+            </section>
+
+            <section id="yolcu" class="view">
+                <h2 style="font-weight:900; margin-bottom:20px;">Lale Yolcu</h2>
+                <div style="background:rgba(255,255,255,0.05); padding:25px; border-radius:30px; border:1px solid rgba(255,255,255,0.1);">
+                    <p style="font-size:11px; font-weight:800; color:var(--bizantine-gold); letter-spacing:3px; margin-bottom:15px;">ESTADO DEL TRÁNSITO</p>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-weight:700;">
+                        <span><i class="fa-solid fa-ship"></i> Vapur</span> <span style="color:#2ecc71;">OPERATIVO</span>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-weight:700;">
+                        <span><i class="fa-solid fa-train-subway"></i> Marmaray</span> <span style="color:#f1c40f;">5 MIN DEMORA</span>
+                    </div>
+                    <hr style="opacity:0.1; margin:15px 0;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-size:12px; opacity:0.6;">Tipo de Cambio (Lira)</span>
+                        <b style="font-size:18px; color:var(--bizantine-gold);">1 USD = 34.22 TL</b>
+                    </div>
                 </div>
             </section>
 
             <section id="radar" class="view">
-                <h2 style="font-weight:900; margin-bottom:15px;">Lale Radar Live</h2>
-                <div id="map-box"></div>
-                <div style="margin-top:15px; background:rgba(255,255,255,0.05); padding:20px; border-radius:25px; font-size:13px;">
-                    <i class="fa-solid fa-circle-info" style="color:var(--bizantine-gold);"></i> Karaköy iskelesi şu an sakin.
-                </div>
-            </section>
-
-            <section id="wallet" class="view">
-                <h2 style="font-weight:900; margin-bottom:20px;">Ley Pay</h2>
-                <div style="background:linear-gradient(135deg, #1a1a1a, #000); padding:30px; border-radius:30px; border:1px solid var(--bizantine-gold); text-align:center;">
-                    <p style="font-size:10px; letter-spacing:2px; opacity:0.6;">TOPLAM VARLIK</p>
-                    <h3 style="font-size:36px; font-weight:900; margin:10px 0;">Cüzdan Aktif</h3>
-                    <button class="edit-btn" onclick="notify('Yakında NFC ile İstanbulKart yükleme!')">İŞLEMLER</button>
-                </div>
-                <div style="margin-top:20px;">
-                    <div class="lale-item" onclick="window.open('https://www.papara.com/')">
-                        <div class="icon-box" style="background:#000; color:#BBFF00; font-weight:900;">P</div>
-                        <div><b>Papara</b><br><small>Hızlı Para Transferi</small></div>
-                    </div>
+                <h2 style="font-weight:900; margin-bottom:20px;">Lale Radar Live</h2>
+                <div id="radar-map"></div>
+                <div style="margin-top:20px; padding:20px; background:var(--glass-dark); border-radius:25px; font-size:13px; border:1px solid rgba(255,255,255,0.05);">
+                    <i class="fa-solid fa-circle-dot" style="color:var(--turkish-red); animation: blink 1s infinite;"></i> 
+                    <b>Sultanahmet:</b> Alta concentración de turistas. Flujo normal.
                 </div>
             </section>
 
             <section id="profile" class="view">
-                <div class="profile-card">
-                    <div class="avatar-wrapper">
-                        <img id="profile-img" src="https://ui-avatars.com/api/?name=Lucas+Guzman&background=D4AF37&color=fff">
+                <div style="text-align:center; padding:40px 20px; background:rgba(255,255,255,0.03); border-radius:35px; border:1px solid rgba(255,255,255,0.08); margin-bottom:25px;">
+                    <div style="width:120px; height:120px; border-radius:50%; border:3px solid var(--bizantine-gold); margin:0 auto 20px; overflow:hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+                        <img id="avatar-p" src="https://ui-avatars.com/api/?name=Lucas+Guzman&background=D4AF37&color=fff" style="width:100%; height:100%; object-fit:cover;">
                     </div>
-                    <h2 id="profile-name-display" style="font-weight:900;">Lucas Guzmán</h2>
-                    <p style="font-size:12px; color:var(--bizantine-gold); font-weight:800; margin-bottom:20px;">ISTANBUL ELITE</p>
-                    <button class="edit-btn" onclick="openEditModal()">PROFİLİ DÜZENLE</button>
+                    <h2 id="name-p" style="font-weight:900; font-size:26px;">Lucas Guzmán</h2>
+                    <p style="color:var(--bizantine-gold); font-weight:800; font-size:12px; letter-spacing:4px; margin-top:5px;">ELITE MEMBER</p>
+                    <button class="btn-gold" style="margin-top:25px; padding:12px 30px; width:auto;" onclick="openEdit()">EDITAR PERFIL</button>
                 </div>
-
-                <button onclick="handleLogout()" style="width:100%; padding:20px; border-radius:20px; background:rgba(227,10,23,0.15); border:1px solid var(--turkish-red); color:var(--turkish-red); font-weight:800; cursor:pointer;">
-                    OTURUMU KAPAT
+                
+                <button onclick="confirmExit()" style="width:100%; padding:22px; border-radius:25px; background:rgba(227,10,23,0.1); border:1px solid var(--turkish-red); color:var(--turkish-red); font-weight:900; cursor:pointer; letter-spacing:1px;">
+                    OTURUMU KAPAT (CERRAR SESIÓN)
                 </button>
             </section>
         </main>
 
         <nav>
-            <div class="nav-link active" onclick="showView('home', this)"><i class="fa-solid fa-house"></i></div>
-            <div class="nav-link" onclick="showView('radar', this)"><i class="fa-solid fa-compass"></i></div>
-            <div class="nav-link" onclick="showView('wallet', this)"><i class="fa-solid fa-wallet"></i></div>
-            <div class="nav-link" onclick="showView('profile', this)"><i class="fa-solid fa-user-gear"></i></div>
+            <div class="n-link active" onclick="showView('home', this)"><i class="fa-solid fa-house-chimney"></i></div>
+            <div class="n-link" onclick="showView('rehber', this)"><i class="fa-solid fa-star-and-crescent"></i></div>
+            <div class="n-link" onclick="showView('radar', this)"><i class="fa-solid fa-compass"></i></div>
+            <div class="n-link" onclick="showView('profile', this)"><i class="fa-solid fa-user-ninja"></i></div>
         </nav>
     </div>
 
-    <div id="edit-modal">
-        <h2 style="margin-bottom:30px;">Profilini Düzenle</h2>
-        <input type="text" id="name-input" placeholder="Adınız Soyadınız">
-        <input type="text" id="img-input" placeholder="Fotoğraf URL (Opsiyonel)">
-        <button class="edit-btn" style="padding:20px 50px;" onclick="saveProfile()">KAYDET</button>
-        <p onclick="closeEditModal()" style="margin-top:20px; opacity:0.5; cursor:pointer;">Vazgeç</p>
+    <div id="modal-edit" class="lale-modal">
+        <h2 style="font-weight:900; font-size:30px; margin-bottom:30px;">Ayarlar</h2>
+        <input type="text" id="in-name" class="lale-input" placeholder="Yeni Adınız">
+        <input type="text" id="in-url" class="lale-input" placeholder="Fotoğraf URL (Opsiyonel)">
+        <button class="btn-gold" onclick="saveProfile()">DEĞİŞİKLİKLERİ KAYDET</button>
+        <p onclick="closeEdit()" style="text-align:center; margin-top:25px; opacity:0.4; font-weight:700; cursor:pointer;">Kapat</p>
     </div>
 
-    <div id="logout-screen" class="logout-screen">
-        <svg class="tulip-3d" style="width:80px; margin-bottom:30px;" viewBox="0 0 100 100" fill="currentColor"><path d="M50 95C50 95 20 70 20 40C20 25 35 15 50 30C65 15 80 25 80 40C80 70 50 95 50 95Z"/></svg>
-        <h2 style="letter-spacing:5px;">GÖRÜŞMEK ÜZERE</h2>
-        <p id="logout-user-msg" style="margin-top:10px; opacity:0.6; font-weight:600;"></p>
+    <div id="toast-bar">
+        <i class="fa-solid fa-bell-concierge" style="color:var(--bizantine-gold); font-size:24px;"></i>
+        <span id="toast-msg"></span>
     </div>
 
-    <div id="toast">Bildirim Mesajı</div>
+    <div id="exit-view">
+        <div class="tulip-wrap" style="transform: scale(0.8);">
+            <div class="petal p-left"></div>
+            <div class="petal p-center"></div>
+            <div class="petal p-right"></div>
+        </div>
+        <h2 style="margin-top:35px; letter-spacing:8px; font-weight:900;">GÜLE GÜLE</h2>
+        <p id="exit-bye" style="margin-top:15px; opacity:0.6; font-weight:700;"></p>
+    </div>
 
     <script>
         mapboxgl.accessToken = 'pk.eyJ1IjoibHVjYXNndXptYW4iLCJhIjoiY2x0MTZ2YnEyMGZhajJpbm8yYTNrdzZ6eSJ9.8qY7iM_NnC6E2Xp5Y6rK7A';
-        
-        // PROFILE LOGIC
-        function openEditModal() { document.getElementById('edit-modal').style.display = 'flex'; }
-        function closeEditModal() { document.getElementById('edit-modal').style.display = 'none'; }
-        
-        function saveProfile() {
-            const newName = document.getElementById('name-input').value;
-            const newImg = document.getElementById('img-input').value;
 
-            if(newName) {
-                document.getElementById('display-name').innerText = newName;
-                document.getElementById('profile-name-display').innerText = newName;
-                if(!newImg) {
-                    const avatarUrl = `https://ui-avatars.com/api/?name=${newName.replace(' ','+')}&background=D4AF37&color=fff`;
-                    document.getElementById('header-avatar').src = avatarUrl;
-                    document.getElementById('profile-img').src = avatarUrl;
-                }
-            }
-            if(newImg) {
-                document.getElementById('header-avatar').src = newImg;
-                document.getElementById('profile-img').src = newImg;
-            }
-            closeEditModal();
-            notify("Profil başarıyla güncellendi!");
-        }
-
-        // VIEW LOGIC
+        // VIEW CONTROLLER
         function showView(id, el) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            if(el && el.classList.contains('nav-link')) {
-                document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
+            if(el && el.classList.contains('n-link')) {
+                document.querySelectorAll('.n-link').forEach(n => n.classList.remove('active'));
                 el.classList.add('active');
             }
-            if(id === 'radar') initMap();
+            if(id === 'radar') initRadar();
+            document.getElementById('main-scroll').scrollTo({top:0, behavior:'smooth'});
         }
 
-        let map;
-        function initMap() {
-            if(map) return;
+        let mapObj;
+        function initRadar() {
+            if(mapObj) return;
             setTimeout(() => {
-                map = new mapboxgl.Map({
-                    container: 'map-box',
+                mapObj = new mapboxgl.Map({
+                    container: 'radar-map',
                     style: 'mapbox://styles/mapbox/dark-v11',
                     center: [28.9784, 41.0082],
-                    zoom: 12
+                    zoom: 12.5,
+                    pitch: 45
                 });
-            }, 100);
+                mapObj.addControl(new mapboxgl.GeolocateControl({ trackUserLocation: true }));
+            }, 300);
         }
 
-        // LOGOUT LOGIC
-        function handleLogout() {
-            const userName = document.getElementById('display-name').innerText;
-            const screen = document.getElementById('logout-screen');
-            document.getElementById('logout-user-msg').innerText = `${userName}, İstanbul sizi bekliyor olacak.`;
-            
+        // PROFILE SYSTEM
+        function openEdit() { document.getElementById('modal-edit').style.display = 'flex'; }
+        function closeEdit() { document.getElementById('modal-edit').style.display = 'none'; }
+        
+        function saveProfile() {
+            const n = document.getElementById('in-name').value;
+            const u = document.getElementById('in-url').value;
+            if(n) {
+                document.getElementById('user-display').innerText = n;
+                document.getElementById('name-p').innerText = n;
+            }
+            if(u) {
+                document.getElementById('avatar-h').src = u;
+                document.getElementById('avatar-p').src = u;
+            } else if(n) {
+                const url = `https://ui-avatars.com/api/?name=${n.replace(' ','+')}&background=D4AF37&color=fff`;
+                document.getElementById('avatar-h').src = url;
+                document.getElementById('avatar-p').src = url;
+            }
+            closeEdit();
+            notify("Profil başarıyla güncellendi!");
+        }
+
+        // EXIT SYSTEM
+        function confirmExit() {
+            const name = document.getElementById('user-display').innerText;
+            const screen = document.getElementById('exit-view');
+            document.getElementById('exit-bye').innerText = `${name}, İstanbul seni özleyecek.`;
             screen.style.display = 'flex';
             setTimeout(() => { screen.style.opacity = '1'; }, 100);
-            
-            setTimeout(() => {
-                window.location.reload(); // Simula la salida volviendo al splash inicial
-            }, 4000);
+            setTimeout(() => { window.location.reload(); }, 4500);
         }
 
+        // UTILS
         function notify(msg) {
-            const t = document.getElementById('toast');
-            t.innerText = msg;
-            t.classList.add('active');
-            setTimeout(() => t.classList.remove('active'), 3000);
+            const bar = document.getElementById('toast-bar');
+            document.getElementById('toast-msg').innerText = msg;
+            bar.classList.add('active');
+            setTimeout(() => bar.classList.remove('active'), 3500);
         }
 
         window.onload = () => {
-            const h = new Date().getHours();
-            const g = document.getElementById('greet-txt');
-            if(h < 12) g.innerText = "GÜNAYDIN";
-            else if(h < 18) g.innerText = "İYİ GÜNLER";
-            else g.innerText = "İYİ AKŞAMLAR";
+            const hours = new Date().getHours();
+            const greet = document.getElementById('time-txt');
+            if(hours >= 5 && hours < 12) greet.innerText = "GÜNAYDIN";
+            else if(hours >= 12 && hours < 18) greet.innerText = "İYİ GÜNLER";
+            else if(hours >= 18 && hours < 22) greet.innerText = "İYİ AKŞAMLAR";
+            else greet.innerText = "İYİ GECELER";
 
             setTimeout(() => {
                 document.getElementById('splash').style.opacity = '0';
-                document.getElementById('app').classList.add('loaded');
-                setTimeout(() => document.getElementById('splash').style.display = 'none', 1500);
-            }, 3000);
+                document.getElementById('app').classList.add('ready');
+                setTimeout(() => { document.getElementById('splash').style.display = 'none'; }, 1200);
+            }, 3500);
         };
     </script>
 </body>
