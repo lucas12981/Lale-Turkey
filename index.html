@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>LALE - İstanbul Premium Hub</title>
+    <title>LALE - İstanbul Premium</title>
 
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
@@ -16,332 +16,338 @@
         :root {
             --turkish-red: #E30A17;
             --bizantine-gold: #D4AF37;
-            --deep-dark: #0A0F19;
-            --glass-bg: rgba(255, 255, 255, 0.95);
-            --nav-bg: rgba(10, 15, 25, 0.96);
+            --deep-black: #050505;
+            --glass-light: rgba(255, 255, 255, 0.95);
+            --glass-dark: rgba(10, 15, 25, 0.96);
+            --gold-gradient: linear-gradient(145deg, #D4AF37 0%, #B8860B 100%);
             --safe-green: #2ecc71;
-            --gold-gradient: linear-gradient(135deg, #D4AF37 0%, #B8860B 100%);
-            --transition-soft: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            --shadow-premium: 0 20px 40px rgba(0,0,0,0.4);
         }
 
-        /* RESET & CORE */
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; outline: none; }
-        body { background: #000; color: #fff; height: 100vh; overflow: hidden; position: fixed; width: 100%; }
+        /* 1. RESET & BASE */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body, html { height: 100%; width: 100%; background: var(--deep-black); color: #fff; overflow: hidden; position: fixed; }
 
-        /* FONDO 3D PREMIUM */
-        .bg-3d-wrap { position: fixed; inset: 0; z-index: 1; overflow: hidden; }
-        .bg-3d-wrap video { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.3) saturate(1.2); transform: scale(1.1); animation: orbit 60s infinite linear; }
-        @keyframes orbit { 0% { transform: scale(1.1) translate(0, 0); } 50% { transform: scale(1.2) translate(-2%, 2%); } 100% { transform: scale(1.1) translate(0, 0); } }
-
-        /* SPLASH SYSTEM (TULIPÁN) */
+        /* 2. SPLASH SCREEN (TULIPAN ROJO) */
         #splash {
             position: fixed; inset: 0; background: #000; z-index: 10000;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: opacity 1s cubic-bezier(0.77, 0, 0.175, 1);
+            transition: opacity 1.2s cubic-bezier(0.7, 0, 0.3, 1);
         }
-        .tulip-svg { width: 120px; color: var(--turkish-red); filter: drop-shadow(0 0 30px var(--turkish-red)); animation: tulipPulse 2s infinite ease-in-out; }
-        @keyframes tulipPulse { 0%, 100% { transform: scale(1); opacity: 0.4; } 50% { transform: scale(1.1); opacity: 1; } }
+        .tulip-icon { 
+            width: 100px; height: 100px; color: var(--turkish-red); 
+            filter: drop-shadow(0 0 25px var(--turkish-red));
+            animation: tulipPulse 2.5s infinite ease-in-out;
+        }
+        @keyframes tulipPulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; filter: drop-shadow(0 0 10px var(--turkish-red)); }
+            50% { transform: scale(1.15); opacity: 1; filter: drop-shadow(0 0 40px var(--turkish-red)); }
+        }
+        .loading-bar-container { width: 120px; height: 2px; background: rgba(255,255,255,0.1); margin-top: 30px; border-radius: 10px; overflow: hidden; }
+        .loading-bar-fill { width: 0%; height: 100%; background: var(--bizantine-gold); animation: loadProgress 3s forwards ease-in-out; }
+        @keyframes loadProgress { to { width: 100%; } }
 
-        /* APP STRUCTURE */
-        .app-shell { position: relative; z-index: 100; height: 100vh; display: flex; flex-direction: column; opacity: 0; transform: scale(1.05); transition: var(--transition-soft); }
-        .app-shell.loaded { opacity: 1; transform: scale(1); }
+        /* 3. FONDO 3D ORBITAL */
+        .bg-3d-video {
+            position: fixed; inset: 0; z-index: 1;
+            object-fit: cover; width: 100%; height: 100%;
+            filter: brightness(0.35) contrast(1.1);
+            transform: scale(1.1); animation: slowOrbit 60s infinite linear;
+        }
+        @keyframes slowOrbit {
+            0% { transform: scale(1.1) translate(0,0) rotate(0deg); }
+            50% { transform: scale(1.25) translate(-2%, 1%) rotate(1deg); }
+            100% { transform: scale(1.1) translate(0,0) rotate(0deg); }
+        }
 
-        header { padding: 60px 25px 20px; display: flex; justify-content: space-between; align-items: center; }
-        .status-pill { background: rgba(227, 10, 23, 0.15); border: 1px solid var(--turkish-red); padding: 6px 14px; border-radius: 20px; font-size: 10px; font-weight: 800; letter-spacing: 1px; color: var(--turkish-red); }
+        /* 4. APP SHELL & HEADER */
+        .app-container { position: relative; z-index: 100; height: 100vh; display: flex; flex-direction: column; opacity: 0; transition: 1.5s ease-out; }
+        .app-container.active { opacity: 1; }
 
-        main { flex: 1; overflow-y: auto; padding: 10px 25px 160px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+        header { padding: 60px 25px 20px; display: flex; justify-content: space-between; align-items: flex-end; }
+        .greet-box p { font-size: 11px; font-weight: 800; color: var(--bizantine-gold); letter-spacing: 3px; margin-bottom: 5px; }
+        .greet-box h1 { font-size: 36px; font-weight: 900; letter-spacing: -1.5px; }
+        .status-dot-live { background: var(--turkish-red); padding: 6px 14px; border-radius: 20px; font-size: 10px; font-weight: 900; display: flex; align-items: center; gap: 6px; box-shadow: 0 0 15px rgba(227,10,23,0.4); }
+        .dot { width: 6px; height: 6px; background: #fff; border-radius: 50%; animation: blink 1s infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+        /* 5. MAIN CONTENT AREA */
+        main { flex: 1; overflow-y: auto; padding: 10px 25px 150px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
         main::-webkit-scrollbar { display: none; }
 
-        /* VIEW SYSTEM */
-        .view { display: none; }
-        .view.active { display: block; animation: viewIn 0.5s forwards; }
-        @keyframes viewIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .view-section { display: none; opacity: 0; transform: translateY(20px); transition: 0.5s ease; }
+        .view-section.active { display: block; opacity: 1; transform: translateY(0); }
 
-        /* UI COMPONENTS: CARDS */
+        /* 6. UI COMPONENTS (CARDS) */
         .lale-card {
-            background: var(--glass-bg); border-radius: 30px; padding: 22px; color: #111;
-            display: flex; align-items: center; gap: 20px; margin-bottom: 16px;
-            border: 1px solid rgba(255,255,255,0.2); transition: var(--transition-soft);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15); cursor: pointer;
+            background: var(--glass-light); border-radius: 28px; padding: 22px; color: #111;
+            display: flex; align-items: center; gap: 18px; margin-bottom: 16px;
+            box-shadow: var(--shadow-premium); border: 1px solid rgba(255,255,255,0.3);
+            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer;
         }
-        .lale-card:active { transform: scale(0.95); opacity: 0.8; }
-        .icon-box { width: 56px; height: 56px; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
+        .lale-card:active { transform: scale(0.96); background: #f0f0f0; }
+        .icon-circle { width: 54px; height: 54px; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
+        
+        /* 7. RADAR & MAPS */
+        #radar-wrapper { width: 100%; height: 380px; border-radius: 35px; overflow: hidden; position: relative; border: 1.5px solid rgba(212,175,55,0.4); box-shadow: 0 15px 40px rgba(0,0,0,0.6); }
+        #map-core { width: 100%; height: 100%; }
+        .map-label { position: absolute; top: 20px; left: 20px; background: rgba(0,0,0,0.8); padding: 8px 15px; border-radius: 12px; font-size: 11px; font-weight: 700; color: var(--bizantine-gold); z-index: 10; backdrop-filter: blur(10px); }
 
-        /* MAPBOX UI */
-        #radar-container { width: 100%; height: 420px; border-radius: 35px; overflow: hidden; border: 1px solid rgba(212,175,55,0.3); position: relative; }
-        #radar-map { width: 100%; height: 100%; }
-        .map-overlay { position: absolute; top: 15px; left: 15px; background: rgba(0,0,0,0.7); padding: 10px 15px; border-radius: 15px; backdrop-filter: blur(10px); font-size: 12px; font-weight: 600; color: var(--bizantine-gold); z-index: 5; }
-
-        /* WALLET UI (LEY PAY) */
-        .wallet-card {
-            background: linear-gradient(135deg, #1a1a1a 0%, #000 100%);
+        /* 8. LEY PAY (WALLET) */
+        .wallet-banner {
+            background: linear-gradient(135deg, #121212 0%, #000 100%);
             padding: 30px; border-radius: 35px; border: 1px solid var(--bizantine-gold);
             margin-bottom: 25px; position: relative; overflow: hidden;
         }
-        .wallet-card h3 { font-size: 38px; font-weight: 900; margin: 10px 0; color: #fff; }
-        .wallet-card::after { content: '\f555'; font-family: "Font Awesome 6 Free"; font-weight: 900; position: absolute; right: -20px; bottom: -20px; font-size: 120px; opacity: 0.05; color: #fff; }
+        .wallet-banner h4 { font-size: 11px; opacity: 0.6; letter-spacing: 2px; }
+        .wallet-banner h2 { font-size: 42px; font-weight: 900; margin: 10px 0; color: #fff; }
+        .btn-reload { background: var(--bizantine-gold); border: none; padding: 12px 25px; border-radius: 15px; font-weight: 800; font-size: 13px; color: #000; }
+        .wallet-banner::after { content: '\f239'; font-family: "Font Awesome 6 Free"; font-weight: 900; position: absolute; right: -20px; bottom: -20px; font-size: 130px; opacity: 0.04; }
 
-        /* NAVIGATION BAR */
+        /* 9. NAVIGATION BAR */
         nav {
             position: fixed; bottom: 30px; left: 20px; right: 20px; height: 85px;
-            background: var(--nav-bg); border-radius: 40px; display: flex;
-            align-items: center; backdrop-filter: blur(20px); 
+            background: var(--glass-dark); border-radius: 42px; display: flex;
+            align-items: center; backdrop-filter: blur(25px); 
             border: 1px solid rgba(255,255,255,0.08); z-index: 1000;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.7);
         }
-        .nav-item { flex: 1; text-align: center; color: #555; font-size: 26px; transition: 0.4s; cursor: pointer; position: relative; }
-        .nav-item.active { color: var(--bizantine-gold); transform: translateY(-8px); }
-        .nav-item.active::after { content: ''; position: absolute; bottom: -12px; left: 50%; transform: translateX(-50%); width: 6px; height: 6px; background: var(--bizantine-gold); border-radius: 50%; box-shadow: 0 0 10px var(--bizantine-gold); }
+        .nav-btn { flex: 1; text-align: center; color: #555; font-size: 26px; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; position: relative; }
+        .nav-btn.active { color: var(--bizantine-gold); transform: translateY(-10px); }
+        .nav-btn.active::after { content: ''; position: absolute; bottom: -12px; left: 50%; transform: translateX(-50%); width: 5px; height: 5px; background: var(--bizantine-gold); border-radius: 50%; box-shadow: 0 0 10px var(--bizantine-gold); }
 
-        /* UTILS */
-        .text-gold { color: var(--bizantine-gold); }
-        .btn-primary { background: var(--gold-gradient); color: #000; border: none; padding: 22px; border-radius: 25px; font-weight: 900; font-size: 18px; width: 100%; margin-bottom: 30px; box-shadow: 0 10px 25px rgba(184,134,11,0.3); }
-        
-        /* NOTIFICACIÓN TOAST */
-        #toast { position: fixed; top: -100px; left: 20px; right: 20px; background: var(--glass-bg); color: #000; padding: 18px; border-radius: 20px; z-index: 20000; font-weight: 800; display: flex; align-items: center; gap: 12px; transition: 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55); box-shadow: 0 15px 40px rgba(0,0,0,0.3); }
-        #toast.show { top: 50px; }
+        /* 10. TOAST NOTIFICATIONS */
+        #lale-toast { position: fixed; top: -100px; left: 20px; right: 20px; background: var(--glass-light); color: #000; padding: 20px; border-radius: 22px; z-index: 11000; display: flex; align-items: center; gap: 15px; font-weight: 800; transition: 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+        #lale-toast.visible { top: 50px; }
+
+        /* BUTTONS */
+        .btn-action-gold { background: var(--gold-gradient); color: #000; border: none; padding: 24px; border-radius: 28px; font-weight: 900; font-size: 18px; width: 100%; margin-bottom: 25px; box-shadow: 0 15px 30px rgba(212,175,55,0.3); cursor: pointer; }
     </style>
 </head>
 <body>
 
-<div id="toast"><i class="fa-solid fa-bell text-gold"></i> <span id="toast-msg">Hoş geldiniz!</span></div>
+    <audio id="bosphorus-sound" loop preload="auto">
+        <source src="https://www.soundjay.com/nature/ocean-wave-1.mp3" type="audio/mpeg">
+    </audio>
 
-<audio id="ambient-sound" loop><source src="https://www.soundjay.com/nature/ocean-wave-1.mp3" type="audio/mpeg"></audio>
+    <div id="splash">
+        <svg class="tulip-icon" viewBox="0 0 100 100" fill="currentColor">
+            <path d="M50 95C50 95 20 70 20 40C20 25 35 15 50 30C65 15 80 25 80 40C80 70 50 95 50 95Z"/>
+        </svg>
+        <h2 style="color:white; margin-top:25px; letter-spacing:10px; font-weight:800; font-size:16px;">LALE ISTANBUL</h2>
+        <div class="loading-bar-container"><div class="loading-bar-fill"></div></div>
+    </div>
 
-<div id="splash">
-    <svg class="tulip-svg" viewBox="0 0 100 100" fill="currentColor">
-        <path d="M50 95C50 95 20 70 20 40C20 25 35 15 50 30C65 15 80 25 80 40C80 70 50 95 50 95Z"/>
-    </svg>
-    <h2 style="margin-top:25px; letter-spacing:8px; font-weight:800; font-size:14px; color:white;">LALE ISTANBUL</h2>
-    <div style="margin-top:15px; width:40px; height:2px; background:var(--bizantine-gold); animation: lineGrow 2s infinite;"></div>
-</div>
-
-<div class="bg-3d-wrap">
-    <video autoplay muted loop playsinline poster="https://i.imgur.com/8QWv8mD.jpg">
+    <video class="bg-3d-video" autoplay muted loop playsinline>
         <source src="https://assets.mixkit.co/videos/preview/mixkit-mosque-of-istanbul-at-sunset-20235-large.mp4" type="video/mp4">
     </video>
-</div>
 
-<div class="app-shell" id="lale-app">
-    <header>
-        <div>
-            <p id="time-greet" style="font-size:11px; font-weight:800; color:var(--bizantine-gold); letter-spacing:2px; margin-bottom:4px;">GÜNAYDIN</p>
-            <h1 style="font-size:34px; font-weight:900; letter-spacing:-1.5px;">Lale Hub</h1>
-        </div>
-        <div class="status-pill"><i class="fa-solid fa-wifi"></i> LIVE</div>
-    </header>
+    <div class="app-container" id="app">
+        <header>
+            <div class="greet-box">
+                <p id="greeting-txt">MERHABA</p>
+                <h1>Lale Hub</h1>
+            </div>
+            <div class="status-dot-live"><div class="dot"></div> LUCAS</div>
+        </header>
 
-    <main id="main-scroll">
-        
-        <section id="home" class="view active">
-            <button class="btn-primary" onclick="showView('radar')">
-                <i class="fa-solid fa-compass-drafting"></i> EXPLORAR RADAR
-            </button>
+        <main id="scroll-engine">
+            <section id="home" class="view-section active">
+                <button class="btn-action-gold" onclick="showView('radar', document.getElementById('btn-radar'))">
+                    <i class="fa-solid fa-bolt"></i> LALE JAM'İ BAŞLAT
+                </button>
 
-            <div style="background:rgba(255,255,255,0.05); border-radius:28px; padding:20px; border:1px solid rgba(255,255,255,0.1); margin-bottom:30px; display:flex; justify-content:space-between; align-items:center;">
-                <div>
-                    <p style="font-size:11px; font-weight:800; opacity:0.6;">LALE REWARDS</p>
-                    <h4 style="font-size:20px; font-weight:800; color:var(--bizantine-gold);">1,250 LP</h4>
+                <div style="background:rgba(212,175,55,0.1); border:1px solid var(--bizantine-gold); padding:20px; border-radius:28px; margin-bottom:30px; display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <p style="font-size:10px; font-weight:800; opacity:0.6;">LALE REWARDS</p>
+                        <h4 style="font-size:22px; font-weight:900; color:var(--bizantine-gold);">1,250 LP</h4>
+                    </div>
+                    <i class="fa-solid fa-gem" style="font-size:28px; color:var(--bizantine-gold);"></i>
                 </div>
-                <button onclick="notify('¡Pronto podrás canjear tus puntos!')" style="background:none; border:1px solid var(--bizantine-gold); color:var(--bizantine-gold); padding:8px 15px; border-radius:12px; font-weight:800; font-size:11px;">CANJEAR</button>
-            </div>
 
-            <p style="font-size:11px; font-weight:800; opacity:0.4; letter-spacing:3px; margin-bottom:15px; text-transform:uppercase;">Mobilite & Hizmetler</p>
-            
-            <div class="lale-card" onclick="openApp('bitaksi://', 'https://www.bitaksi.com/')">
-                <div class="icon-box" style="background:#FFD600;"><i class="fa-solid fa-taxi"></i></div>
-                <div style="flex:1;"><b>BiTaksi</b><br><small style="opacity:0.6;">Sarı taksi çağır</small></div>
-                <i class="fa-solid fa-chevron-right" style="opacity:0.2;"></i>
-            </div>
-
-            <div class="lale-card" onclick="openApp('getir://', 'https://getir.com/')">
-                <div class="icon-box" style="background:#5d3ebc; color:#fff;"><i class="fa-solid fa-basket-shopping"></i></div>
-                <div style="flex:1;"><b>Getir</b><br><small style="opacity:0.6;">Dakikalar içinde kapında</small></div>
-                <i class="fa-solid fa-chevron-right" style="opacity:0.2;"></i>
-            </div>
-
-            <div class="lale-card" onclick="showView('wallet')">
-                <div class="icon-box" style="background:var(--bizantine-gold); color:#000;"><i class="fa-solid fa-wallet"></i></div>
-                <div style="flex:1;"><b>Ley Pay</b><br><small style="opacity:0.6;">IstanbulKart & Dijital Cüzdan</small></div>
-                <i class="fa-solid fa-chevron-right" style="opacity:0.2;"></i>
-            </div>
-
-            <div class="lale-card" onclick="window.location.href='whatsapp://send?text=Lale%20Istanbul%20App%20ile%20şehri%20keşfet!'">
-                <div class="icon-box" style="background:#25D366; color:#fff;"><i class="fa-brands fa-whatsapp"></i></div>
-                <div style="flex:1;"><b>Arkadaşlarını Davet Et</b><br><small style="opacity:0.6;">Her davet +500 LP</small></div>
-                <i class="fa-solid fa-share-nodes" style="opacity:0.2;"></i>
-            </div>
-        </section>
-
-        <section id="radar" class="view">
-            <h2 style="font-size:28px; font-weight:900; margin-bottom:20px;">Lale Radar <span class="text-gold">Live</span></h2>
-            <div id="radar-container">
-                <div class="map-overlay"><i class="fa-solid fa-location-arrow"></i> KARAKÖY, IST</div>
-                <div id="radar-map"></div>
-            </div>
-            <div style="margin-top:25px; background:var(--glass-bg); color:#000; border-radius:30px; padding:20px;">
-                <p style="font-weight:800; font-size:12px; color:var(--turkish-red); margin-bottom:10px;"><i class="fa-solid fa-circle-exclamation"></i> ALERTAS EN VIVO</p>
-                <div style="font-size:14px; line-height:1.6;">
-                    <b>Vapur Seferleri:</b> Kadıköy - Beşiktaş hattı normal.<br>
-                    <b>Eventos:</b> Lale Jam hoy en Galataport (20:00).
+                <p style="font-size:11px; font-weight:800; opacity:0.4; letter-spacing:4px; margin-bottom:15px;">MOBİLİTE</p>
+                
+                <div class="lale-card" onclick="smartOpen('bitaksi://', 'https://www.bitaksi.com/')">
+                    <div class="icon-circle" style="background:#FFD600;"><i class="fa-solid fa-taxi"></i></div>
+                    <div style="flex:1;"><b>BiTaksi</b><br><small style="opacity:0.6;">Sarı taksi çağır</small></div>
+                    <i class="fa-solid fa-chevron-right" style="opacity:0.2;"></i>
                 </div>
-            </div>
-        </section>
 
-        <section id="wallet" class="view">
-            <h2 style="font-size:28px; font-weight:900; margin-bottom:20px;">Ley Pay</h2>
-            <div class="wallet-card">
-                <p style="font-size:11px; font-weight:800; letter-spacing:2px; opacity:0.7;">ISTANBULKART BALANCE</p>
-                <h3 id="card-balance">₺ 0.00</h3>
-                <button onclick="notify('Conecta tu IstanbulKart vía NFC próximamente')" style="background:var(--bizantine-gold); border:none; padding:10px 20px; border-radius:15px; font-weight:900; font-size:12px;">TL YÜKLE</button>
-            </div>
+                <div class="lale-card" onclick="smartOpen('uber://', 'https://www.uber.com/tr')">
+                    <div class="icon-circle" style="background:#000; color:#fff;"><i class="fa-brands fa-uber"></i></div>
+                    <div style="flex:1;"><b>Uber</b><br><small style="opacity:0.6;">VIP ve Siyah Taksi</small></div>
+                    <i class="fa-solid fa-chevron-right" style="opacity:0.2;"></i>
+                </div>
 
-            <p style="font-size:11px; font-weight:800; opacity:0.4; letter-spacing:3px; margin-bottom:15px; text-transform:uppercase;">Dijital Cüzdanlar</p>
-            
-            <div class="lale-card" onclick="window.open('https://www.papara.com/')">
-                <div class="icon-box" style="background:#000; color:#BBFF00; font-weight:900;">P</div>
-                <div style="flex:1;"><b>Papara</b><br><small style="opacity:0.6;">Transmisión de dinero rápida</small></div>
-            </div>
+                <p style="font-size:11px; font-weight:800; opacity:0.4; letter-spacing:4px; margin:25px 0 15px;">YAŞAM</p>
 
-            <div class="lale-card" onclick="window.open('https://tosla.com/')">
-                <div class="icon-box" style="background:#FF006E; color:#fff;"><i class="fa-solid fa-ice-cream"></i></div>
-                <div style="flex:1;"><b>Tosla</b><br><small style="opacity:0.6;">Cüzdanını sosyalleştir</small></div>
-            </div>
-        </section>
+                <div class="lale-card" onclick="smartOpen('getir://', 'https://getir.com/')">
+                    <div class="icon-circle" style="background:#5d3ebc; color:#fff;"><i class="fa-solid fa-basket-shopping"></i></div>
+                    <div style="flex:1;"><b>Getir</b><br><small style="opacity:0.6;">Market kapında</small></div>
+                </div>
 
-    </main>
+                <div class="lale-card" onclick="showView('wallet', document.getElementById('btn-wallet'))">
+                    <div class="icon-circle" style="background:var(--turkish-red); color:#fff;"><i class="fa-solid fa-wallet"></i></div>
+                    <div style="flex:1;"><b>Ley Pay</b><br><small style="opacity:0.6;">IstanbulKart & Pay</small></div>
+                </div>
+            </section>
 
-    <nav>
-        <div class="nav-item active" onclick="showView('home', this)"><i class="fa-solid fa-house-chimney"></i></div>
-        <div class="nav-item" onclick="showView('radar', this)"><i class="fa-solid fa-map-location-dot"></i></div>
-        <div class="nav-item" onclick="showView('wallet', this)"><i class="fa-solid fa-wallet"></i></div>
-        <div class="nav-item" onclick="notify('Perfil: Lucas Guzmán - Kurucu Üye')"><i class="fa-solid fa-circle-user"></i></div>
-    </nav>
-</div>
+            <section id="radar" class="view-section">
+                <h2 style="font-size:30px; font-weight:900; margin-bottom:20px;">Lale Jam Radar</h2>
+                <div id="radar-wrapper">
+                    <div class="map-label"><i class="fa-solid fa-location-dot"></i> ISTANBUL, LIVE</div>
+                    <div id="map-core"></div>
+                </div>
+                <div style="margin-top:25px; padding:25px; background:var(--glass-light); color:#111; border-radius:30px;">
+                    <p style="font-weight:900; font-size:12px; color:var(--turkish-red); margin-bottom:10px;">TRAFİK & EVENT</p>
+                    <p style="font-size:14px; line-height:1.6; font-weight:500;">
+                        <b>Karaköy:</b> Yoğun insan trafiği. <br>
+                        <b>Vapur:</b> Eminönü hattı 5 dk gecikmeli. <br>
+                        <b>Jam:</b> 42 kişi yakında.
+                    </p>
+                </div>
+            </section>
 
-<script>
-    // 1. CONFIGURACIÓN
-    const MAPBOX_TOKEN = 'pk.eyJ1IjoibHVjYXNndXptYW4iLCJhIjoiY2x0MTZ2YnEyMGZhajJpbm8yYTNrdzZ6eSJ9.8qY7iM_NnC6E2Xp5Y6rK7A';
-    mapboxgl.accessToken = MAPBOX_TOKEN;
-    
-    let currentView = 'home';
-    let map = null;
+            <section id="wallet" class="view-section">
+                <h2 style="font-size:30px; font-weight:900; margin-bottom:20px;">Ley Pay</h2>
+                <div class="wallet-banner">
+                    <h4>ISTANBULKART SALDO</h4>
+                    <h2 id="balance-val">₺ 45.80</h2>
+                    <button class="btn-reload" onclick="triggerToast('NFC Okuyucu Hazırlanıyor...')">TL YÜKLE</button>
+                </div>
 
-    // 2. SISTEMA DE VISTAS (SPA ROBUSTA)
-    function showView(viewId, navEl) {
-        if(viewId === currentView) return;
+                <p style="font-size:11px; font-weight:800; opacity:0.4; letter-spacing:4px; margin-bottom:15px;">DİJİTAL CÜZDANLAR</p>
+                
+                <div class="lale-card" onclick="window.open('https://www.papara.com/')">
+                    <div class="icon-circle" style="background:#000; color:#BBFF00; font-weight:900;">P</div>
+                    <div style="flex:1;"><b>Papara</b><br><small style="opacity:0.6;">Instant Transfers</small></div>
+                </div>
+
+                <div class="lale-card" onclick="window.open('https://tosla.com/')">
+                    <div class="icon-circle" style="background:#FF006E; color:#fff;"><i class="fa-solid fa-ice-cream"></i></div>
+                    <div style="flex:1;"><b>Tosla</b><br><small style="opacity:0.6;">Sosyal Ödeme</small></div>
+                </div>
+            </section>
+        </main>
+
+        <nav>
+            <div class="nav-btn active" onclick="showView('home', this)"><i class="fa-solid fa-house-chimney"></i></div>
+            <div id="btn-radar" class="nav-btn" onclick="showView('radar', this)"><i class="fa-solid fa-compass"></i></div>
+            <div id="btn-wallet" class="nav-btn" onclick="showView('wallet', this)"><i class="fa-solid fa-wallet"></i></div>
+            <div class="nav-btn" onclick="triggerToast('Lucas Guzmán - Kurucu Üye')"><i class="fa-solid fa-circle-user"></i></div>
+        </nav>
+    </div>
+
+    <div id="lale-toast">
+        <i class="fa-solid fa-bell" style="color:var(--bizantine-gold); font-size:22px;"></i>
+        <span id="toast-text"></span>
+    </div>
+
+    <script>
+        // MAPBOX ACCESS
+        mapboxgl.accessToken = 'pk.eyJ1IjoibHVjYXNndXptYW4iLCJhIjoiY2x0MTZ2YnEyMGZhajJpbm8yYTNrdzZ6eSJ9.8qY7iM_NnC6E2Xp5Y6rK7A';
         
-        // Haptic feedback simulado
-        if (window.navigator.vibrate) window.navigator.vibrate(15);
+        let activeMap = null;
+        let currentViewId = 'home';
 
-        // Cambiar estados de UI
-        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-        document.getElementById(viewId).classList.add('active');
-        
-        if(navEl) {
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            navEl.classList.add('active');
+        // VIEW MANAGER
+        function showView(viewId, btn) {
+            if(viewId === currentViewId) return;
+
+            // Haptic Feedback
+            if(window.navigator.vibrate) window.navigator.vibrate(10);
+
+            // Transition logic
+            document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+
+            if(btn) {
+                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            }
+
+            currentViewId = viewId;
+
+            // Initialize Map if needed
+            if(viewId === 'radar') initMap();
+
+            // Scroll to top
+            document.getElementById('scroll-engine').scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        currentView = viewId;
-
-        // Lógica específica
-        if(viewId === 'radar') {
-            initRadarMap();
-        }
-
-        // Scroll top automático al cambiar
-        document.getElementById('main-scroll').scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    // 3. RADAR MAP ENGINE (GEOLOCALIZACIÓN REAL)
-    function initRadarMap() {
-        if(map) return;
-        
-        setTimeout(() => {
-            map = new mapboxgl.Map({
-                container: 'radar-map',
-                style: 'mapbox://styles/mapbox/dark-v11',
-                center: [28.9784, 41.0082],
-                zoom: 12,
-                pitch: 50,
-                antialias: true
-            });
-
-            map.addControl(new mapboxgl.GeolocateControl({
-                positionOptions: { enableHighAccuracy: true },
-                trackUserLocation: true,
-                showUserHeading: true
-            }));
-
-            // Agregar un marcador de ejemplo (Galataport)
-            new mapboxgl.Marker({ color: '#D4AF37' })
-                .setLngLat([28.9833, 41.0258])
-                .setPopup(new mapboxgl.Popup().setHTML('<h4>Lale Jam Event</h4><p>20:00 - Galataport</p>'))
-                .addTo(map);
-        }, 300);
-    }
-
-    // 4. SISTEMA DE NOTIFICACIONES (TOAST)
-    function notify(msg) {
-        const toast = document.getElementById('toast');
-        document.getElementById('toast-msg').innerText = msg;
-        toast.classList.add('show');
-        setTimeout(() => toast.classList.remove('show'), 3500);
-    }
-
-    // 5. HELPER PARA ABRIR APPS O WEB
-    function openApp(deepLink, webFallback) {
-        const start = Date.now();
-        window.location.href = deepLink;
-        
-        setTimeout(() => {
-            if (Date.now() - start < 1500) {
-                window.open(webFallback, '_blank');
-            }
-        }, 1000);
-    }
-
-    // 6. ACTUALIZAR SALUDO AUTOMÁTICO (TURKISH LOGIC)
-    function updateGreeting() {
-        const hours = new Date().getHours();
-        const greetEl = document.getElementById('time-greet');
-        
-        if (hours >= 5 && hours < 12) greetEl.innerText = "GÜNAYDIN";
-        else if (hours >= 12 && hours < 18) greetEl.innerText = "İYİ GÜNLER";
-        else if (hours >= 18 && hours < 22) greetEl.innerText = "İYİ AKŞAMLAR";
-        else greetEl.innerText = "İYİ GECELER";
-    }
-
-    // 7. BOOTSTRAP DE LA APP
-    window.onload = () => {
-        updateGreeting();
-        
-        // Simular carga de datos de Firebase
-        setTimeout(() => {
-            document.getElementById('card-balance').innerText = "₺ 84.20";
-        }, 4000);
-
-        // Activar audio al primer toque (browser policy)
-        document.body.addEventListener('click', () => {
-            const audio = document.getElementById('ambient-sound');
-            if(audio.paused) {
-                audio.volume = 0.2;
-                audio.play().catch(() => {});
-            }
-        }, { once: true });
-
-        // Remover Splash y cargar App
-        setTimeout(() => {
-            document.getElementById('splash').style.opacity = '0';
-            document.getElementById('lale-app').classList.add('loaded');
+        // MAP ENGINE
+        function initMap() {
+            if(activeMap) return;
             setTimeout(() => {
-                document.getElementById('splash').style.display = 'none';
-                notify("Hoş geldiniz, Lucas.");
-            }, 1000);
-        }, 3500);
-    };
-</script>
+                activeMap = new mapboxgl.Map({
+                    container: 'map-core',
+                    style: 'mapbox://styles/mapbox/dark-v11',
+                    center: [28.9784, 41.0082],
+                    zoom: 13,
+                    pitch: 55,
+                    antialias: true
+                });
 
+                activeMap.addControl(new mapboxgl.GeolocateControl({
+                    positionOptions: { enableHighAccuracy: true },
+                    trackUserLocation: true,
+                    showUserHeading: true
+                }));
+
+                // Fake Live Events Marker
+                new mapboxgl.Marker({ color: '#D4AF37' })
+                    .setLngLat([28.9833, 41.0258])
+                    .addTo(activeMap);
+            }, 400);
+        }
+
+        // SMART APP OPENER (Deep Linking)
+        function smartOpen(deep, web) {
+            const now = Date.now();
+            window.location.href = deep;
+            setTimeout(() => {
+                if (Date.now() - now < 1500) window.open(web, '_blank');
+            }, 1000);
+        }
+
+        // TOAST SYSTEM
+        function triggerToast(msg) {
+            const toast = document.getElementById('lale-toast');
+            document.getElementById('toast-text').innerText = msg;
+            toast.classList.add('visible');
+            setTimeout(() => toast.classList.remove('visible'), 3500);
+        }
+
+        // GREETING LOGIC
+        function updateGreeting() {
+            const h = new Date().getHours();
+            const g = document.getElementById('greeting-txt');
+            if(h >= 5 && h < 12) g.innerText = "GÜNAYDIN";
+            else if(h >= 12 && h < 18) g.innerText = "İYİ GÜNLER";
+            else if(h >= 18 && h < 22) g.innerText = "İYİ AKŞAMLAR";
+            else g.innerText = "İYİ GECELER";
+        }
+
+        // INITIALIZATION
+        window.onload = () => {
+            updateGreeting();
+            
+            // Audio Activation
+            document.body.addEventListener('click', () => {
+                const snd = document.getElementById('bosphorus-sound');
+                if(snd.paused) { snd.volume = 0.25; snd.play().catch(e => {}); }
+            }, { once: true });
+
+            // Splash Sequence
+            setTimeout(() => {
+                document.getElementById('splash').style.opacity = '0';
+                document.getElementById('app').classList.add('active');
+                setTimeout(() => {
+                    document.getElementById('splash').style.display = 'none';
+                    triggerToast("Hoş geldiniz, Lucas Guzmán.");
+                }, 1200);
+            }, 3500);
+        };
+    </script>
 </body>
 </html>
