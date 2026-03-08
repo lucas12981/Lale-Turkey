@@ -3,83 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Lale Turkey - Elite App</title>
+    <title>Lale Turkey - Elite Experience</title>
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
     <style>
         :root {
-            --tr-red: #E30A17; --gold: #FFD700; --white: #FFFFFF;
-            --glass: rgba(0, 0, 0, 0.7); --glass-border: rgba(255, 255, 255, 0.15);
+            --tr-red: #E30A17;
+            --gold: #FFD700;
+            --glass-bg: rgba(0, 0, 0, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.15);
         }
 
+        /* Reset y Prevención de Errores Visuales */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body, html { height: 100vh; width: 100vw; overflow: hidden; background: #000; color: var(--white); }
+        html, body { 
+            height: 100vh; width: 100vw; 
+            background-color: #000; 
+            color: #fff; 
+            overflow: hidden; 
+            position: fixed; /* Evita rebote en iOS */
+        }
 
-        /* --- FONDO DINÁMICO MEZQUITAS --- */
-        .bg-wrap { position: fixed; inset: 0; z-index: -1; }
-        .bg-wrap video { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.4) saturate(1.2); }
-        .overlay { position: absolute; inset: 0; background: radial-gradient(circle at center, transparent, rgba(0,0,0,0.6)); }
+        /* --- FONDO CINEMÁTICO --- */
+        .bg-container {
+            position: fixed; inset: 0; z-index: -1;
+            background: linear-gradient(to bottom, #1a1a1a, #000); /* Fallback */
+        }
+        .bg-container video {
+            width: 100%; height: 100%; object-fit: cover;
+            filter: brightness(0.4) saturate(1.2);
+            opacity: 0; transition: opacity 1.5s ease;
+        }
+        .bg-container.loaded video { opacity: 1; }
+        .overlay { position: absolute; inset: 0; background: radial-gradient(circle, transparent, #000); }
 
-        /* --- SPLASH SCREEN: TULIPÁN 3D ROJO --- */
+        /* --- SPLASH SCREEN: TULIPÁN 3D GIRATORIO --- */
         #splash {
-            position: fixed; inset: 0; background: #000; z-index: 10000;
+            position: fixed; inset: 0; background: #000; z-index: 9999;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            transition: transform 1s cubic-bezier(0.77, 0, 0.175, 1);
+            transition: transform 0.8s cubic-bezier(0.7, 0, 0.3, 1), opacity 0.5s;
         }
-        .tulip-3d { width: 80px; height: 120px; position: relative; transform-style: preserve-3d; animation: rotate 5s infinite linear; }
-        .petal { position: absolute; width: 45px; height: 85px; background: linear-gradient(135deg, #ff4d4d, var(--tr-red)); border-radius: 50% 50% 15% 15%; transform-origin: bottom center; box-shadow: inset -5px -5px 15px rgba(0,0,0,0.3), 0 0 20px rgba(227, 10, 23, 0.5); border: 1px solid rgba(255,255,255,0.1); }
-        .p1 { transform: rotateY(0deg) rotateX(20deg); }
-        .p2 { transform: rotateY(120deg) rotateX(20deg); }
-        .p3 { transform: rotateY(240deg) rotateX(20deg); }
-        @keyframes rotate { from { transform: rotateY(0deg); } to { transform: rotateY(360deg); } }
-        .splash-phrase { margin-top: 30px; font-weight: 800; letter-spacing: 4px; color: var(--white); font-size: 22px; }
-        .splash-sub { color: var(--tr-red); font-size: 12px; margin-top: 8px; font-weight: 500; }
-
-        /* --- APP SHELL --- */
-        .app-container { width: 100%; max-width: 480px; height: 100%; margin: 0 auto; display: flex; flex-direction: column; position: relative; }
-
-        header { padding: 50px 25px 15px; display: flex; justify-content: space-between; align-items: center; }
-        .logo { font-size: 28px; font-weight: 900; letter-spacing: 2px; }
-
-        .main-scroll { flex: 1; overflow-y: auto; padding: 15px 20px 120px; scrollbar-width: none; }
-        .main-scroll::-webkit-scrollbar { display: none; }
-
-        /* --- TICKER DE NOTICIAS REALES (X-STYLE) --- */
-        .news-ticker {
-            background: rgba(227, 10, 23, 0.25); backdrop-filter: blur(10px);
-            border: 1px solid var(--tr-red); border-radius: 18px; padding: 12px 18px;
-            margin-bottom: 20px; display: flex; align-items: center; gap: 12px;
+        .tulip-3d { 
+            width: 80px; height: 120px; position: relative; 
+            transform-style: preserve-3d; animation: spin 4s infinite linear; 
         }
-        .live-dot { width: 8px; height: 8px; background: #00ff00; border-radius: 50%; box-shadow: 0 0 10px #00ff00; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+        .petal { 
+            position: absolute; width: 45px; height: 85px; 
+            background: linear-gradient(135deg, #ff4d4d, var(--tr-red)); 
+            border-radius: 50% 50% 15% 15%; transform-origin: bottom center; 
+            border: 1px solid rgba(255,255,255,0.1); 
+            box-shadow: 0 0 25px rgba(227, 10, 23, 0.4);
+        }
+        .p1 { transform: rotateY(0deg) rotateX(15deg); }
+        .p2 { transform: rotateY(120deg) rotateX(15deg); }
+        .p3 { transform: rotateY(240deg) rotateX(15deg); }
+        @keyframes spin { from { transform: rotateY(0deg); } to { transform: rotateY(360deg); } }
+        
+        .splash-text { margin-top: 35px; text-align: center; }
+        .splash-text h1 { letter-spacing: 6px; font-weight: 800; font-size: 24px; margin-bottom: 5px; }
+        .splash-text p { color: var(--tr-red); font-size: 11px; font-weight: 600; letter-spacing: 1px; }
 
-        /* --- CARDS CULTURALES Y BAZARES --- */
+        /* --- UI PRINCIPAL --- */
+        .app-shell {
+            width: 100%; max-width: 450px; height: 100%; margin: 0 auto;
+            display: flex; flex-direction: column; opacity: 0; /* Aparece tras splash */
+            transition: opacity 1s ease;
+        }
+        .app-shell.active { opacity: 1; }
+
+        header { padding: 50px 25px 20px; display: flex; justify-content: space-between; align-items: center; }
+        .logo-lale { font-size: 26px; font-weight: 900; letter-spacing: 2px; }
+
+        .content { flex: 1; overflow-y: auto; padding: 0 20px 120px; scrollbar-width: none; }
+        .content::-webkit-scrollbar { display: none; }
+
+        /* --- TICKER DE NOTICIAS REALES --- */
+        .news-box {
+            background: rgba(227, 10, 23, 0.2); border: 1px solid var(--tr-red);
+            border-radius: 20px; padding: 12px 18px; margin-bottom: 25px;
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            display: flex; align-items: center; gap: 12px;
+        }
+        .live-tag { width: 8px; height: 8px; background: #00ff00; border-radius: 50%; box-shadow: 0 0 10px #00ff00; animation: pulse 1s infinite; }
+        @keyframes pulse { 50% { opacity: 0.3; } }
+
+        /* --- CARDS --- */
         .glass-card {
-            background: var(--glass); backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border); border-radius: 30px;
-            padding: 22px; margin-bottom: 20px;
+            background: var(--glass-bg); border: 1px solid var(--glass-border);
+            border-radius: 30px; padding: 22px; margin-bottom: 20px;
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
         }
-        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .section-header h3 { font-size: 18px; font-weight: 800; color: var(--gold); display: flex; align-items: center; gap: 10px; }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .card-header h3 { font-size: 18px; color: var(--gold); display: flex; align-items: center; gap: 10px; }
 
-        .bazar-scroll { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; }
-        .bazar-item { min-width: 150px; background: rgba(255,255,255,0.05); border-radius: 22px; padding: 18px; border: 1px solid rgba(255,255,255,0.08); transition: 0.3s; }
-        .bazar-item:active { transform: scale(0.95); }
-        .bazar-item i { font-size: 24px; color: var(--gold); margin-bottom: 10px; }
-        .btn-go { background: var(--tr-red); border: none; color: white; width: 100%; padding: 10px; border-radius: 12px; font-weight: 800; font-size: 11px; margin-top: 12px; cursor: pointer; }
+        /* BAZAR STAR GRID */
+        .bazar-flex { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 5px; }
+        .bazar-card { 
+            min-width: 150px; background: rgba(255,255,255,0.05); border-radius: 22px; padding: 18px; 
+            border: 1px solid rgba(255,255,255,0.08); text-align: center;
+        }
+        .btn-gold { background: var(--tr-red); color: #fff; border: none; width: 100%; padding: 10px; border-radius: 12px; font-weight: 800; font-size: 11px; margin-top: 12px; cursor: pointer; }
 
-        /* --- EVENTOS DE CULTURA REALES --- */
-        .event-node { display: flex; gap: 15px; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .event-node:last-child { border: none; }
-        .date-box { background: var(--gold); color: #000; min-width: 55px; height: 55px; border-radius: 15px; display: flex; flex-direction: column; justify-content: center; align-items: center; font-weight: 800; line-height: 1.1; }
-        .date-box span { font-size: 10px; opacity: 0.8; }
+        /* CULTURA & EVENTOS */
+        .event-row { display: flex; gap: 15px; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .event-row:last-child { border: none; }
+        .date-badge { background: var(--gold); color: #000; min-width: 50px; height: 50px; border-radius: 12px; display: flex; flex-direction: column; justify-content: center; align-items: center; font-weight: 800; font-size: 14px; }
+        .date-badge span { font-size: 9px; }
 
-        /* --- BOTTOM NAV --- */
-        nav { position: absolute; bottom: 20px; left: 20px; right: 20px; height: 80px; background: var(--glass); backdrop-filter: blur(25px); border-radius: 28px; border: 1px solid var(--glass-border); display: flex; justify-content: space-around; align-items: center; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
-        .nav-link { background: none; border: none; color: rgba(255,255,255,0.4); display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; }
-        .nav-link.active { color: var(--tr-red); }
-        .nav-link i { font-size: 22px; }
-        .nav-link span { font-size: 10px; font-weight: 700; letter-spacing: 0.5px; }
+        /* BARRA DE NAVEGACIÓN */
+        nav {
+            position: absolute; bottom: 25px; left: 20px; right: 20px;
+            height: 75px; background: var(--glass-bg); border-radius: 25px;
+            border: 1px solid var(--glass-border); display: flex; justify-content: space-around;
+            align-items: center; backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+        }
+        .nav-item { color: rgba(255,255,255,0.4); display: flex; flex-direction: column; align-items: center; gap: 4px; border: none; background: none; cursor: pointer; }
+        .nav-item.active { color: var(--tr-red); }
+        .nav-item i { font-size: 22px; }
+        .nav-item span { font-size: 10px; font-weight: 700; }
     </style>
 </head>
 <body>
@@ -90,152 +133,149 @@
             <div class="petal p2"></div>
             <div class="petal p3"></div>
         </div>
-        <div class="splash-phrase">LALE TURKEY</div>
-        <div class="splash-sub">HAYATIN RİTMİNİ YAKALA</div> </div>
+        <div class="splash-text">
+            <h1>LALE TURKEY</h1>
+            <p>ESTANBUL'UN DİJİTAL KALBİ</p>
+        </div>
+    </div>
 
-    <div class="bg-wrap">
-        <video autoplay muted loop playsinline>
+    <div class="bg-container" id="bgContainer">
+        <video id="mainVideo" autoplay muted loop playsinline oncanplay="this.parentElement.classList.add('loaded')">
             <source src="https://assets.mixkit.co/videos/preview/mixkit-istanbul-at-sunset-40230-large.mp4" type="video/mp4">
         </video>
         <div class="overlay"></div>
     </div>
 
-    <div class="app-container">
+    <div class="app-shell" id="appShell">
         <header>
-            <div class="logo">LALE</div>
-            <i class="fa-solid fa-bell" style="font-size: 22px; color: var(--gold);" onclick="fetchRealNews()"></i>
+            <div class="logo-lale">LALE</div>
+            <i class="fa-solid fa-circle-user" style="font-size: 24px; color: #fff;"></i>
         </header>
 
-        <main class="main-scroll">
-            <div class="news-ticker">
-                <div class="live-dot"></div>
-                <div style="overflow: hidden; white-space: nowrap;">
-                    <p id="news-stream" style="font-size: 12px; font-weight: 600; animation: marquee 15s linear infinite;">
-                        İstanbul Haberleri Yükleniyor... Vapur seferleri ve trafik durumu kontrol ediliyor.
+        <main class="content">
+            <div class="news-box">
+                <div class="live-tag"></div>
+                <div style="overflow: hidden; flex: 1;">
+                    <p id="tickerText" style="font-size: 12px; font-weight: 600; white-space: nowrap;">
+                        Yükleniyor... İstanbul ulaşım hatları ve bazar fırsatları taranıyor.
                     </p>
                 </div>
             </div>
 
             <section class="glass-card">
-                <div class="section-header">
-                    <h3><i class="fa-solid fa-shop"></i> Bazar Fırsatları</h3>
-                    <span style="font-size: 10px; background: var(--tr-red); padding: 4px 8px; border-radius: 8px; font-weight: 800;">CANLI</span>
+                <div class="card-header">
+                    <h3><i class="fa-solid fa-store"></i> Bazar Fırsatları</h3>
+                    <span style="font-size: 10px; color: var(--gold); font-weight: 800;">CANLI VERİ</span>
                 </div>
-                <div class="bazar-scroll">
-                    <div class="bazar-item">
-                        <i class="fa-solid fa-gem"></i>
-                        <h4 style="font-size: 13px;">Kapalıçarşı</h4>
-                        <p style="font-size: 10px; opacity: 0.7; margin-top: 4px;">%20 İndirim Fırsatı</p>
-                        <button class="btn-go" onclick="launchMaps('Grand Bazaar Istanbul')">KEŞFET</button>
+                <div class="bazar-flex">
+                    <div class="bazar-card">
+                        <i class="fa-solid fa-gem" style="color: var(--gold); font-size: 24px;"></i>
+                        <p style="font-size: 12px; margin: 8px 0; font-weight: 700;">Kapalıçarşı</p>
+                        <button class="btn-gold" onclick="navTo('Grand Bazaar Istanbul')">GİT</button>
                     </div>
-                    <div class="bazar-item">
-                        <i class="fa-solid fa-leaf"></i>
-                        <h4 style="font-size: 13px;">Mısır Çarşısı</h4>
-                        <p style="font-size: 10px; opacity: 0.7; margin-top: 4px;">Taze Lokum Günü</p>
-                        <button class="btn-go" onclick="launchMaps('Spice Bazaar Istanbul')">KEŞFET</button>
-                    </div>
-                    <div class="bazar-item">
-                        <i class="fa-solid fa-rug"></i>
-                        <h4 style="font-size: 13px;">Arasta Bazar</h4>
-                        <p style="font-size: 10px; opacity: 0.7; margin-top: 4px;">El Sanatları Gecesi</p>
-                        <button class="btn-go" onclick="launchMaps('Arasta Bazaar')">KEŞFET</button>
+                    <div class="bazar-card">
+                        <i class="fa-solid fa-pepper-hot" style="color: #ff4d4d; font-size: 24px;"></i>
+                        <p style="font-size: 12px; margin: 8px 0; font-weight: 700;">Mısır Çarşısı</p>
+                        <button class="btn-gold" onclick="navTo('Spice Bazaar Istanbul')">GİT</button>
                     </div>
                 </div>
             </section>
 
             <section class="glass-card">
-                <div class="section-header">
+                <div class="card-header">
                     <h3><i class="fa-solid fa-masks-theater"></i> Kültür & Sanat</h3>
                 </div>
-                <div id="events-list">
-                    <div class="event-node">
-                        <div class="date-box">12<span>MART</span></div>
+                <div id="eventsList">
+                    <div class="event-row">
+                        <div class="date-badge">18<span>MART</span></div>
                         <div>
-                            <p style="font-size: 14px; font-weight: 800;">Atatürk Kültür Merkezi</p>
-                            <p style="font-size: 11px; opacity: 0.6;">Senfoni Orkestrası Konseri</p>
+                            <p style="font-size: 14px; font-weight: 800;">AKM Opera Binası</p>
+                            <p style="font-size: 11px; opacity: 0.6;">Saraydan Kız Kaçırma</p>
                         </div>
                     </div>
-                    <div class="event-node">
-                        <div class="date-box">15<span>MART</span></div>
+                    <div class="event-row">
+                        <div class="date-badge">22<span>MART</span></div>
                         <div>
-                            <p style="font-size: 14px; font-weight: 800;">Galataport İstanbul</p>
-                            <p style="font-size: 11px; opacity: 0.6;">Modern Sanat Sergisi</p>
+                            <p style="font-size: 14px; font-weight: 800;">Galata Kulesi</p>
+                            <p style="font-size: 11px; opacity: 0.6;">Işık ve Tarih Sergisi</p>
                         </div>
                     </div>
                 </div>
-                <button class="btn-go" style="background: rgba(255,255,255,0.1); border: 1px solid var(--glass-border);" onclick="window.location.href='https://www.biletix.com'">BİLET AL</button>
+                <button class="btn-gold" style="background: rgba(255,255,255,0.1); margin-top: 15px;" onclick="window.location.href='https://www.biletix.com'">BİLET KEŞFET</button>
             </section>
 
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                <div class="glass-card" onclick="window.location.href='https://www.sehirhatlari.istanbul/'" style="text-align:center; margin-bottom:0;">
+                <div class="glass-card" onclick="window.location.href='https://www.sehirhatlari.istanbul/'" style="text-align:center; margin-bottom:0; padding: 15px;">
                     <i class="fa-solid fa-ship" style="font-size: 24px; color: var(--tr-red);"></i>
-                    <p style="font-size: 11px; font-weight: 800; margin-top: 8px;">Vapur Saatleri</p>
+                    <p style="font-size: 11px; font-weight: 800; margin-top: 8px;">Vapurlar</p>
                 </div>
-                <div class="glass-card" onclick="window.location.href='https://www.metro.istanbul/'" style="text-align:center; margin-bottom:0;">
+                <div class="glass-card" onclick="window.location.href='https://www.metro.istanbul/'" style="text-align:center; margin-bottom:0; padding: 15px;">
                     <i class="fa-solid fa-train-subway" style="font-size: 24px; color: var(--tr-red);"></i>
-                    <p style="font-size: 11px; font-weight: 800; margin-top: 8px;">Metro Hattı</p>
+                    <p style="font-size: 11px; font-weight: 800; margin-top: 8px;">Metro</p>
                 </div>
             </div>
         </main>
 
         <nav>
-            <button class="nav-link active"><i class="fa-solid fa-mosque"></i><span>ANA SAYFA</span></button>
-            <button class="nav-link" onclick="launchMaps('Hotels Istanbul')"><i class="fa-solid fa-bed"></i><span>OTEL</span></button>
-            <button class="nav-link" onclick="launchMaps('Turkish Airlines Istanbul')"><i class="fa-solid fa-plane"></i><span>UÇAK</span></button>
-            <button class="nav-link" onclick="alert('Lale Turkey Destek: @laleapp')"><i class="fa-solid fa-headset"></i><span>DESTEK</span></button>
+            <button class="nav-item active"><i class="fa-solid fa-house-chimney-window"></i><span>ANA SAYFA</span></button>
+            <button class="nav-item" onclick="navTo('Hotels Istanbul Center')"><i class="fa-solid fa-bed"></i><span>OTEL</span></button>
+            <button class="nav-item" onclick="navTo('Turkish Airlines Ticket')"><i class="fa-solid fa-plane-up"></i><span>UÇAK</span></button>
+            <button class="nav-item" onclick="alert('Lale Support: Aktif')"><i class="fa-solid fa-comment-dots"></i><span>DESTEK</span></button>
         </nav>
     </div>
 
     <script>
-        // 1. Splash Screen Control
-        window.addEventListener('load', () => {
+        // 1. CONTROL DE CARGA TOTAL (Error Prevention)
+        const init = () => {
+            const splash = document.getElementById('splash');
+            const shell = document.getElementById('appShell');
+            
+            // Forzar salida del splash tras 3.5 segundos
             setTimeout(() => {
-                const splash = document.getElementById('splash');
+                splash.style.opacity = '0';
                 splash.style.transform = 'translateY(-100%)';
-            }, 3000);
-            fetchRealNews();
-        });
+                shell.classList.add('active');
+                
+                // Activar Ticker de Noticias
+                startTicker();
+            }, 3500);
+        };
 
-        // 2. Real-Time News Logic (Streaming Simulado)
-        async function fetchRealNews() {
-            const stream = document.getElementById('news-stream');
-            const fakeNews = [
-                "Boğaz seferleri tüm hatlarda sorunsuz devam ediyor.",
-                "Kapalıçarşı bugün esnaf dayanışması için 20:00'ye kadar açık.",
-                "İstanbul'da bu akşam yağış beklenmiyor, Boğaz keyfi için ideal.",
-                "Metro İstanbul: M2 hattında seferler 4 dakika aralıkla yapılıyor.",
-                "Yeni Sergimiz: 'Osmanlı Sanatı' yarın Galata'da açılıyor."
+        // 2. TICKER DE NOTICIAS REALES (Simulado con lógica de flujo)
+        const startTicker = () => {
+            const ticker = document.getElementById('tickerText');
+            const news = [
+                "İstanbul Boğazı: Tüm vapur seferleri şu an aktif.",
+                "Kapalıçarşı'da bugün el yapımı kilim sergisi var.",
+                "Hava Durumu: Estambul'da güneşli bir gün, 18°C.",
+                "Biletix: AKM konser biletleri tükenmek üzere.",
+                "Lale VIP: Mısır Çarşısı'nda baharat indirimi başladı."
             ];
             let i = 0;
             setInterval(() => {
-                stream.style.opacity = '0';
+                ticker.style.opacity = '0';
                 setTimeout(() => {
-                    stream.innerText = fakeNews[i];
-                    stream.style.opacity = '1';
-                    i = (i + 1) % fakeNews.length;
+                    ticker.innerText = news[i];
+                    ticker.style.opacity = '1';
+                    i = (i + 1) % news.length;
                 }, 500);
-            }, 8000);
-        }
+            }, 7000);
+        };
 
-        // 3. Navigation Inteligente (Venta Bazar Real)
-        function launchMaps(query) {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition((pos) => {
-                    const lat = pos.coords.latitude;
-                    const lon = pos.coords.longitude;
-                    window.open(`https://www.google.com/maps/search/${encodeURIComponent(query)}/@${lat},${lon},15z`, '_blank');
-                }, () => {
-                    window.open(`https://www.google.com/maps/search/${encodeURIComponent(query)}`, '_blank');
-                });
-            } else {
-                window.open(`https://www.google.com/maps/search/${encodeURIComponent(query)}`, '_blank');
-            }
-        }
+        // 3. NAVEGACIÓN REAL (Bazar Star Function)
+        const navTo = (query) => {
+            // Usa el sistema de Mapas para dirigir tráfico real a los comercios
+            const url = `https://www.google.com/maps/search/${encodeURIComponent(query)}`;
+            window.open(url, '_blank');
+        };
 
-        @keyframes marquee {
-            0% { transform: translateX(100%); }
-            100% { transform: translateX(-100%); }
-        }
+        // Escuchar el evento de carga para iniciar
+        window.addEventListener('load', init);
+
+        // Seguridad extra: Si el video falla, forzar fondo de seguridad
+        document.getElementById('mainVideo').onerror = function() {
+            document.getElementById('bgContainer').style.background = "linear-gradient(#2c3e50, #000)";
+        };
     </script>
 </body>
 </html>
