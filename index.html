@@ -256,7 +256,7 @@
             <button class="nav-item active"><i class="fa-solid fa-house-chimney-window"></i><span>ANA SAYFA</span></button>
             <button class="nav-item" onclick="navTo('Hotels Istanbul Center')"><i class="fa-solid fa-bed"></i><span>OTEL</span></button>
             <button class="nav-item" onclick="navTo('Turkish Airlines Ticket')"><i class="fa-solid fa-plane-up"></i><span>UÇAK</span></button>
-            <button class="nav-item" onclick="alert('Lale Support: Aktif')"><i class="fa-solid fa-comment-dots"></i><span>DESTEK</span></button>
+            <button class="nav-item" onclick="window.location.href='https://wa.me/5492246496971?text=Merhaba!%20Lale%20Turkey%20deste%C4%9Fe%20ihtiyac%C4%B1m%20var.'"><i class="fa-solid fa-comment-dots"></i><span>DESTEK</span></button>
         </nav>
     </div>
 
@@ -314,7 +314,7 @@
             }, 7000);
         };
 
-        // 3. LÓGICA DE CÁMARA Y FORTUNA (SIMULACIÓN IA)
+        // 3. LÓGICA DE CÁMARA Y FORTUNA (15 MENSAJES VARIADOS)
         let stream = null;
         const openCamera = async () => {
             const modal = document.getElementById('cameraModal');
@@ -333,7 +333,6 @@
         };
 
         const takePhoto = () => {
-            // Animación de captura
             document.body.style.filter = "brightness(2)";
             setTimeout(() => {
                 document.body.style.filter = "none";
@@ -349,7 +348,16 @@
                 "Fincanında bir anahtar var. Bu, yeni bir evin veya iş kapısının açılacağına işarettir.",
                 "Dost görünümlü birine dikkat et, ama merak etme; şansın seni koruyor.",
                 "Büyük bir kalabalığa gireceksin, bu toplulukta yıldızın parlayacak.",
-                "Parasal bir ferahlama var. Hiç beklemediğin bir yerden destek alacaksın."
+                "Parasal bir ferahlama var. Hiç beklemediğin bir yerden destek alacaksın.",
+                "Göz aydınlığı var! Sevdiğin birinden alacağın hediye seni çok mutlu edecek.",
+                "Hanene ay doğuyor. Ailenle ilgili sıkıntılar geride kalıyor, huzur geliyor.",
+                "Yolun açık, engeller birer birer kalkıyor. Hedefine çok yakınsın.",
+                "Fincanın dibinde bir balık var. Bu, büyük bir rızık ve bereket demektir.",
+                "İki vakte kadar bir görüşmen var. Bu görüşme hayatının akışını değiştirebilir.",
+                "Bir dileğin var, sabret. Meyvesini toplama zamanı yaklaşıyor.",
+                "Nazara gelmişsin ama dua seni koruyor. Üzerindeki ağırlık kalkacak.",
+                "Kalbindeki o niyet gerçek oluyor. Sadece biraz más zaman gerekiyor.",
+                "Eski bir dostun kapını çalacak. Geçmişten gelen güzel bir anı canlanacak."
             ];
             const randomFortune = fortunes[Math.floor(Math.random() * fortunes.length)];
             
