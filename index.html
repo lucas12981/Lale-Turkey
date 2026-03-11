@@ -123,6 +123,29 @@
         .nav-item.active { color: var(--tr-red); }
         .nav-item i { font-size: 22px; }
         .nav-item span { font-size: 10px; font-weight: 700; }
+
+        /* --- MODAL DE CÁMARA Y FORTUNA --- */
+        #cameraModal {
+            position: fixed; inset: 0; background: #000; z-index: 10000;
+            display: none; flex-direction: column;
+        }
+        #videoFeed { width: 100%; height: 100%; object-fit: cover; }
+        .camera-ui { position: absolute; bottom: 40px; left: 0; right: 0; display: flex; justify-content: center; align-items: center; gap: 30px; }
+        .capture-btn { width: 70px; height: 70px; border-radius: 50%; border: 5px solid #fff; background: transparent; cursor: pointer; }
+        .close-camera { color: #fff; font-size: 30px; cursor: pointer; }
+
+        #fortuneOverlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 10001;
+            display: none; flex-direction: column; justify-content: center; align-items: center; padding: 40px; text-align: center;
+        }
+        .fortune-card {
+            background: var(--glass-bg); border: 2px solid var(--gold); padding: 30px; border-radius: 30px;
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            animation: slideUp 0.5s ease-out;
+        }
+        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .scanning-line { width: 100%; height: 2px; background: var(--gold); position: absolute; top: 0; left: 0; box-shadow: 0 0 15px var(--gold); animation: scan 2s linear infinite; }
+        @keyframes scan { from { top: 0; } to { top: 100%; } }
     </style>
 </head>
 <body>
@@ -161,6 +184,19 @@
                     </p>
                 </div>
             </div>
+
+            <section class="glass-card" style="border: 1px solid var(--gold); box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);">
+                <div class="card-header">
+                    <h3><i class="fa-solid fa-mug-hot"></i> Yapay Zeka Kahve Falı</h3>
+                    <span style="font-size: 10px; color: var(--gold); font-weight: 800;">PREMIUM</span>
+                </div>
+                <div style="text-align: center; padding: 10px;">
+                    <p style="font-size: 13px; opacity: 0.8; margin-bottom: 15px;">Fincanınızın fotoğrafını çekin, yapay zeka geleceğinizi fısıldasın.</p>
+                    <button class="btn-gold" onclick="openCamera()" style="background: linear-gradient(45deg, #FFD700, #b8860b); color: #000; height: 50px; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                        <i class="fa-solid fa-camera"></i> FALIMA BAK
+                    </button>
+                </div>
+            </section>
 
             <section class="glass-card">
                 <div class="card-header">
@@ -224,24 +260,40 @@
         </nav>
     </div>
 
+    <div id="cameraModal">
+        <video id="videoFeed" autoplay playsinline></video>
+        <div class="camera-ui">
+            <i class="fa-solid fa-xmark close-camera" onclick="closeCamera()"></i>
+            <button class="capture-btn" onclick="takePhoto()"></button>
+            <div style="width: 30px;"></div>
+        </div>
+    </div>
+
+    <div id="fortuneOverlay">
+        <div class="scanning-line"></div>
+        <div class="fortune-card">
+            <i class="fa-solid fa-wand-magic-sparkles" style="color: var(--gold); font-size: 40px; margin-bottom: 20px;"></i>
+            <h2 style="color: var(--gold); margin-bottom: 15px;">FALINIZ ÇIKTI!</h2>
+            <p id="fortuneText" style="line-height: 1.6; font-weight: 600;"></p>
+            <button class="btn-gold" style="margin-top: 25px;" onclick="closeFortune()">TEŞEKKÜRLER</button>
+        </div>
+    </div>
+
     <script>
-        // 1. CONTROL DE CARGA TOTAL (Error Prevention)
+        // 1. CONTROL DE CARGA TOTAL
         const init = () => {
             const splash = document.getElementById('splash');
             const shell = document.getElementById('appShell');
             
-            // Forzar salida del splash tras 3.5 segundos
             setTimeout(() => {
                 splash.style.opacity = '0';
                 splash.style.transform = 'translateY(-100%)';
                 shell.classList.add('active');
-                
-                // Activar Ticker de Noticias
                 startTicker();
             }, 3500);
         };
 
-        // 2. TICKER DE NOTICIAS REALES (Simulado con lógica de flujo)
+        // 2. TICKER DE NOTICIAS
         const startTicker = () => {
             const ticker = document.getElementById('tickerText');
             const news = [
@@ -262,17 +314,60 @@
             }, 7000);
         };
 
-        // 3. NAVEGACIÓN REAL (Bazar Star Function)
+        // 3. LÓGICA DE CÁMARA Y FORTUNA (SIMULACIÓN IA)
+        let stream = null;
+        const openCamera = async () => {
+            const modal = document.getElementById('cameraModal');
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+                document.getElementById('videoFeed').srcObject = stream;
+                modal.style.display = 'flex';
+            } catch (err) {
+                alert("Kamera erişimi reddedildi.");
+            }
+        };
+
+        const closeCamera = () => {
+            if(stream) stream.getTracks().forEach(track => track.stop());
+            document.getElementById('cameraModal').style.display = 'none';
+        };
+
+        const takePhoto = () => {
+            // Animación de captura
+            document.body.style.filter = "brightness(2)";
+            setTimeout(() => {
+                document.body.style.filter = "none";
+                closeCamera();
+                showFortune();
+            }, 100);
+        };
+
+        const showFortune = () => {
+            const fortunes = [
+                "Kısmetin kapıda! Çok yakında bir yolculuk görünüyor, bu yol sana huzur getirecek.",
+                "Yüreğin ferahlıyor. Beklediğin o haber kuş kanadıyla geliyor, hazırlıklı ol.",
+                "Fincanında bir anahtar var. Bu, yeni bir evin veya iş kapısının açılacağına işarettir.",
+                "Dost görünümlü birine dikkat et, ama merak etme; şansın seni koruyor.",
+                "Büyük bir kalabalığa gireceksin, bu toplulukta yıldızın parlayacak.",
+                "Parasal bir ferahlama var. Hiç beklemediğin bir yerden destek alacaksın."
+            ];
+            const randomFortune = fortunes[Math.floor(Math.random() * fortunes.length)];
+            
+            document.getElementById('fortuneText').innerText = randomFortune;
+            document.getElementById('fortuneOverlay').style.display = 'flex';
+        };
+
+        const closeFortune = () => {
+            document.getElementById('fortuneOverlay').style.display = 'none';
+        };
+
         const navTo = (query) => {
-            // Usa el sistema de Mapas para dirigir tráfico real a los comercios
             const url = `https://www.google.com/maps/search/${encodeURIComponent(query)}`;
             window.open(url, '_blank');
         };
 
-        // Escuchar el evento de carga para iniciar
         window.addEventListener('load', init);
 
-        // Seguridad extra: Si el video falla, forzar fondo de seguridad
         document.getElementById('mainVideo').onerror = function() {
             document.getElementById('bgContainer').style.background = "linear-gradient(#2c3e50, #000)";
         };
