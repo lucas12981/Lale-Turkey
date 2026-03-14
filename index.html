@@ -39,7 +39,7 @@
         .bg-container.loaded video { opacity: 1; }
         .overlay { position: absolute; inset: 0; background: radial-gradient(circle, transparent, #000); }
 
-        /* --- SPLASH SCREEN: TULIPÁN 3D GIRATORIO --- */
+        /* --- SPLASH SCREEN: TULIPÁN 3D --- */
         #splash {
             position: fixed; inset: 0; background: #000; z-index: 9999;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
@@ -79,12 +79,11 @@
         .content { flex: 1; overflow-y: auto; padding: 0 20px 120px; scrollbar-width: none; }
         .content::-webkit-scrollbar { display: none; }
 
-        /* --- TICKER DE NOTICIAS --- */
+        /* --- TICKER --- */
         .news-box {
             background: rgba(227, 10, 23, 0.2); border: 1px solid var(--tr-red);
             border-radius: 20px; padding: 12px 18px; margin-bottom: 25px;
-            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-            display: flex; align-items: center; gap: 12px;
+            backdrop-filter: blur(10px); display: flex; align-items: center; gap: 12px;
         }
         .live-tag { width: 8px; height: 8px; background: #00ff00; border-radius: 50%; box-shadow: 0 0 10px #00ff00; animation: pulse 1s infinite; }
         @keyframes pulse { 50% { opacity: 0.3; } }
@@ -93,7 +92,7 @@
         .glass-card {
             background: var(--glass-bg); border: 1px solid var(--glass-border);
             border-radius: 30px; padding: 22px; margin-bottom: 20px;
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(20px);
         }
         .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .card-header h3 { font-size: 18px; color: var(--gold); display: flex; align-items: center; gap: 10px; }
@@ -105,16 +104,27 @@
         }
         .btn-gold { background: var(--tr-red); color: #fff; border: none; width: 100%; padding: 10px; border-radius: 12px; font-weight: 800; font-size: 11px; margin-top: 12px; cursor: pointer; }
 
-        .event-row { display: flex; gap: 15px; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .event-row:last-child { border: none; }
-        .date-badge { background: var(--gold); color: #000; min-width: 50px; height: 50px; border-radius: 12px; display: flex; flex-direction: column; justify-content: center; align-items: center; font-weight: 800; font-size: 14px; }
-        .date-badge span { font-size: 9px; }
+        /* --- NUEVO: LALE VIP DRIVE (Estilo Uber) --- */
+        .ride-card {
+            background: linear-gradient(135deg, rgba(227, 10, 23, 0.1), rgba(0, 0, 0, 0.6));
+            border: 1px solid var(--tr-red); border-radius: 30px; padding: 22px; margin-bottom: 20px;
+            backdrop-filter: blur(20px);
+        }
+        .ride-options { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px; }
+        .ride-btn {
+            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 18px; padding: 15px; text-align: center; cursor: pointer; transition: all 0.3s;
+        }
+        .ride-btn:active { transform: scale(0.95); background: var(--tr-red); }
+        .ride-btn i { font-size: 24px; color: var(--gold); margin-bottom: 8px; display: block; }
+        .ride-btn p { font-size: 10px; font-weight: 800; letter-spacing: 1px; }
 
+        /* --- NAV --- */
         nav {
             position: absolute; bottom: 25px; left: 20px; right: 20px;
             height: 75px; background: var(--glass-bg); border-radius: 25px;
             border: 1px solid var(--glass-border); display: flex; justify-content: space-around;
-            align-items: center; backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            align-items: center; backdrop-filter: blur(25px);
         }
         .nav-item { color: rgba(255,255,255,0.4); display: flex; flex-direction: column; align-items: center; gap: 4px; border: none; background: none; cursor: pointer; }
         .nav-item.active { color: var(--tr-red); }
@@ -122,35 +132,21 @@
         .nav-item span { font-size: 10px; font-weight: 700; }
 
         /* --- MODALES --- */
-        #cameraModal { position: fixed; inset: 0; background: #000; z-index: 10000; display: none; flex-direction: column; }
+        #cameraModal, #fortuneOverlay, #exitOverlay { position: fixed; inset: 0; z-index: 10000; display: none; }
+        #cameraModal { background: #000; flex-direction: column; }
         #videoFeed { width: 100%; height: 100%; object-fit: cover; }
-        .camera-ui { position: absolute; bottom: 40px; left: 0; right: 0; display: flex; justify-content: center; align-items: center; gap: 30px; }
+        .camera-ui { position: absolute; bottom: 40px; width: 100%; display: flex; justify-content: center; align-items: center; gap: 30px; }
         .capture-btn { width: 70px; height: 70px; border-radius: 50%; border: 5px solid #fff; background: transparent; cursor: pointer; }
-        .close-camera { color: #fff; font-size: 30px; cursor: pointer; }
-
-        #fortuneOverlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 10001;
-            display: none; flex-direction: column; justify-content: center; align-items: center; padding: 40px; text-align: center;
-        }
-        .fortune-card {
-            background: var(--glass-bg); border: 2px solid var(--gold); padding: 30px; border-radius: 30px;
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            animation: slideUp 0.5s ease-out;
-        }
+        
+        #fortuneOverlay { background: rgba(0,0,0,0.9); flex-direction: column; justify-content: center; align-items: center; padding: 40px; text-align: center; }
+        .fortune-card { background: var(--glass-bg); border: 2px solid var(--gold); padding: 30px; border-radius: 30px; backdrop-filter: blur(20px); animation: slideUp 0.5s ease-out; }
         @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         .scanning-line { width: 100%; height: 2px; background: var(--gold); position: absolute; top: 0; left: 0; box-shadow: 0 0 15px var(--gold); animation: scan 2s linear infinite; }
         @keyframes scan { from { top: 0; } to { top: 100%; } }
 
-        /* --- SISTEMA DE SALIDA ELEGANTE --- */
-        #exitOverlay {
-            position: fixed; inset: 0; background: #000; z-index: 20000;
-            display: none; flex-direction: column; justify-content: center; align-items: center;
-            opacity: 0; transition: opacity 2s ease;
-        }
-        .exit-text { 
-            font-size: 22px; font-weight: 800; color: var(--tr-red); 
-            letter-spacing: 4px; text-align: center;
-        }
+        /* SALIDA ELEGANTE */
+        #exitOverlay { background: #000; z-index: 20000; flex-direction: column; justify-content: center; align-items: center; opacity: 0; transition: opacity 2s ease; }
+        .exit-text { font-size: 22px; font-weight: 800; color: var(--tr-red); letter-spacing: 4px; text-align: center; }
     </style>
 </head>
 <body>
@@ -170,25 +166,37 @@
     <div class="app-shell" id="appShell">
         <header>
             <div class="logo-lale">LALE</div>
-            <i class="fa-solid fa-circle-user" style="font-size: 24px; color: #fff;"></i>
+            <i class="fa-solid fa-circle-user" style="font-size: 24px;"></i>
         </header>
 
         <main class="content">
             <div class="news-box">
                 <div class="live-tag"></div>
-                <div style="overflow: hidden; flex: 1;">
-                    <p id="tickerText" style="font-size: 12px; font-weight: 600; white-space: nowrap;">Yükleniyor...</p>
-                </div>
+                <p id="tickerText" style="font-size: 12px; font-weight: 600;">Yükleniyor...</p>
             </div>
 
             <section class="glass-card" style="border: 1px solid var(--gold);">
                 <div class="card-header">
                     <h3><i class="fa-solid fa-mug-hot"></i> Yapay Zeka Kahve Falı</h3>
-                    <span style="font-size: 10px; color: var(--gold); font-weight: 800;">PREMIUM</span>
                 </div>
-                <div style="text-align: center; padding: 10px;">
-                    <p style="font-size: 13px; opacity: 0.8; margin-bottom: 15px;">Fincanınızın fotoğrafını çekin, yapay zeka geleceğinizi fısıldasın.</p>
-                    <button class="btn-gold" onclick="openCamera()" style="background: linear-gradient(45deg, #FFD700, #b8860b); color: #000; height: 50px;">FALIMA BAK</button>
+                <button class="btn-gold" onclick="openCamera()" style="background: linear-gradient(45deg, #FFD700, #b8860b); color: #000; height: 50px;">FALIMA BAK</button>
+            </section>
+
+            <section class="ride-card">
+                <div class="card-header">
+                    <h3><i class="fa-solid fa-car-side"></i> Lale VIP Drive</h3>
+                    <span style="font-size: 10px; color: #00ff00; font-weight: 800;">CANLI</span>
+                </div>
+                <p style="font-size: 11px; opacity: 0.7;">İstanbul içinde lüks ve hızlı ulaşım.</p>
+                <div class="ride-options">
+                    <div class="ride-btn" onclick="requestRide('Uber')">
+                        <i class="fa-brands fa-uber"></i>
+                        <p>UBER ÇAĞIR</p>
+                    </div>
+                    <div class="ride-btn" onclick="requestRide('BiTaksi')">
+                        <i class="fa-solid fa-taxi"></i>
+                        <p>BITAKSI</p>
+                    </div>
                 </div>
             </section>
 
@@ -197,48 +205,33 @@
                 <div class="bazar-flex">
                     <div class="bazar-card">
                         <i class="fa-solid fa-gem" style="color: var(--gold); font-size: 24px;"></i>
-                        <p style="font-size: 12px; margin: 8px 0; font-weight: 700;">Kapalıçarşı</p>
+                        <p style="font-size: 12px; font-weight: 700; margin: 8px 0;">Kapalıçarşı</p>
                         <button class="btn-gold" onclick="navTo('Grand Bazaar Istanbul')">GİT</button>
                     </div>
                     <div class="bazar-card">
                         <i class="fa-solid fa-pepper-hot" style="color: #ff4d4d; font-size: 24px;"></i>
-                        <p style="font-size: 12px; margin: 8px 0; font-weight: 700;">Mısır Çarşısı</p>
+                        <p style="font-size: 12px; font-weight: 700; margin: 8px 0;">Mısır Çarşısı</p>
                         <button class="btn-gold" onclick="navTo('Spice Bazaar Istanbul')">GİT</button>
                     </div>
                 </div>
             </section>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                <div class="glass-card" onclick="window.location.href='https://www.sehirhatlari.istanbul/'" style="text-align:center; padding: 15px;">
-                    <i class="fa-solid fa-ship" style="font-size: 24px; color: var(--tr-red);"></i>
-                    <p style="font-size: 11px; font-weight: 800; margin-top: 8px;">Vapurlar</p>
-                </div>
-                <div class="glass-card" onclick="window.location.href='https://www.metro.istanbul/'" style="text-align:center; padding: 15px;">
-                    <i class="fa-solid fa-train-subway" style="font-size: 24px; color: var(--tr-red);"></i>
-                    <p style="font-size: 11px; font-weight: 800; margin-top: 8px;">Metro</p>
-                </div>
-            </div>
-
-            <button class="btn-gold" onclick="triggerExit()" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); margin-top: 20px; height: 50px; opacity: 0.7;">
+            <button class="btn-gold" onclick="triggerExit()" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); margin-top: 20px; height: 50px;">
                 <i class="fa-solid fa-power-off"></i> UYGULAMADAN ÇIK
             </button>
         </main>
 
         <nav>
-            <button class="nav-item active"><i class="fa-solid fa-house-chimney-window"></i><span>ANA SAYFA</span></button>
+            <button class="nav-item active"><i class="fa-solid fa-house"></i><span>ANA SAYFA</span></button>
             <button class="nav-item" onclick="navTo('Hotels Istanbul')"><i class="fa-solid fa-bed"></i><span>OTEL</span></button>
-            <button class="nav-item" onclick="navTo('Turkish Airlines')"><i class="fa-solid fa-plane-up"></i><span>UÇAK</span></button>
-            <button class="nav-item" onclick="window.location.href='https://wa.me/5492246496971?text=Merhaba!%20Lale%20Turkey%20deste%C4%9Fe%20ihtiyac%C4%B1m%20var.'"><i class="fa-solid fa-comment-dots"></i><span>DESTEK</span></button>
+            <button class="nav-item" onclick="navTo('Turkish Airlines')"><i class="fa-solid fa-plane"></i><span>UÇAK</span></button>
+            <button class="nav-item" onclick="window.location.href='https://wa.me/5492246496971?text=Merhaba!'"><i class="fa-solid fa-comment-dots"></i><span>DESTEK</span></button>
         </nav>
     </div>
 
     <div id="cameraModal">
         <video id="videoFeed" autoplay playsinline></video>
-        <div class="camera-ui">
-            <i class="fa-solid fa-xmark close-camera" onclick="closeCamera()"></i>
-            <button class="capture-btn" onclick="takePhoto()"></button>
-            <div style="width: 30px;"></div>
-        </div>
+        <div class="camera-ui"><i class="fa-solid fa-xmark" style="color:#fff; font-size:30px;" onclick="closeCamera()"></i><button class="capture-btn" onclick="takePhoto()"></button></div>
     </div>
 
     <div id="fortuneOverlay">
@@ -251,9 +244,7 @@
         </div>
     </div>
 
-    <div id="exitOverlay">
-        <div class="exit-text">LALE TURKEY<br><span style="font-size: 14px; opacity: 0.6; letter-spacing: 2px;">GÜLE GÜLE...</span></div>
-    </div>
+    <div id="exitOverlay"><div class="exit-text">LALE TURKEY<br><span style="font-size: 14px; opacity: 0.6;">GÜLE GÜLE...</span></div></div>
 
     <script>
         const init = () => {
@@ -266,85 +257,60 @@
 
         const startTicker = () => {
             const ticker = document.getElementById('tickerText');
-            const news = [
-                "İstanbul Boğazı: Tüm vapur seferleri şu an aktif.",
-                "Kapalıçarşı'da bugün el yapımı kilim sergisi var.",
-                "Hava Durumu: Estambul'da güneşli bir día, 18°C.",
-                "Lale VIP: Mısır Çarşısı'nda baharat indirimi başladı."
-            ];
+            const news = ["İstanbul Boğazı: Vapurlar aktif.", "Kapalıçarşı: Bugün indirim günü.", "Hava Durumu: 18°C Güneşli.", "Lale VIP Drive: Araçlar kapınızda."];
             let i = 0;
-            setInterval(() => {
-                ticker.style.opacity = '0';
+            setInterval(() => { ticker.innerText = news[i]; i = (i + 1) % news.length; }, 6000);
+        };
+
+        // LÓGICA DE TRANSPORTE REAL
+        const requestRide = (service) => {
+            const ticker = document.getElementById('tickerText');
+            ticker.innerText = `${service} yönlendiriliyor...`;
+            
+            setTimeout(() => {
+                if(service === 'Uber') {
+                    window.location.href = "uber://?action=setPickup&pickup=my_location";
+                } else {
+                    window.location.href = "bitaksi://";
+                }
+                // Fallback a web si no hay app
                 setTimeout(() => {
-                    ticker.innerText = news[i];
-                    ticker.style.opacity = '1';
-                    i = (i + 1) % news.length;
-                }, 500);
-            }, 7000);
+                    if (!document.hidden) {
+                        window.open(service === 'Uber' ? "https://www.uber.com/tr" : "https://www.bitaksi.com", "_blank");
+                    }
+                }, 2500);
+            }, 1000);
         };
 
         let stream = null;
         const openCamera = async () => {
-            const modal = document.getElementById('cameraModal');
             try {
                 stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
                 document.getElementById('videoFeed').srcObject = stream;
-                modal.style.display = 'flex';
-            } catch (err) { alert("Kamera erişimi reddedildi."); }
+                document.getElementById('cameraModal').style.display = 'flex';
+            } catch (err) { alert("Kamera kapalı."); }
         };
 
-        const closeCamera = () => {
-            if(stream) stream.getTracks().forEach(track => track.stop());
-            document.getElementById('cameraModal').style.display = 'none';
-        };
+        const closeCamera = () => { if(stream) stream.getTracks().forEach(t => t.stop()); document.getElementById('cameraModal').style.display = 'none'; };
 
         const takePhoto = () => {
             document.body.style.filter = "brightness(2)";
-            setTimeout(() => {
-                document.body.style.filter = "none";
-                closeCamera();
-                showFortune();
-            }, 100);
+            setTimeout(() => { document.body.style.filter = "none"; closeCamera(); showFortune(); }, 100);
         };
 
         const showFortune = () => {
-            const fortunes = [
-                "Kısmetin kapıda! Çok yakında bir yolculuk görünüyor, bu yol sana huzur getirecek.",
-                "Yüreğin ferahlıyor. Beklediğin o haber kuş kanadıyla geliyor, hazırlıklı ol.",
-                "Fincanında bir anahtar var. Bu, yeni bir evin veya iş kapısının açılacağına işarettir.",
-                "Dost görünümlü birine dikkat et, ama merak etme; şansın seni koruyor.",
-                "Büyük bir kalabalığa gireceksin, bu toplulukta yıldızın parlayacak.",
-                "Parasal bir ferahlama var. Hiç beklemediğin bir yerden destek alacaksın.",
-                "Göz aydınlığı var! Sevdiğin birinden alacağın hediye seni çok mutlu edecek.",
-                "Hanene ay doğuyor. Ailenle ilgili sıkıntılar geride kalıyor, huzur geliyor.",
-                "Yolun açık, engeller birer birer kalkıyor. Hedefine çok yakınsın.",
-                "Fincanın dibinde bir balık var. Bu, büyük bir rızık ve bereket demektir.",
-                "İki vakte kadar bir görüşmen var. Bu görüşme hayatının akışını değiştirebilir.",
-                "Bir dileğin var, sabret. Meyvesini toplama zamanı yaklaşıyor.",
-                "Nazara gelmişsin ama dua seni koruyor. Üzerindeki ağırlık kalkacak.",
-                "Kalbindeki o niyet gerçek oluyor. Sadece biraz más zaman gerekiyor.",
-                "Eski bir dostun kapını çalacak. Geçmişten gelen güzel bir anı canlanacak."
-            ];
+            const fortunes = ["Kısmetin kapıda! Çok yakında bir yolculuk görünüyor.", "Yüreğin ferahlıyor. Beklediğin haber yolda.", "Fincanında bir anahtar var. Yeni bir kapı açılıyor.", "Dost görünümlü birine dikkat et, şansın seni koruyor.", "Büyük bir kalabalığa gireceksin, yıldızın parlayacak.", "Parasal bir ferahlama var, destek alacaksın.", "Göz aydınlığı var! Sevdiğinden hediye alacaksın.", "Hanene ay doğuyor. Huzur geliyor.", "Yolun açık, engeller kalkıyor. Hedefine yakınsın.", "Fincanın dibinde balık var. Bereket demektir.", "İki vakte kadar bir görüşmen var, hayatın değişebilir.", "Bir dileğin var, sabret. Zamanı yaklaşıyor.", "Nazara gelmişsin ama dua seni koruyor.", "Kalbindeki o niyet gerçek oluyor.", "Eski bir dostun kapını çalacak."];
             document.getElementById('fortuneText').innerText = fortunes[Math.floor(Math.random() * fortunes.length)];
             document.getElementById('fortuneOverlay').style.display = 'flex';
         };
 
         const closeFortune = () => document.getElementById('fortuneOverlay').style.display = 'none';
+        const navTo = (q) => window.open(`https://www.google.com/maps/search/${encodeURIComponent(q)}`, '_blank');
 
-        const navTo = (query) => {
-            window.open(`https://www.google.com/maps/search/${encodeURIComponent(query)}`, '_blank');
-        };
-
-        // LÓGICA DE SALIDA ELEGANTE
         const triggerExit = () => {
-            const exitOverlay = document.getElementById('exitOverlay');
-            exitOverlay.style.display = 'flex';
-            setTimeout(() => {
-                exitOverlay.style.opacity = '1';
-                setTimeout(() => {
-                    window.location.href = "about:blank"; // Cierre virtual
-                }, 2500);
-            }, 100);
+            const e = document.getElementById('exitOverlay');
+            e.style.display = 'flex';
+            setTimeout(() => { e.style.opacity = '1'; setTimeout(() => { window.location.href = "about:blank"; }, 2500); }, 100);
         };
 
         window.addEventListener('load', init);
