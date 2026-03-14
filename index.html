@@ -3,317 +3,408 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Lale Turkey - Elite Experience</title>
+    <title>Lale Turkey - Elite Super App</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
         :root {
             --tr-red: #E30A17;
             --gold: #FFD700;
-            --glass-bg: rgba(0, 0, 0, 0.75);
-            --glass-border: rgba(255, 255, 255, 0.15);
+            --dark-bg: #000000;
+            --glass: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.12);
+            --shadow-red: rgba(227, 10, 23, 0.3);
+            --shadow-gold: rgba(255, 215, 0, 0.3);
         }
 
-        /* Reset y Prevención de Errores Visuales */
+        /* RESET & BASE */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+        
         html, body { 
             height: 100vh; width: 100vw; 
-            background-color: #000; 
-            color: #fff; 
+            background-color: var(--dark-bg); 
+            color: #ffffff; 
             overflow: hidden; 
             position: fixed; 
         }
 
-        /* --- FONDO CINEMÁTICO --- */
-        .bg-container {
+        /* --- CAPA CINEMÁTICA --- */
+        .video-background {
             position: fixed; inset: 0; z-index: -1;
-            background: linear-gradient(to bottom, #1a1a1a, #000);
+            background: #111;
         }
-        .bg-container video {
+        .video-background video {
             width: 100%; height: 100%; object-fit: cover;
-            filter: brightness(0.4) saturate(1.2);
-            opacity: 0; transition: opacity 1.5s ease;
+            filter: brightness(0.3) saturate(1.1);
+            opacity: 0; transition: opacity 2s ease-in-out;
         }
-        .bg-container.loaded video { opacity: 1; }
-        .overlay { position: absolute; inset: 0; background: radial-gradient(circle, transparent, #000); }
+        .video-background.active video { opacity: 1; }
+        .vignette {
+            position: absolute; inset: 0;
+            background: radial-gradient(circle, transparent 20%, rgba(0,0,0,0.8) 100%);
+            z-index: 1;
+        }
 
-        /* --- SPLASH SCREEN: TULIPÁN 3D --- */
-        #splash {
-            position: fixed; inset: 0; background: #000; z-index: 9999;
+        /* --- SPLASH SCREEN 3D --- */
+        #lale-loader {
+            position: fixed; inset: 0; background: #000; z-index: 10000;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            transition: transform 0.8s cubic-bezier(0.7, 0, 0.3, 1), opacity 0.5s;
+            transition: all 0.9s cubic-bezier(0.77, 0, 0.175, 1);
         }
-        .tulip-3d { 
-            width: 80px; height: 120px; position: relative; 
-            transform-style: preserve-3d; animation: spin 4s infinite linear; 
+        .tulip-container {
+            width: 80px; height: 120px; position: relative;
+            transform-style: preserve-3d; animation: tulipRotate 4s infinite linear;
         }
-        .petal { 
-            position: absolute; width: 45px; height: 85px; 
-            background: linear-gradient(135deg, #ff4d4d, var(--tr-red)); 
-            border-radius: 50% 50% 15% 15%; transform-origin: bottom center; 
-            border: 1px solid rgba(255,255,255,0.1); 
-            box-shadow: 0 0 25px rgba(227, 10, 23, 0.4);
+        .petal-3d {
+            position: absolute; width: 45px; height: 90px;
+            background: linear-gradient(to bottom, #ff4d4d, var(--tr-red));
+            border-radius: 50% 50% 20% 20%; transform-origin: bottom center;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 0 30px var(--shadow-red);
         }
         .p1 { transform: rotateY(0deg) rotateX(15deg); }
         .p2 { transform: rotateY(120deg) rotateX(15deg); }
         .p3 { transform: rotateY(240deg) rotateX(15deg); }
-        @keyframes spin { from { transform: rotateY(0deg); } to { transform: rotateY(360deg); } }
+        @keyframes tulipRotate { from { transform: rotateY(0deg); } to { transform: rotateY(360deg); } }
+
+        .loader-text { margin-top: 40px; text-align: center; }
+        .loader-text h1 { letter-spacing: 8px; font-weight: 800; font-size: 26px; }
+        .loader-text span { color: var(--tr-red); font-size: 11px; font-weight: 700; letter-spacing: 2px; }
+
+        /* --- ESTRUCTURA APP --- */
+        .app-container {
+            width: 100%; max-width: 480px; height: 100%;
+            margin: 0 auto; display: flex; flex-direction: column;
+            opacity: 0; transition: opacity 1s ease;
+        }
+        .app-container.ready { opacity: 1; }
+
+        header {
+            padding: 50px 25px 20px;
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 100;
+        }
+        .brand { font-size: 28px; font-weight: 900; letter-spacing: 2px; }
+        .user-profile { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--gold); display: flex; justify-content: center; align-items: center; background: var(--glass); }
+
+        /* --- CONTENIDO SCROLLABLE --- */
+        .main-scroll {
+            flex: 1; overflow-y: auto; padding: 0 20px 140px;
+            scrollbar-width: none; -ms-overflow-style: none;
+        }
+        .main-scroll::-webkit-scrollbar { display: none; }
+
+        /* SALUDO & TICKER */
+        .greet-box { margin-bottom: 25px; }
+        #dynamicGreeting { font-size: 22px; font-weight: 800; color: var(--gold); margin-bottom: 8px; }
         
-        .splash-text { margin-top: 35px; text-align: center; }
-        .splash-text h1 { letter-spacing: 6px; font-weight: 800; font-size: 24px; margin-bottom: 5px; }
-        .splash-text p { color: var(--tr-red); font-size: 11px; font-weight: 600; letter-spacing: 1px; }
-
-        /* --- UI PRINCIPAL --- */
-        .app-shell {
-            width: 100%; max-width: 450px; height: 100%; margin: 0 auto;
-            display: flex; flex-direction: column; opacity: 0;
-            transition: opacity 1s ease;
+        .ticker {
+            background: rgba(227, 10, 23, 0.12); border: 1px solid var(--tr-red);
+            border-radius: 18px; padding: 12px 18px; display: flex; align-items: center; gap: 12px;
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
         }
-        .app-shell.active { opacity: 1; }
+        .live-pulse { width: 10px; height: 10px; background: #00ff00; border-radius: 50%; box-shadow: 0 0 10px #00ff00; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(1.2); } 100% { opacity: 1; transform: scale(1); } }
 
-        header { padding: 50px 25px 20px; display: flex; justify-content: space-between; align-items: center; }
-        .logo-lale { font-size: 26px; font-weight: 900; letter-spacing: 2px; }
-
-        .content { flex: 1; overflow-y: auto; padding: 0 20px 120px; scrollbar-width: none; }
-        .content::-webkit-scrollbar { display: none; }
-
-        /* --- TICKER --- */
-        .news-box {
-            background: rgba(227, 10, 23, 0.2); border: 1px solid var(--tr-red);
-            border-radius: 20px; padding: 12px 18px; margin-bottom: 25px;
-            backdrop-filter: blur(10px); display: flex; align-items: center; gap: 12px;
+        /* CARDS & GRIDS */
+        .section-card {
+            background: rgba(0,0,0,0.6); border: 1px solid var(--glass-border);
+            border-radius: 30px; padding: 25px; margin-bottom: 20px;
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
         }
-        .live-tag { width: 8px; height: 8px; background: #00ff00; border-radius: 50%; box-shadow: 0 0 10px #00ff00; animation: pulse 1s infinite; }
-        @keyframes pulse { 50% { opacity: 0.3; } }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+        .section-header h3 { font-size: 17px; font-weight: 700; color: var(--gold); display: flex; align-items: center; gap: 10px; }
 
-        /* --- CARDS --- */
-        .glass-card {
-            background: var(--glass-bg); border: 1px solid var(--glass-border);
-            border-radius: 30px; padding: 22px; margin-bottom: 20px;
-            backdrop-filter: blur(20px);
+        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        
+        .action-button {
+            background: rgba(255, 255, 255, 0.04); border: 1px solid var(--glass-border);
+            border-radius: 20px; padding: 20px; text-align: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer;
         }
-        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .card-header h3 { font-size: 18px; color: var(--gold); display: flex; align-items: center; gap: 10px; }
+        .action-button:active { transform: scale(0.94); background: var(--tr-red); border-color: transparent; }
+        .action-button i { font-size: 26px; color: var(--gold); margin-bottom: 10px; display: block; }
+        .action-button p { font-size: 11px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
 
-        .bazar-flex { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 5px; }
-        .bazar-card { 
-            min-width: 150px; background: rgba(255,255,255,0.05); border-radius: 22px; padding: 18px; 
-            border: 1px solid rgba(255,255,255,0.08); text-align: center;
-        }
-        .btn-gold { background: var(--tr-red); color: #fff; border: none; width: 100%; padding: 10px; border-radius: 12px; font-weight: 800; font-size: 11px; margin-top: 12px; cursor: pointer; }
+        /* SECCIONES ESPECÍFICAS */
+        .card-pay { border: 1px solid rgba(255, 215, 0, 0.25); }
+        .card-yemek { border: 1px solid rgba(227, 10, 23, 0.25); }
 
-        /* --- NUEVO: LALE VIP DRIVE (Estilo Uber) --- */
-        .ride-card {
-            background: linear-gradient(135deg, rgba(227, 10, 23, 0.1), rgba(0, 0, 0, 0.6));
-            border: 1px solid var(--tr-red); border-radius: 30px; padding: 22px; margin-bottom: 20px;
-            backdrop-filter: blur(20px);
+        .balance-display {
+            background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
+            border-radius: 20px; padding: 20px; text-align: center; margin-bottom: 15px;
+            border: 1px solid rgba(255,215,0,0.1);
         }
-        .ride-options { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px; }
-        .ride-btn {
-            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 18px; padding: 15px; text-align: center; cursor: pointer; transition: all 0.3s;
-        }
-        .ride-btn:active { transform: scale(0.95); background: var(--tr-red); }
-        .ride-btn i { font-size: 24px; color: var(--gold); margin-bottom: 8px; display: block; }
-        .ride-btn p { font-size: 10px; font-weight: 800; letter-spacing: 1px; }
 
-        /* --- NAV --- */
+        /* --- NAVEGACIÓN INFERIOR --- */
         nav {
-            position: absolute; bottom: 25px; left: 20px; right: 20px;
-            height: 75px; background: var(--glass-bg); border-radius: 25px;
+            position: fixed; bottom: 30px; left: 20px; right: 20px;
+            height: 80px; background: rgba(0, 0, 0, 0.85); border-radius: 28px;
             border: 1px solid var(--glass-border); display: flex; justify-content: space-around;
-            align-items: center; backdrop-filter: blur(25px);
+            align-items: center; backdrop-filter: blur(30px); z-index: 1000;
         }
-        .nav-item { color: rgba(255,255,255,0.4); display: flex; flex-direction: column; align-items: center; gap: 4px; border: none; background: none; cursor: pointer; }
+        .nav-item { color: rgba(255,255,255,0.3); display: flex; flex-direction: column; align-items: center; gap: 6px; border: none; background: none; cursor: pointer; transition: 0.3s; }
         .nav-item.active { color: var(--tr-red); }
-        .nav-item i { font-size: 22px; }
-        .nav-item span { font-size: 10px; font-weight: 700; }
+        .nav-item i { font-size: 24px; }
+        .nav-item span { font-size: 10px; font-weight: 800; }
 
-        /* --- MODALES --- */
-        #cameraModal, #fortuneOverlay, #exitOverlay { position: fixed; inset: 0; z-index: 10000; display: none; }
-        #cameraModal { background: #000; flex-direction: column; }
-        #videoFeed { width: 100%; height: 100%; object-fit: cover; }
-        .camera-ui { position: absolute; bottom: 40px; width: 100%; display: flex; justify-content: center; align-items: center; gap: 30px; }
-        .capture-btn { width: 70px; height: 70px; border-radius: 50%; border: 5px solid #fff; background: transparent; cursor: pointer; }
+        /* --- MODALES & OVERLAYS --- */
+        #camera-ui, #fortune-overlay, #exit-overlay { position: fixed; inset: 0; z-index: 11000; display: none; }
         
-        #fortuneOverlay { background: rgba(0,0,0,0.9); flex-direction: column; justify-content: center; align-items: center; padding: 40px; text-align: center; }
-        .fortune-card { background: var(--glass-bg); border: 2px solid var(--gold); padding: 30px; border-radius: 30px; backdrop-filter: blur(20px); animation: slideUp 0.5s ease-out; }
-        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .scanning-line { width: 100%; height: 2px; background: var(--gold); position: absolute; top: 0; left: 0; box-shadow: 0 0 15px var(--gold); animation: scan 2s linear infinite; }
-        @keyframes scan { from { top: 0; } to { top: 100%; } }
+        #camera-ui { background: #000; flex-direction: column; }
+        #camera-feed { width: 100%; height: 100%; object-fit: cover; }
+        .cam-controls { position: absolute; bottom: 50px; width: 100%; display: flex; justify-content: center; align-items: center; gap: 40px; }
+        .shutter { width: 85px; height: 85px; border-radius: 50%; border: 6px solid #fff; background: transparent; cursor: pointer; }
 
-        /* SALIDA ELEGANTE */
-        #exitOverlay { background: #000; z-index: 20000; flex-direction: column; justify-content: center; align-items: center; opacity: 0; transition: opacity 2s ease; }
-        .exit-text { font-size: 22px; font-weight: 800; color: var(--tr-red); letter-spacing: 4px; text-align: center; }
+        #fortune-overlay { 
+            background: rgba(0,0,0,0.96); flex-direction: column; justify-content: center; align-items: center; padding: 40px; 
+            text-align: center; backdrop-filter: blur(15px);
+        }
+        .fortune-result-card { 
+            background: #111; border: 2px solid var(--gold); padding: 40px; border-radius: 35px; 
+            max-width: 350px; box-shadow: 0 0 50px rgba(255, 215, 0, 0.15);
+            animation: slideIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes slideIn { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        #exit-overlay { 
+            background: #000; z-index: 20000; flex-direction: column; justify-content: center; align-items: center; 
+            opacity: 0; transition: opacity 2s ease; 
+        }
+        .exit-brand { font-size: 26px; font-weight: 900; color: var(--tr-red); letter-spacing: 5px; text-align: center; }
+
+        /* MODO LANDSCAPE PREVENCIÓN */
+        @media (orientation: landscape) and (max-height: 500px) {
+            .app-container { display: none; }
+            body::after { content: "Lütfen cihazınızı dikey çevirin."; position: fixed; inset: 0; background: #000; display: flex; justify-content: center; align-items: center; z-index: 99999; }
+        }
     </style>
 </head>
 <body>
 
-    <div id="splash">
-        <div class="tulip-3d"><div class="petal p1"></div><div class="petal p2"></div><div class="petal p3"></div></div>
-        <div class="splash-text"><h1>LALE TURKEY</h1><p>ESTANBUL'UN DİJİTAL KALBİ</p></div>
-    </div>
-
-    <div class="bg-container" id="bgContainer">
-        <video id="mainVideo" autoplay muted loop playsinline oncanplay="this.parentElement.classList.add('loaded')">
-            <source src="https://assets.mixkit.co/videos/preview/mixkit-istanbul-at-sunset-40230-large.mp4" type="video/mp4">
-        </video>
-        <div class="overlay"></div>
-    </div>
-
-    <div class="app-shell" id="appShell">
-        <header>
-            <div class="logo-lale">LALE</div>
-            <i class="fa-solid fa-circle-user" style="font-size: 24px;"></i>
-        </header>
-
-        <main class="content">
-            <div class="news-box">
-                <div class="live-tag"></div>
-                <p id="tickerText" style="font-size: 12px; font-weight: 600;">Yükleniyor...</p>
-            </div>
-
-            <section class="glass-card" style="border: 1px solid var(--gold);">
-                <div class="card-header">
-                    <h3><i class="fa-solid fa-mug-hot"></i> Yapay Zeka Kahve Falı</h3>
-                </div>
-                <button class="btn-gold" onclick="openCamera()" style="background: linear-gradient(45deg, #FFD700, #b8860b); color: #000; height: 50px;">FALIMA BAK</button>
-            </section>
-
-            <section class="ride-card">
-                <div class="card-header">
-                    <h3><i class="fa-solid fa-car-side"></i> Lale VIP Drive</h3>
-                    <span style="font-size: 10px; color: #00ff00; font-weight: 800;">CANLI</span>
-                </div>
-                <p style="font-size: 11px; opacity: 0.7;">İstanbul içinde lüks ve hızlı ulaşım.</p>
-                <div class="ride-options">
-                    <div class="ride-btn" onclick="requestRide('Uber')">
-                        <i class="fa-brands fa-uber"></i>
-                        <p>UBER ÇAĞIR</p>
-                    </div>
-                    <div class="ride-btn" onclick="requestRide('BiTaksi')">
-                        <i class="fa-solid fa-taxi"></i>
-                        <p>BITAKSI</p>
-                    </div>
-                </div>
-            </section>
-
-            <section class="glass-card">
-                <div class="card-header"><h3><i class="fa-solid fa-store"></i> Bazar Fırsatları</h3></div>
-                <div class="bazar-flex">
-                    <div class="bazar-card">
-                        <i class="fa-solid fa-gem" style="color: var(--gold); font-size: 24px;"></i>
-                        <p style="font-size: 12px; font-weight: 700; margin: 8px 0;">Kapalıçarşı</p>
-                        <button class="btn-gold" onclick="navTo('Grand Bazaar Istanbul')">GİT</button>
-                    </div>
-                    <div class="bazar-card">
-                        <i class="fa-solid fa-pepper-hot" style="color: #ff4d4d; font-size: 24px;"></i>
-                        <p style="font-size: 12px; font-weight: 700; margin: 8px 0;">Mısır Çarşısı</p>
-                        <button class="btn-gold" onclick="navTo('Spice Bazaar Istanbul')">GİT</button>
-                    </div>
-                </div>
-            </section>
-
-            <button class="btn-gold" onclick="triggerExit()" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); margin-top: 20px; height: 50px;">
-                <i class="fa-solid fa-power-off"></i> UYGULAMADAN ÇIK
-            </button>
-        </main>
-
-        <nav>
-            <button class="nav-item active"><i class="fa-solid fa-house"></i><span>ANA SAYFA</span></button>
-            <button class="nav-item" onclick="navTo('Hotels Istanbul')"><i class="fa-solid fa-bed"></i><span>OTEL</span></button>
-            <button class="nav-item" onclick="navTo('Turkish Airlines')"><i class="fa-solid fa-plane"></i><span>UÇAK</span></button>
-            <button class="nav-item" onclick="window.location.href='https://wa.me/5492246496971?text=Merhaba!'"><i class="fa-solid fa-comment-dots"></i><span>DESTEK</span></button>
-        </nav>
-    </div>
-
-    <div id="cameraModal">
-        <video id="videoFeed" autoplay playsinline></video>
-        <div class="camera-ui"><i class="fa-solid fa-xmark" style="color:#fff; font-size:30px;" onclick="closeCamera()"></i><button class="capture-btn" onclick="takePhoto()"></button></div>
-    </div>
-
-    <div id="fortuneOverlay">
-        <div class="scanning-line"></div>
-        <div class="fortune-card">
-            <i class="fa-solid fa-wand-magic-sparkles" style="color: var(--gold); font-size: 40px; margin-bottom: 20px;"></i>
-            <h2 style="color: var(--gold); margin-bottom: 15px;">FALINIZ ÇIKTI!</h2>
-            <p id="fortuneText" style="line-height: 1.6; font-weight: 600;"></p>
-            <button class="btn-gold" style="margin-top: 25px;" onclick="closeFortune()">TEŞEKKÜRLER</button>
+    <div id="lale-loader">
+        <div class="tulip-container">
+            <div class="petal-3d p1"></div>
+            <div class="petal-3d p2"></div>
+            <div class="petal-3d p3"></div>
+        </div>
+        <div class="loader-text">
+            <h1>LALE TURKEY</h1>
+            <span>İSTANBUL'UN DİJİTAL KALBİ</span>
         </div>
     </div>
 
-    <div id="exitOverlay"><div class="exit-text">LALE TURKEY<br><span style="font-size: 14px; opacity: 0.6;">GÜLE GÜLE...</span></div></div>
+    <div class="video-background" id="bgLayer">
+        <video id="v-player" autoplay muted loop playsinline oncanplay="this.parentElement.classList.add('active')">
+            <source src="https://assets.mixkit.co/videos/preview/mixkit-istanbul-at-sunset-40230-large.mp4" type="video/mp4">
+        </video>
+        <div class="vignette"></div>
+    </div>
+
+    <div class="app-container" id="appMain">
+        <header>
+            <div class="brand">LALE</div>
+            <div class="user-profile"><i class="fa-solid fa-user-astronaut"></i></div>
+        </header>
+
+        <main class="main-scroll">
+            <div class="greet-box">
+                <h2 id="dynamicGreeting">Hoş Geldiniz</h2>
+                <div class="ticker">
+                    <div class="live-pulse"></div>
+                    <p id="tickerContent" style="font-size: 11px; font-weight: 700; letter-spacing: 0.5px;">Veriler güncelleniyor...</p>
+                </div>
+            </div>
+
+            <section class="section-card" style="border: 2px solid var(--gold); background: linear-gradient(to bottom, rgba(255,215,0,0.05), transparent);">
+                <div class="section-header">
+                    <h3><i class="fa-solid fa-magic-wand-sparkles"></i> Yapay Zeka Falı</h3>
+                    <span style="font-size: 9px; font-weight: 800; background: var(--gold); color: #000; padding: 3px 8px; border-radius: 10px;">PREMIUM</span>
+                </div>
+                <button onclick="launchCamera()" style="width: 100%; height: 60px; background: var(--gold); color: #000; border: none; border-radius: 18px; font-weight: 900; letter-spacing: 1px; cursor: pointer;">FOTOĞRAF ÇEK VE ANALİZ ET</button>
+            </section>
+
+            <section class="section-card">
+                <div class="section-header">
+                    <h3><i class="fa-solid fa-car-rear"></i> Lale VIP Drive</h3>
+                </div>
+                <div class="btn-grid">
+                    <div class="action-button" onclick="launchApp('uber://', 'https://www.uber.com/tr')">
+                        <i class="fa-brands fa-uber"></i><p>Uber Çağır</p>
+                    </div>
+                    <div class="action-button" onclick="launchApp('bitaksi://', 'https://www.bitaksi.com')">
+                        <i class="fa-solid fa-taxi"></i><p>BiTaksi</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section-card card-pay">
+                <div class="section-header">
+                    <h3><i class="fa-solid fa-wallet"></i> Lale VIP Pay</h3>
+                </div>
+                <div class="balance-display">
+                    <p style="font-size: 10px; opacity: 0.6; text-transform: uppercase; margin-bottom: 5px;">İstanbul Kart Bakiyesi</p>
+                    <p style="font-size: 26px; font-weight: 800; color: var(--gold);">₺145.50</p>
+                </div>
+                <div class="btn-grid">
+                    <div class="action-button" onclick="launchApp('papara://', 'https://www.papara.com')">
+                        <i class="fa-solid fa-qrcode"></i><p>Papara QR</p>
+                    </div>
+                    <div class="action-button" onclick="launchApp('istanbulcard://', 'https://www.istanbulkart.istanbul')">
+                        <i class="fa-solid fa-plus-circle"></i><p>TL Yükle</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section-card card-yemek">
+                <div class="section-header">
+                    <h3><i class="fa-solid fa-bowl-food"></i> Lale Yemek 7/24</h3>
+                </div>
+                <div class="btn-grid">
+                    <div class="action-button" onclick="launchApp('yemeksepeti://', 'https://www.yemeksepeti.com')">
+                        <i class="fa-solid fa-motorcycle"></i><p>Yemeksepeti</p>
+                    </div>
+                    <div class="action-button" onclick="launchApp('getir://', 'https://getir.com')">
+                        <i class="fa-solid fa-bag-shopping"></i><p>Getir Yemek</p>
+                    </div>
+                </div>
+            </section>
+
+            <button onclick="initExit()" style="width: 100%; padding: 20px; background: none; border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; color: rgba(255,255,255,0.3); font-size: 11px; font-weight: 800; letter-spacing: 2px;">GÜVENLİ ÇIKIŞ</button>
+        </main>
+
+        <nav>
+            <button class="nav-item active"><i class="fa-solid fa-house-chimney"></i><span>ANA SAYFA</span></button>
+            <button class="nav-item" onclick="launchApp('istanbulcard://', 'https://www.istanbulkart.istanbul')"><i class="fa-solid fa-credit-card"></i><span>KART</span></button>
+            <button class="nav-item" onclick="launchApp('getir://', 'https://getir.com')"><i class="fa-solid fa-utensils"></i><span>YEMEK</span></button>
+            <button class="nav-item" onclick="window.location.href='https://wa.me/5492246496971'"><i class="fa-solid fa-headset"></i><span>DESTEK</span></button>
+        </nav>
+    </div>
+
+    <div id="camera-ui">
+        <video id="camera-feed" autoplay playsinline></video>
+        <div class="cam-controls">
+            <i class="fa-solid fa-circle-xmark" style="font-size: 45px; color: #fff;" onclick="killCamera()"></i>
+            <div class="shutter" onclick="captureAndProcess()"></div>
+        </div>
+    </div>
+
+    <div id="fortune-overlay">
+        <div class="fortune-result-card">
+            <i class="fa-solid fa-star-and-crescent" style="color: var(--gold); font-size: 45px; margin-bottom: 25px;"></i>
+            <h2 style="color: var(--gold); margin-bottom: 15px; letter-spacing: 2px;">FALINIZ HAZIR</h2>
+            <p id="fortuneBody" style="line-height: 1.8; font-weight: 600; font-size: 15px; color: #f0f0f0;"></p>
+            <button onclick="document.getElementById('fortune-overlay').style.display='none'" style="margin-top: 35px; width: 100%; padding: 18px; background: var(--tr-red); border: none; border-radius: 15px; color: #fff; font-weight: 800; text-transform: uppercase;">Harika, Teşekkürler</button>
+        </div>
+    </div>
+
+    <div id="exit-overlay"><div class="exit-brand">LALE TURKEY<br><span style="font-size: 12px; opacity: 0.5; letter-spacing: 2px;">İYİ GÜNLER DİLERİZ</span></div></div>
 
     <script>
-        const init = () => {
+        // 1. INICIALIZACIÓN
+        document.addEventListener('DOMContentLoaded', () => {
+            updateGreeting();
             setTimeout(() => {
-                document.getElementById('splash').style.transform = 'translateY(-100%)';
-                document.getElementById('appShell').classList.add('active');
-                startTicker();
+                document.getElementById('lale-loader').style.transform = 'translateY(-100%)';
+                document.getElementById('appMain').classList.add('ready');
+                startTickerCycle();
             }, 3500);
-        };
+        });
 
-        const startTicker = () => {
-            const ticker = document.getElementById('tickerText');
-            const news = ["İstanbul Boğazı: Vapurlar aktif.", "Kapalıçarşı: Bugün indirim günü.", "Hava Durumu: 18°C Güneşli.", "Lale VIP Drive: Araçlar kapınızda."];
-            let i = 0;
-            setInterval(() => { ticker.innerText = news[i]; i = (i + 1) % news.length; }, 6000);
-        };
+        // 2. SALUDO DINÁMICO (Basado en la hora real de Turquía)
+        function updateGreeting() {
+            const hour = new Date().getHours();
+            let text = "İyi Geceler";
+            if (hour >= 5 && hour < 12) text = "Günaydın";
+            else if (hour >= 12 && hour < 18) text = "Tünaydın";
+            else if (hour >= 18 && hour < 23) text = "İyi Akşamlar";
+            document.getElementById('dynamicGreeting').innerText = `${text}, Hoş Geldiniz`;
+        }
 
-        // LÓGICA DE TRANSPORTE REAL
-        const requestRide = (service) => {
-            const ticker = document.getElementById('tickerText');
-            ticker.innerText = `${service} yönlendiriliyor...`;
-            
+        // 3. TICKER DINÁMICO
+        function startTickerCycle() {
+            const feed = [
+                "Boğaz Köprüsü: Trafik akıcı.",
+                "Yemeksepeti: %30 İndirim Fırsatı!",
+                "Getir: Teslimat süresi 10 dk.",
+                "Istanbul Kart: Bakiyeniz güvende.",
+                "Lale VIP: Özel araçlar kapınızda."
+            ];
+            let idx = 0;
+            setInterval(() => {
+                document.getElementById('tickerContent').innerText = feed[idx];
+                idx = (idx + 1) % feed.length;
+            }, 5000);
+        }
+
+        // 4. LÓGICA DE DEEP LINKS (Real)
+        function launchApp(deep, web) {
+            document.getElementById('tickerContent').innerText = "Bağlanıyor...";
+            window.location.href = deep;
+            // Fallback si la app no está instalada
             setTimeout(() => {
-                if(service === 'Uber') {
-                    window.location.href = "uber://?action=setPickup&pickup=my_location";
-                } else {
-                    window.location.href = "bitaksi://";
-                }
-                // Fallback a web si no hay app
-                setTimeout(() => {
-                    if (!document.hidden) {
-                        window.open(service === 'Uber' ? "https://www.uber.com/tr" : "https://www.bitaksi.com", "_blank");
-                    }
-                }, 2500);
-            }, 1000);
-        };
+                if (!document.hidden) window.open(web, '_blank');
+            }, 2500);
+        }
 
-        let stream = null;
-        const openCamera = async () => {
+        // 5. CÁMARA & IA FAL (15 Fortunas)
+        let streamTrack = null;
+        async function launchCamera() {
             try {
-                stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-                document.getElementById('videoFeed').srcObject = stream;
-                document.getElementById('cameraModal').style.display = 'flex';
-            } catch (err) { alert("Kamera kapalı."); }
-        };
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+                streamTrack = stream;
+                document.getElementById('camera-feed').srcObject = stream;
+                document.getElementById('camera-ui').style.display = 'flex';
+            } catch (err) { alert("Lütfen kamera izni verin."); }
+        }
 
-        const closeCamera = () => { if(stream) stream.getTracks().forEach(t => t.stop()); document.getElementById('cameraModal').style.display = 'none'; };
+        function killCamera() {
+            if(streamTrack) streamTrack.getTracks().forEach(t => t.stop());
+            document.getElementById('camera-ui').style.display = 'none';
+        }
 
-        const takePhoto = () => {
+        function captureAndProcess() {
             document.body.style.filter = "brightness(2)";
-            setTimeout(() => { document.body.style.filter = "none"; closeCamera(); showFortune(); }, 100);
-        };
+            setTimeout(() => {
+                document.body.style.filter = "none";
+                killCamera();
+                showFortune();
+            }, 200);
+        }
 
-        const showFortune = () => {
-            const fortunes = ["Kısmetin kapıda! Çok yakında bir yolculuk görünüyor.", "Yüreğin ferahlıyor. Beklediğin haber yolda.", "Fincanında bir anahtar var. Yeni bir kapı açılıyor.", "Dost görünümlü birine dikkat et, şansın seni koruyor.", "Büyük bir kalabalığa gireceksin, yıldızın parlayacak.", "Parasal bir ferahlama var, destek alacaksın.", "Göz aydınlığı var! Sevdiğinden hediye alacaksın.", "Hanene ay doğuyor. Huzur geliyor.", "Yolun açık, engeller kalkıyor. Hedefine yakınsın.", "Fincanın dibinde balık var. Bereket demektir.", "İki vakte kadar bir görüşmen var, hayatın değişebilir.", "Bir dileğin var, sabret. Zamanı yaklaşıyor.", "Nazara gelmişsin ama dua seni koruyor.", "Kalbindeki o niyet gerçek oluyor.", "Eski bir dostun kapını çalacak."];
-            document.getElementById('fortuneText').innerText = fortunes[Math.floor(Math.random() * fortunes.length)];
-            document.getElementById('fortuneOverlay').style.display = 'flex';
-        };
+        function showFortune() {
+            const data = [
+                "Kısmetin kapıda! Çok yakında bir yolculuk görünüyor.",
+                "Yüreğin ferahlıyor. Beklediğin o güzel haber yolda.",
+                "Fincanında bir anahtar var. Yeni bir kapı senin için açılıyor.",
+                "Dost görünümlü birine dikkat et, yıldızın seni koruyor.",
+                "Büyük bir kalabalığa gireceksin, tüm gözler sende olacak.",
+                "Parasal bir ferahlama var, beklemediğin bir yerden destek alacaksın.",
+                "Göz aydınlığı var! Sevdiğin birinden sürpriz bir hediye alacaksın.",
+                "Hanene ay doğuyor. Huzur ve bereket seninle olacak.",
+                "Yolun açık, tüm engeller kalkıyor. Hedefine çok yakınsın.",
+                "Fincanın dibinde balık var. Bu senin için büyük bir bereket demektir.",
+                "İki vakte kadar önemli bir görüşmen var, hayatın değişebilir.",
+                "Bir dileğin var, sabret. Zamanı senin için yaklaşıyor.",
+                "Nazara gelmişsin ama duaların gücü seni koruyor.",
+                "Kalbindeki o niyet çok yakında gerçeğe dönüşüyor.",
+                "Eski bir dostun kapını çalacak, hasret gidereceksiniz."
+            ];
+            document.getElementById('fortuneBody').innerText = data[Math.floor(Math.random() * data.length)];
+            document.getElementById('fortune-overlay').style.display = 'flex';
+        }
 
-        const closeFortune = () => document.getElementById('fortuneOverlay').style.display = 'none';
-        const navTo = (q) => window.open(`https://www.google.com/maps/search/${encodeURIComponent(q)}`, '_blank');
-
-        const triggerExit = () => {
-            const e = document.getElementById('exitOverlay');
-            e.style.display = 'flex';
-            setTimeout(() => { e.style.opacity = '1'; setTimeout(() => { window.location.href = "about:blank"; }, 2500); }, 100);
-        };
-
-        window.addEventListener('load', init);
+        // 6. SALIDA ELEGANTE
+        function initExit() {
+            const overlay = document.getElementById('exit-overlay');
+            overlay.style.display = 'flex';
+            setTimeout(() => { 
+                overlay.style.opacity = '1'; 
+                setTimeout(() => window.location.href = "about:blank", 2500);
+            }, 100);
+        }
     </script>
 </body>
 </html>
