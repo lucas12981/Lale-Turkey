@@ -3,354 +3,460 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Lale Turkey - Elite Super App</title>
+    <title>Lale Turkey | Industrial & Lifestyle Elite App</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
         :root {
             --tr-red: #E30A17;
             --gold: #FFD700;
-            --dark-bg: #000000;
-            --glass: rgba(255, 255, 255, 0.08);
+            --gold-glow: rgba(255, 215, 0, 0.4);
+            --dark-bg: #050505;
+            --card-bg: rgba(20, 20, 20, 0.85);
             --glass-border: rgba(255, 255, 255, 0.12);
-            --shadow-red: rgba(227, 10, 23, 0.3);
+            --pharmacy: #2ecc71;
+            --font-main: 'Plus Jakarta Sans', sans-serif;
         }
 
-        /* RESET & BASE */
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+        /* --- BASE STYLES --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--font-main); -webkit-tap-highlight-color: transparent; }
         
-        html, body { 
-            height: 100vh; width: 100vw; 
+        body { 
             background-color: var(--dark-bg); 
             color: #ffffff; 
             overflow: hidden; 
+            height: 100vh; 
+            width: 100vw; 
             position: fixed; 
         }
 
-        /* --- CAPA CINEMÁTICA --- */
-        .video-background {
+        /* --- ANIMATED CINEMATIC BACKGROUND --- */
+        .hero-bg {
             position: fixed; inset: 0; z-index: -1;
-            background: #111;
+            background: #000;
         }
-        .video-background video {
+        .hero-bg video {
             width: 100%; height: 100%; object-fit: cover;
-            filter: brightness(0.3) saturate(1.1);
-            opacity: 0; transition: opacity 2s ease-in-out;
+            filter: brightness(0.35) contrast(1.1);
         }
-        .video-background.active video { opacity: 1; }
-        .vignette {
+        .hero-overlay {
             position: absolute; inset: 0;
-            background: radial-gradient(circle, transparent 20%, rgba(0,0,0,0.8) 100%);
-            z-index: 1;
+            background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.9) 100%);
         }
 
-        /* --- SPLASH SCREEN 3D --- */
-        #lale-loader {
-            position: fixed; inset: 0; background: #000; z-index: 10000;
+        /* --- ELITE LOADER 3D --- */
+        #lale-preloader {
+            position: fixed; inset: 0; background: #000; z-index: 99999;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            transition: all 0.9s cubic-bezier(0.77, 0, 0.175, 1);
         }
-        .tulip-container {
-            width: 80px; height: 120px; position: relative;
-            transform-style: preserve-3d; animation: tulipRotate 4s infinite linear;
+        .tulip-3d {
+            width: 70px; height: 100px; position: relative;
+            transform-style: preserve-3d; animation: tulipSpin 4s infinite linear;
         }
         .petal-3d {
-            position: absolute; width: 45px; height: 90px;
-            background: linear-gradient(to bottom, #ff4d4d, var(--tr-red));
-            border-radius: 50% 50% 20% 20%; transform-origin: bottom center;
-            box-shadow: 0 0 30px var(--shadow-red);
+            position: absolute; width: 40px; height: 80px;
+            background: linear-gradient(135deg, #ff4d4d, var(--tr-red));
+            border-radius: 50% 50% 15% 15%; transform-origin: bottom center;
+            box-shadow: 0 0 25px var(--tr-red);
         }
-        .p1 { transform: rotateY(0deg) rotateX(15deg); }
-        .p2 { transform: rotateY(120deg) rotateX(15deg); }
-        .p3 { transform: rotateY(240deg) rotateX(15deg); }
-        @keyframes tulipRotate { from { transform: rotateY(0deg); } to { transform: rotateY(360deg); } }
+        .p-1 { transform: rotateY(0deg) rotateX(15deg); }
+        .p-2 { transform: rotateY(120deg) rotateX(15deg); }
+        .p-3 { transform: rotateY(240deg) rotateX(15deg); }
+        @keyframes tulipSpin { from { transform: rotateY(0deg); } to { transform: rotateY(360deg); } }
 
-        /* --- ESTRUCTURA APP --- */
-        .app-container {
-            width: 100%; max-width: 480px; height: 100%;
+        /* --- APP CORE LAYOUT --- */
+        .app-wrapper {
+            width: 100%; max-width: 500px; height: 100%;
             margin: 0 auto; display: flex; flex-direction: column;
-            opacity: 0; transition: opacity 1s ease;
+            opacity: 0; transition: opacity 1.2s ease-in-out;
         }
-        .app-container.ready { opacity: 1; }
+        .app-wrapper.visible { opacity: 1; }
 
         header {
-            padding: 50px 25px 20px;
+            padding: 60px 25px 20px;
             display: flex; justify-content: space-between; align-items: center;
-            z-index: 100;
+            backdrop-filter: blur(10px); z-index: 100;
         }
-        .brand { font-size: 28px; font-weight: 900; letter-spacing: 2px; }
-
-        /* --- PERFIL PERSONALIZADO --- */
-        .profile-trigger {
-            width: 45px; height: 45px; border-radius: 50%;
-            border: 2px solid var(--gold); overflow: hidden;
-            background: var(--glass); cursor: pointer;
+        .logo-text { font-size: 24px; font-weight: 900; letter-spacing: 4px; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.3); }
+        
+        .profile-ring {
+            width: 50px; height: 50px; border-radius: 50%;
+            padding: 2px; background: linear-gradient(45deg, var(--gold), #fff);
+            box-shadow: 0 0 15px var(--gold-glow); cursor: pointer;
         }
-        #userImgDisplay { width: 100%; height: 100%; object-fit: cover; }
+        .profile-img { width: 100%; height: 100%; border-radius: 50%; border: 2px solid #000; object-fit: cover; }
 
-        /* --- CONTENIDO SCROLLABLE --- */
-        .main-scroll {
-            flex: 1; overflow-y: auto; padding: 0 20px 140px;
+        /* --- SCROLLABLE CONTENT --- */
+        .content-area {
+            flex: 1; overflow-y: auto; padding: 10px 20px 130px;
             scrollbar-width: none;
         }
-        .main-scroll::-webkit-scrollbar { display: none; }
+        .content-area::-webkit-scrollbar { display: none; }
 
-        .greet-box { margin-bottom: 25px; }
-        #dynamicGreeting { font-size: 22px; font-weight: 800; color: var(--gold); margin-bottom: 5px; }
-        #userNameHeader { font-size: 16px; opacity: 0.8; font-weight: 600; }
+        .welcome-block { margin-bottom: 25px; padding-left: 5px; }
+        .welcome-block h2 { font-size: 28px; font-weight: 800; color: var(--gold); }
+        .welcome-block p { font-size: 15px; font-weight: 500; opacity: 0.8; }
+
+        /* --- LIVE TICKER SYSTEM --- */
+        .news-ticker {
+            background: rgba(227, 10, 23, 0.15); border: 1px solid var(--tr-red);
+            border-radius: 20px; padding: 12px 18px; margin-top: 20px;
+            display: flex; align-items: center; gap: 12px; overflow: hidden;
+        }
+        .live-dot { width: 8px; height: 8px; background: #00ff00; border-radius: 50%; animation: pulse 1.5s infinite; }
+        .ticker-text-scroll { font-size: 11px; font-weight: 700; white-space: nowrap; animation: marquee 20s linear infinite; }
+        @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-180%); } }
+        @keyframes pulse { 0% { opacity: 1; box-shadow: 0 0 0 0 rgba(0,255,0,0.7); } 70% { opacity: 0.5; box-shadow: 0 0 0 10px rgba(0,255,0,0); } 100% { opacity: 1; } }
+
+        /* --- CARDS & UI ELEMENTS --- */
+        .section-box {
+            background: var(--card-bg); border: 1px solid var(--glass-border);
+            border-radius: 32px; padding: 24px; margin-bottom: 20px;
+            backdrop-filter: blur(25px); position: relative; overflow: hidden;
+        }
+        .section-box::before {
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .box-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .box-header h3 { font-size: 15px; font-weight: 800; color: var(--gold); letter-spacing: 1px; display: flex; align-items: center; gap: 10px; }
         
-        .ticker {
-            background: rgba(227, 10, 23, 0.12); border: 1px solid var(--tr-red);
-            border-radius: 18px; padding: 12px 18px; display: flex; align-items: center; gap: 12px;
-            margin-top: 15px; backdrop-filter: blur(10px);
-        }
-        .live-pulse { width: 10px; height: 10px; background: #00ff00; border-radius: 50%; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
-
-        /* CARDS */
-        .section-card {
-            background: rgba(0,0,0,0.6); border: 1px solid var(--glass-border);
-            border-radius: 30px; padding: 25px; margin-bottom: 20px;
-            backdrop-filter: blur(20px);
-        }
-        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
-        .section-header h3 { font-size: 16px; font-weight: 700; color: var(--gold); display: flex; align-items: center; gap: 10px; }
-
-        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
         
-        .action-button {
-            background: rgba(255, 255, 255, 0.04); border: 1px solid var(--glass-border);
-            border-radius: 20px; padding: 18px 10px; text-align: center;
-            transition: 0.3s; cursor: pointer;
+        .btn-premium {
+            background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border);
+            border-radius: 22px; padding: 22px 10px; text-align: center;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer;
         }
-        .action-button:active { transform: scale(0.95); background: var(--tr-red); }
-        .action-button i { font-size: 24px; color: var(--gold); margin-bottom: 8px; display: block; }
-        .action-button p { font-size: 10px; font-weight: 800; text-transform: uppercase; }
+        .btn-premium:active { transform: scale(0.92); background: var(--tr-red); border-color: #fff; }
+        .btn-premium i { font-size: 26px; color: var(--gold); margin-bottom: 10px; display: block; filter: drop-shadow(0 0 5px var(--gold-glow)); }
+        .btn-premium span { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
 
-        /* --- MODALES --- */
-        .modal-overlay {
+        /* --- PHARMACY SPECIAL UI --- */
+        .pharmacy-active { border: 1px solid var(--pharmacy) !important; box-shadow: 0 0 20px rgba(46, 204, 113, 0.2); }
+        .pharmacy-btn { background: var(--pharmacy) !important; color: #fff; font-weight: 900; border-radius: 18px; padding: 18px; border: none; width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px; transition: 0.3s; }
+        .pharmacy-btn:active { transform: scale(0.95); filter: brightness(1.2); }
+
+        /* --- MODALS --- */
+        .glass-modal {
             position: fixed; inset: 0; background: rgba(0,0,0,0.95);
-            z-index: 12000; display: none; flex-direction: column;
-            justify-content: center; align-items: center; padding: 30px;
-            backdrop-filter: blur(15px);
+            z-index: 999999; display: none; justify-content: center; align-items: center;
+            padding: 30px; backdrop-filter: blur(15px);
+        }
+        .modal-body {
+            background: #111; border: 1px solid var(--gold);
+            padding: 35px; border-radius: 40px; width: 100%; max-width: 380px; text-align: center;
+            box-shadow: 0 0 40px rgba(0,0,0,1);
+        }
+        .modal-body input {
+            width: 100%; background: #1a1a1a; border: 1px solid var(--glass-border);
+            padding: 16px; border-radius: 15px; color: #fff; margin-bottom: 15px; font-size: 14px;
+        }
+        .btn-confirm {
+            width: 100%; padding: 18px; background: var(--gold); color: #000;
+            border: none; border-radius: 15px; font-weight: 900; cursor: pointer; font-size: 14px;
         }
 
-        .profile-form {
-            background: #111; border: 1px solid var(--gold); padding: 30px;
-            border-radius: 35px; width: 100%; max-width: 350px; text-align: center;
-        }
-        .profile-form input {
-            width: 100%; background: #222; border: 1px solid var(--glass-border);
-            padding: 15px; border-radius: 12px; color: #fff; margin-bottom: 10px;
-        }
-        .save-btn {
-            width: 100%; padding: 15px; background: var(--gold); color: #000;
-            border: none; border-radius: 12px; font-weight: 900; cursor: pointer;
-        }
-
-        /* NAVEGACIÓN */
-        nav {
+        /* --- NAVIGATION BAR --- */
+        .nav-dock {
             position: fixed; bottom: 30px; left: 20px; right: 20px;
-            height: 80px; background: rgba(0, 0, 0, 0.85); border-radius: 28px;
+            height: 85px; background: rgba(0,0,0,0.9); border-radius: 30px;
             border: 1px solid var(--glass-border); display: flex; justify-content: space-around;
-            align-items: center; backdrop-filter: blur(30px); z-index: 1000;
+            align-items: center; backdrop-filter: blur(30px); z-index: 10000;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
         }
-        .nav-item { color: rgba(255,255,255,0.3); display: flex; flex-direction: column; align-items: center; border: none; background: none; }
-        .nav-item.active { color: var(--tr-red); }
-        .nav-item i { font-size: 22px; }
-        .nav-item span { font-size: 9px; font-weight: 800; margin-top: 5px; }
+        .dock-item {
+            background: none; border: none; color: rgba(255,255,255,0.4);
+            display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer;
+            transition: 0.3s;
+        }
+        .dock-item.active { color: var(--tr-red); }
+        .dock-item i { font-size: 22px; }
+        .dock-item span { font-size: 10px; font-weight: 800; }
 
-        #camera-ui { position: fixed; inset: 0; z-index: 13000; display: none; background: #000; flex-direction: column; }
-        #camera-feed { width: 100%; height: 100%; object-fit: cover; }
+        /* --- CAMERA LAYER --- */
+        #cam-overlay { position: fixed; inset: 0; z-index: 2000000; display: none; background: #000; }
+        #video-preview { width: 100%; height: 100%; object-fit: cover; }
+        .cam-shutter {
+            position: absolute; bottom: 50px; left: 50%; transform: translateX(-50%);
+            width: 80px; height: 80px; border: 6px solid #fff; border-radius: 50%;
+            background: transparent;
+        }
     </style>
 </head>
 <body>
 
-    <div id="lale-loader">
-        <div class="tulip-container">
-            <div class="petal-3d p1"></div>
-            <div class="petal-3d p2"></div>
-            <div class="petal-3d p3"></div>
+    <div id="lale-preloader">
+        <div class="tulip-3d">
+            <div class="petal-3d p-1"></div>
+            <div class="petal-3d p-2"></div>
+            <div class="petal-3d p-3"></div>
         </div>
-        <h1 style="margin-top: 40px; letter-spacing: 5px; font-size: 20px;">LALE TURKEY</h1>
+        <h2 style="margin-top: 40px; letter-spacing: 5px; font-size: 18px; font-weight: 900;">LALE TURKEY</h2>
+        <p style="font-size: 10px; opacity: 0.5; margin-top: 10px;">PREMIUM MOBILE EXPERIENCE</p>
     </div>
 
-    <div class="video-background" id="bgLayer">
-        <video id="v-player" autoplay muted loop playsinline oncanplay="this.parentElement.classList.add('active')">
+    <div class="hero-bg">
+        <video autoplay muted loop playsinline>
             <source src="https://assets.mixkit.co/videos/preview/mixkit-istanbul-at-sunset-40230-large.mp4" type="video/mp4">
         </video>
-        <div class="vignette"></div>
+        <div class="hero-overlay"></div>
     </div>
 
-    <div class="app-container" id="appMain">
+    <div class="app-wrapper" id="laleApp">
         <header>
-            <div class="brand">LALE</div>
-            <div class="profile-trigger" onclick="openProfileModal()">
-                <img id="userImgDisplay" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
+            <div class="logo-text">LALE</div>
+            <div class="profile-ring" onclick="openModal('profileModal')">
+                <img id="avatarImg" class="profile-img" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
             </div>
         </header>
 
-        <main class="main-scroll">
-            <div class="greet-box">
-                <h2 id="dynamicGreeting">Günaydın</h2>
-                <p id="userNameHeader">Hoş Geldiniz, Misafir</p>
-                <div class="ticker">
-                    <div class="live-pulse"></div>
-                    <p id="tickerContent" style="font-size: 11px; font-weight: 700;">Süper Lig heyecanı Lale Arena'da!</p>
+        <main class="content-area">
+            <div class="welcome-block">
+                <h2 id="helloTitle">Merhaba</h2>
+                <p id="userNameDisplay">Lale Elite Üyesi</p>
+                
+                <div class="news-ticker">
+                    <div class="live-dot"></div>
+                    <div class="ticker-text-scroll" id="liveTicker">
+                        Süper Lig: Derbi heyecanı Lale Arena'da canlı skorlarla! • Sanayi: Türkiye makine ihracatında yeni rekor! • Lale VIP: İstanbul Card yüklemelerinde özel fırsatlar...
+                    </div>
                 </div>
             </div>
 
-            <section class="section-card" style="border: 1px solid var(--gold);">
-                <div class="section-header">
-                    <h3><i class="fa-solid fa-magic-wand-sparkles"></i> Yapay Zeka Falı</h3>
+            <section class="section-box pharmacy-active">
+                <div class="box-header">
+                    <h3><i class="fa-solid fa-house-medical"></i> Akıllı Eczane</h3>
+                    <span style="font-size: 9px; background: var(--pharmacy); padding: 4px 8px; border-radius: 20px; font-weight: 800;">7/24 AKTİF</span>
                 </div>
-                <button onclick="launchCamera()" style="width: 100%; padding: 18px; background: var(--gold); border: none; border-radius: 15px; font-weight: 900; cursor: pointer;">KAHVE FALINA BAK</button>
+                <p style="font-size: 12px; opacity: 0.8; margin-bottom: 20px; line-height: 1.4;">
+                    Konumunuzu kullanarak şu an açık olan en yakın <b>Nöbetçi Eczaneyi</b> anında bulun.
+                </p>
+                <button class="pharmacy-btn" onclick="triggerPharmacySearch()">
+                    <i class="fa-solid fa-map-location-dot"></i> NÖBETÇİ ECZANE BUL
+                </button>
             </section>
 
-            <section class="section-card" style="border: 1px solid #1db954;">
-                <div class="section-header">
-                    <h3><i class="fa-solid fa-futbol"></i> Lale Arena - Taraftar</h3>
-                    <span style="font-size: 9px; font-weight: 800; color: #1db954;">CANLI SKOR</span>
+            <section class="section-box">
+                <div class="box-header">
+                    <h3><i class="fa-solid fa-futbol"></i> Lale Arena</h3>
+                    <i class="fa-solid fa-ranking-star" style="color: var(--gold);"></i>
                 </div>
-                <div class="btn-grid">
-                    <div class="action-button" onclick="window.open('https://www.google.com/maps/search/Nevizade+Sokak', '_blank')" style="border-bottom: 3px solid #A32638;">
+                <div class="action-grid">
+                    <div class="btn-premium" onclick="openMap('GS')">
                         <i class="fa-solid fa-location-dot" style="color: #FFB500;"></i>
-                        <p style="color: #FFB500;">GS: Nevizade</p>
+                        <span style="color: #FFB500;">GS: Nevizade</span>
                     </div>
-                    <div class="action-button" onclick="window.open('https://www.google.com/maps/search/Bagdat+Caddesi', '_blank')" style="border-bottom: 3px solid #002347;">
+                    <div class="btn-premium" onclick="openMap('FB')">
                         <i class="fa-solid fa-location-dot" style="color: #FBED21;"></i>
-                        <p style="color: #FBED21;">FB: Bağdat Cad</p>
+                        <span style="color: #FBED21;">FB: Bağdat Cad.</span>
                     </div>
-                    <div class="action-button" onclick="window.open('https://www.google.com/maps/search/Besiktas+Carsi', '_blank')" style="border-bottom: 3px solid #fff;">
+                    <div class="btn-premium" onclick="openMap('BJK')">
                         <i class="fa-solid fa-location-dot" style="color: #fff;"></i>
-                        <p>BJK: Çarşı</p>
+                        <span>BJK: Çarşı</span>
                     </div>
-                    <div class="action-button" onclick="window.open('https://m.mackolik.com/canli-sonuclar', '_blank')" style="background: rgba(29, 185, 84, 0.2);">
+                    <div class="btn-premium" onclick="window.open('https://m.mackolik.com/canli-sonuclar', '_blank')">
                         <i class="fa-solid fa-star" style="color: #1db954;"></i>
-                        <p style="color: #1db954;">CANLI SKOR</p>
+                        <span style="color: #1db954;">CANLI SKOR</span>
                     </div>
                 </div>
             </section>
 
-            <section class="section-card">
-                <div class="section-header"><h3><i class="fa-solid fa-wallet"></i> Lale VIP Pay</h3></div>
-                <div class="btn-grid">
-                    <div class="action-button" onclick="window.location.href='papara://'"><i class="fa-solid fa-qrcode"></i><p>Papara</p></div>
-                    <div class="action-button" onclick="window.location.href='istanbulcard://'"><i class="fa-solid fa-credit-card"></i><p>Istanbul Card</p></div>
+            <section class="section-box" style="border-color: var(--gold);">
+                <div class="box-header">
+                    <h3><i class="fa-solid fa-wand-magic-sparkles"></i> Yapay Zeka Falı</h3>
+                </div>
+                <button class="btn-confirm" onclick="initFortuneCamera()" style="background: linear-gradient(45deg, var(--gold), #fff); box-shadow: 0 5px 20px var(--gold-glow);">
+                    FİNCAN RESMİ ÇEK
+                </button>
+            </section>
+
+            <section class="section-box">
+                <div class="box-header"><h3><i class="fa-solid fa-wallet"></i> Lale VIP Pay</h3></div>
+                <div class="action-grid">
+                    <div class="btn-premium" onclick="deepLink('papara://')"><i class="fa-solid fa-qrcode"></i><span>PAPARA</span></div>
+                    <div class="btn-premium" onclick="deepLink('istanbulcard://')"><i class="fa-solid fa-credit-card"></i><span>ISTANBUL CARD</span></div>
                 </div>
             </section>
 
-            <section class="section-card">
-                <div class="section-header"><h3><i class="fa-solid fa-utensils"></i> Lale Yemek</h3></div>
-                <div class="btn-grid">
-                    <div class="action-button" onclick="window.location.href='getir://'"><i class="fa-solid fa-bag-shopping"></i><p>Getir</p></div>
-                    <div class="action-button" onclick="window.location.href='yemeksepeti://'"><i class="fa-solid fa-motorcycle"></i><p>Yemeksepeti</p></div>
+            <section class="section-box">
+                <div class="box-header"><h3><i class="fa-solid fa-utensils"></i> Lale Yemek</h3></div>
+                <div class="action-grid">
+                    <div class="btn-premium" onclick="deepLink('getir://')"><i class="fa-solid fa-bag-shopping"></i><span>GETİR</span></div>
+                    <div class="btn-premium" onclick="deepLink('yemeksepeti://')"><i class="fa-solid fa-motorcycle"></i><span>YEMEKSEPETİ</span></div>
                 </div>
             </section>
 
-            <button onclick="location.reload()" style="width: 100%; padding: 20px; background: none; border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; color: rgba(255,255,255,0.3); font-size: 11px; font-weight: 800; letter-spacing: 2px;">GÜVENLİ ÇIKIŞ</button>
+            <p style="text-align: center; font-size: 10px; opacity: 0.3; padding-bottom: 20px;">LALE TURKEY V4.0 - PREMIUM EDITION</p>
         </main>
 
-        <nav>
-            <button class="nav-item active"><i class="fa-solid fa-house"></i><span>ANA SAYFA</span></button>
-            <button class="nav-item" onclick="openProfileModal()"><i class="fa-solid fa-user"></i><span>PROFİL</span></button>
-            <button class="nav-item" onclick="window.location.href='https://wa.me/5492246496971'"><i class="fa-solid fa-headset"></i><span>DESTEK</span></button>
+        <nav class="nav-dock">
+            <button class="dock-item active"><i class="fa-solid fa-house-user"></i><span>ANA SAYFA</span></button>
+            <button class="dock-item" onclick="openModal('profileModal')"><i class="fa-solid fa-circle-user"></i><span>PROFİL</span></button>
+            <button class="dock-item" onclick="triggerPharmacySearch()"><i class="fa-solid fa-briefcase-medical"></i><span>ECZANE</span></button>
+            <button class="dock-item" onclick="window.location.href='mailto:support@laleturkey.com'"><i class="fa-solid fa-envelope-open-text"></i><span>İLETİŞİM</span></button>
         </nav>
     </div>
 
-    <div id="profileModal" class="modal-overlay">
-        <div class="profile-form">
-            <h2 style="color: var(--gold); margin-bottom: 20px;">PROFİLİNİ DÜZENLE</h2>
-            <input type="text" id="inputName" placeholder="Adınız">
-            <input type="text" id="inputSurname" placeholder="Soyadınız">
-            <p style="font-size: 10px; margin-bottom: 10px; opacity: 0.6;">Profil Fotoğrafı Seç:</p>
-            <input type="file" id="inputFile" accept="image/*" style="font-size: 10px;">
-            <button class="save-btn" onclick="saveProfile()">KAYDET</button>
-            <button onclick="closeProfileModal()" style="background:none; border:none; color:#fff; margin-top:15px; font-size:12px; cursor:pointer;">Kapat</button>
+    <div id="profileModal" class="glass-modal">
+        <div class="modal-body">
+            <h2 style="color: var(--gold); margin-bottom: 10px;">Profil Ayarları</h2>
+            <p style="font-size: 12px; opacity: 0.6; margin-bottom: 25px;">Bilgilerini güncelle ve deneyimi özelleştir.</p>
+            <input type="text" id="nameIn" placeholder="Adınız">
+            <input type="text" id="surnameIn" placeholder="Soyadınız">
+            <div style="text-align: left; margin-bottom: 15px;">
+                <label style="font-size: 11px; color: var(--gold); font-weight: 800;">PROFİL FOTOĞRAFI:</label>
+                <input type="file" id="photoIn" accept="image/*" style="margin-top: 5px; border: none; padding: 0;">
+            </div>
+            <button class="btn-confirm" onclick="saveUserData()">GÜNCELLE</button>
+            <p style="margin-top: 20px; font-size: 12px; cursor: pointer;" onclick="closeModal('profileModal')">Vazgeç</p>
         </div>
     </div>
 
-    <div id="fortune-overlay" class="modal-overlay">
-        <div class="profile-form">
-            <i class="fa-solid fa-star-and-crescent" style="color: var(--gold); font-size: 40px; margin-bottom: 20px;"></i>
-            <p id="fortuneBody" style="font-weight: 600; line-height: 1.6;"></p>
-            <button class="save-btn" style="margin-top: 20px;" onclick="document.getElementById('fortune-overlay').style.display='none'">TAMAM</button>
+    <div id="fortuneModal" class="glass-modal">
+        <div class="modal-body">
+            <i class="fa-solid fa-sun" style="font-size: 50px; color: var(--gold); margin-bottom: 20px;"></i>
+            <h3 id="fortuneTitle" style="color: var(--gold); margin-bottom: 15px;">FALINIZ ÇIKTI</h3>
+            <p id="fortuneResult" style="font-size: 14px; line-height: 1.6; font-weight: 500;"></p>
+            <button class="btn-confirm" style="margin-top: 25px;" onclick="closeModal('fortuneModal')">TAMAM</button>
         </div>
     </div>
 
-    <div id="camera-ui">
-        <video id="camera-feed" autoplay playsinline></video>
-        <div style="position: absolute; bottom: 50px; width: 100%; display: flex; justify-content: center;">
-            <div onclick="capturePhoto()" style="width: 80px; height: 80px; border: 5px solid #fff; border-radius: 50%;"></div>
-        </div>
+    <div id="cam-overlay">
+        <video id="video-preview" autoplay playsinline></video>
+        <div class="cam-shutter" onclick="captureFortune()"></div>
+        <button onclick="stopCamera()" style="position: absolute; top: 40px; right: 20px; background: none; border: none; color: #fff; font-size: 30px;"><i class="fa-solid fa-xmark"></i></button>
     </div>
 
     <script>
-        // CARGA INICIAL
+        // APP INITIALIZATION
         document.addEventListener('DOMContentLoaded', () => {
             updateGreeting();
             loadProfile();
+            startTickerLoop();
+            
             setTimeout(() => {
-                document.getElementById('lale-loader').style.display = 'none';
-                document.getElementById('appMain').classList.add('ready');
+                document.getElementById('lale-preloader').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('lale-preloader').style.display = 'none';
+                    document.getElementById('laleApp').classList.add('visible');
+                }, 1000);
             }, 3000);
         });
 
         function updateGreeting() {
-            const hour = new Date().getHours();
-            let g = "İyi Geceler";
-            if(hour < 12) g = "Günaydın";
-            else if(hour < 18) g = "Tünaydın";
-            else if(hour < 23) g = "İyi Akşamlar";
-            document.getElementById('dynamicGreeting').innerText = g;
+            const h = new Date().getHours();
+            let g = (h < 12) ? "Günaydın" : (h < 18) ? "Tünaydın" : "İyi Akşamlar";
+            document.getElementById('helloTitle').innerText = g;
         }
 
-        // PERFIL
-        function openProfileModal() { document.getElementById('profileModal').style.display = 'flex'; }
-        function closeProfileModal() { document.getElementById('profileModal').style.display = 'none'; }
+        // SMART PHARMACY LOGIC
+        function triggerPharmacySearch() {
+            // URL inteligente para buscar farmacias de turno en Turquía según GPS
+            window.open("https://www.google.com/maps/search/nöbetçi+ezcane+açık", '_blank');
+        }
 
-        function saveProfile() {
-            const name = document.getElementById('inputName').value;
-            const surname = document.getElementById('inputSurname').value;
-            const file = document.getElementById('inputFile').files[0];
+        // PROFILE ENGINE
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        function saveUserData() {
+            const name = document.getElementById('nameIn').value;
+            const sur = document.getElementById('surnameIn').value;
+            const photo = document.getElementById('photoIn').files[0];
 
             if(name) {
-                localStorage.setItem('lale_name', name + " " + (surname || ""));
-                document.getElementById('userNameHeader').innerText = "Hoş Geldiniz, " + name;
+                const full = name + " " + sur;
+                localStorage.setItem('lale_name', full);
+                document.getElementById('userNameDisplay').innerText = "Hoş Geldiniz, " + full;
             }
 
-            if(file) {
+            if(photo) {
                 const reader = new FileReader();
                 reader.onload = (e) => {
-                    localStorage.setItem('lale_img', e.target.result);
-                    document.getElementById('userImgDisplay').src = e.target.result;
+                    localStorage.setItem('lale_pic', e.target.result);
+                    document.getElementById('avatarImg').src = e.target.result;
                 };
-                reader.readAsDataURL(file);
+                reader.readAsDataURL(photo);
             }
-            closeProfileModal();
+            closeModal('profileModal');
         }
 
         function loadProfile() {
-            const name = localStorage.getItem('lale_name');
-            const img = localStorage.getItem('lale_img');
-            if(name) document.getElementById('userNameHeader').innerText = "Hoş Geldiniz, " + name;
-            if(img) document.getElementById('userImgDisplay').src = img;
+            const n = localStorage.getItem('lale_name');
+            const p = localStorage.getItem('lale_pic');
+            if(n) document.getElementById('userNameDisplay').innerText = "Hoş Geldiniz, " + n;
+            if(p) document.getElementById('avatarImg').src = p;
         }
 
-        // FAL
-        async function launchCamera() {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-            document.getElementById('camera-feed').srcObject = stream;
-            document.getElementById('camera-ui').style.display = 'flex';
+        // FOOTBALL MAPS
+        function openMap(team) {
+            const coords = {
+                'GS': 'https://www.google.com/maps/search/Nevizade+Sokak',
+                'FB': 'https://www.google.com/maps/search/Bağdat+Caddesi',
+                'BJK': 'https://www.google.com/maps/search/Beşiktaş+Çarşı'
+            };
+            window.open(coords[team], '_blank');
         }
 
-        function capturePhoto() {
-            document.getElementById('camera-ui').style.display = 'none';
-            const fortunes = ["Kısmetin çok açık!", "Yüreğin ferahlıyor.", "Yeni bir kapı açılıyor.", "Büyük bir bereket yolda."];
-            document.getElementById('fortuneBody').innerText = fortunes[Math.floor(Math.random()*fortunes.length)];
-            document.getElementById('fortune-overlay').style.display = 'flex';
+        // DEEP LINKING
+        function deepLink(url) {
+            window.location.href = url;
+            setTimeout(() => {
+                // Si después de 2 segundos no abre la app, avisar o abrir web
+                console.log("App link triggered");
+            }, 2000);
+        }
+
+        // AI FORTUNE (FAL) SYSTEM
+        async function initFortuneCamera() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+                document.getElementById('video-preview').srcObject = stream;
+                document.getElementById('cam-overlay').style.display = 'block';
+            } catch (err) {
+                alert("Kamera izni gerekiyor.");
+            }
+        }
+
+        function stopCamera() {
+            const stream = document.getElementById('video-preview').srcObject;
+            if(stream) stream.getTracks().forEach(t => t.stop());
+            document.getElementById('cam-overlay').style.display = 'none';
+        }
+
+        function captureFortune() {
+            stopCamera();
+            const results = [
+                "Tabağında belirten yollar, iş hayatında büyük bir yükselişin habercisi. Makine gibi tıkır tıkır işleyen bir döneme giriyorsun.",
+                "Yüreğin bir lale gibi ferahlıyor. Beklediğin o önemli telefon bugün gelebilir, hazırlıklı ol.",
+                "Hanene büyük bir bereket giriyor. Yatırımların meyvesini verme zamanı geldi.",
+                "Kısmetin iki vakte kadar açılıyor. Yeni bir ortaklık veya proje kapında.",
+                "Bir dostundan alacağın destekle kafandaki tüm soru işaretleri silinecek.",
+                "Göz aydınlığı var! Uzun zamandır çözülmeyen bir mesele bugün çözüme kavuşuyor."
+            ];
+            document.getElementById('fortuneResult').innerText = results[Math.floor(Math.random()*results.length)];
+            openModal('fortuneModal');
+        }
+
+        // DYNAMIC TICKER NEWS
+        function startTickerLoop() {
+            const news = [
+                "Sanayi: Türkiye makine ihracatında Mart ayında %12 artış kaydetti.",
+                "Süper Lig: Hafta sonu oynanacak derbi biletleri tükendi!",
+                "Lale Pay: İstanbul Card yüklemelerinde Papara kullanıcılarına özel iade.",
+                "Hava Durumu: İstanbul'da bahar havası devam ediyor, hafta sonu güneşli.",
+                "Ekonomi: Yeni teşvik paketleri sanayici için yolda."
+            ];
+            let i = 0;
+            setInterval(() => {
+                document.getElementById('liveTicker').innerText = news[i];
+                i = (i + 1) % news.length;
+            }, 10000);
         }
     </script>
 </body>
