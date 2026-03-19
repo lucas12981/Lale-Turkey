@@ -132,6 +132,13 @@
         .card-pay { border: 1px solid rgba(255, 215, 0, 0.25); }
         .card-yemek { border: 1px solid rgba(227, 10, 23, 0.25); }
 
+        /* SECCIÓN FÚTBOL (LALE ARENA) */
+        .card-arena { border: 1px solid #1db954; }
+        .football-widget {
+            width: 100%; border-radius: 20px; overflow: hidden;
+            background: rgba(255,255,255,0.02); min-height: 300px;
+        }
+
         .balance-display {
             background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
             border-radius: 20px; padding: 20px; text-align: center; margin-bottom: 15px;
@@ -272,6 +279,17 @@
                 </div>
             </section>
 
+            <section class="section-card card-arena">
+                <div class="section-header">
+                    <h3><i class="fa-solid fa-futbol"></i> Lale Arena - Süper Lig</h3>
+                    <span style="font-size: 9px; font-weight: 800; background: #1db954; color: #fff; padding: 3px 8px; border-radius: 10px;">CANLI</span>
+                </div>
+                <div class="football-widget">
+                    <div id="scoreaxis-widget-36d93" data-is-v2="true" data-widget="football-standings" data-league="691" data-v2-theme="dark" data-v2-background-color="transparent" data-v2-font-color="#ffffff"></div>
+                    <script>(function(d, s, id) { var js, fjs = d.getElementsByTagName(s)[0]; if (d.getElementById(id)) return; js = d.createElement(s); js.id = id; js.src = 'https://www.scoreaxis.com/widget/developers.js'; fjs.parentNode.insertBefore(js, fjs); }(document, 'script', 'scoreaxis-widget-js'));</script>
+                </div>
+            </section>
+
             <button onclick="initExit()" style="width: 100%; padding: 20px; background: none; border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; color: rgba(255,255,255,0.3); font-size: 11px; font-weight: 800; letter-spacing: 2px;">GÜVENLİ ÇIKIŞ</button>
         </main>
 
@@ -327,10 +345,10 @@
         function startTickerCycle() {
             const feed = [
                 "Boğaz Köprüsü: Trafik akıcı.",
+                "Süper Lig: Galatasaray maç saati yaklaşıyor.",
                 "Yemeksepeti: %30 İndirim Fırsatı!",
-                "Getir: Teslimat süresi 10 dk.",
-                "Istanbul Kart: Bakiyeniz güvende.",
-                "Lale VIP: Özel araçlar kapınızda."
+                "Fenerbahçe: Antrenman notları Lale Arena'da.",
+                "Beşiktaş: Derbi heyecanı başladı!"
             ];
             let idx = 0;
             setInterval(() => {
