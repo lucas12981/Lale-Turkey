@@ -50,6 +50,7 @@
         #lale-preloader {
             position: fixed; inset: 0; background: #000; z-index: 99999;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: opacity 1s ease;
         }
         .tulip-3d {
             width: 70px; height: 100px; position: relative;
@@ -106,8 +107,7 @@
             display: flex; align-items: center; gap: 12px; overflow: hidden;
         }
         .live-dot { width: 8px; height: 8px; background: #00ff00; border-radius: 50%; animation: pulse 1.5s infinite; }
-        .ticker-text-scroll { font-size: 11px; font-weight: 700; white-space: nowrap; animation: marquee 20s linear infinite; }
-        @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-180%); } }
+        .ticker-text-scroll { font-size: 11px; font-weight: 700; white-space: nowrap; transition: 0.5s ease-in-out; }
         @keyframes pulse { 0% { opacity: 1; box-shadow: 0 0 0 0 rgba(0,255,0,0.7); } 70% { opacity: 0.5; box-shadow: 0 0 0 10px rgba(0,255,0,0); } 100% { opacity: 1; } }
 
         /* --- CARDS & UI ELEMENTS --- */
@@ -278,16 +278,24 @@
             <section class="section-box">
                 <div class="box-header"><h3><i class="fa-solid fa-wallet"></i> Lale VIP Pay</h3></div>
                 <div class="action-grid">
-                    <div class="btn-premium" onclick="deepLink('papara://')"><i class="fa-solid fa-qrcode"></i><span>PAPARA</span></div>
-                    <div class="btn-premium" onclick="deepLink('istanbulcard://')"><i class="fa-solid fa-credit-card"></i><span>ISTANBUL CARD</span></div>
+                    <div class="btn-premium" onclick="smartDeepLink('papara://', 'https://www.papara.com')">
+                        <i class="fa-solid fa-qrcode"></i><span>PAPARA</span>
+                    </div>
+                    <div class="btn-premium" onclick="smartDeepLink('istanbulcard://', 'https://www.istanbulkart.istanbul')">
+                        <i class="fa-solid fa-credit-card"></i><span>ISTANBUL CARD</span>
+                    </div>
                 </div>
             </section>
 
             <section class="section-box">
                 <div class="box-header"><h3><i class="fa-solid fa-utensils"></i> Lale Yemek</h3></div>
                 <div class="action-grid">
-                    <div class="btn-premium" onclick="deepLink('getir://')"><i class="fa-solid fa-bag-shopping"></i><span>GETİR</span></div>
-                    <div class="btn-premium" onclick="deepLink('yemeksepeti://')"><i class="fa-solid fa-motorcycle"></i><span>YEMEKSEPETİ</span></div>
+                    <div class="btn-premium" onclick="smartDeepLink('getir://', 'https://getir.com')">
+                        <i class="fa-solid fa-bag-shopping"></i><span>GETİR</span>
+                    </div>
+                    <div class="btn-premium" onclick="smartDeepLink('yemeksepeti://', 'https://www.yemeksepeti.com')">
+                        <i class="fa-solid fa-motorcycle"></i><span>YEMEKSEPETİ</span>
+                    </div>
                 </div>
             </section>
 
@@ -356,8 +364,7 @@
 
         // SMART PHARMACY LOGIC
         function triggerPharmacySearch() {
-            // URL inteligente para buscar farmacias de turno en Turquía según GPS
-            window.open("https://www.google.com/maps/search/nöbetçi+ezcane+açık", '_blank');
+            window.open("https://www.google.com/maps/search/n%C3%B6bet%C3%A7i+eczane", '_blank');
         }
 
         // PROFILE ENGINE
@@ -395,20 +402,24 @@
 
         // FOOTBALL MAPS
         function openMap(team) {
-            const coords = {
-                'GS': 'https://www.google.com/maps/search/Nevizade+Sokak',
-                'FB': 'https://www.google.com/maps/search/Bağdat+Caddesi',
-                'BJK': 'https://www.google.com/maps/search/Beşiktaş+Çarşı'
+            const locations = {
+                'GS': 'https://www.google.com/maps/search/Galatasaray+Nevizade',
+                'FB': 'https://www.google.com/maps/search/Fenerbah%C3%A7e+Ba%C4%9Fdat+Caddesi',
+                'BJK': 'https://www.google.com/maps/search/Be%C5%9Fikta%C5%9F+%C3%87ar%C5%9F%C4%B1'
             };
-            window.open(coords[team], '_blank');
+            window.open(locations[team], '_blank');
         }
 
-        // DEEP LINKING
-        function deepLink(url) {
-            window.location.href = url;
+        // SMART DEEP LINKING (FUNCIONA EN MÓVIL Y PC)
+        function smartDeepLink(appUri, webUrl) {
+            // Intentar abrir la app
+            window.location.href = appUri;
+            
+            // Si el usuario sigue en la página después de 2 segundos, abrir la web
             setTimeout(() => {
-                // Si después de 2 segundos no abre la app, avisar o abrir web
-                console.log("App link triggered");
+                if (!document.hidden) {
+                    window.open(webUrl, '_blank');
+                }
             }, 2000);
         }
 
