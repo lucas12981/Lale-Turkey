@@ -186,6 +186,33 @@
             width: 80px; height: 80px; border: 6px solid #fff; border-radius: 50%;
             background: transparent;
         }
+
+        /* --- LALE VIBES (SHORTS) UI --- */
+        #vibe-overlay {
+            position: fixed; inset: 0; background: #000; z-index: 2000001;
+            display: none; flex-direction: column;
+        }
+        .vibe-video-container { width: 100%; height: 100%; position: relative; overflow: hidden; }
+        .vibe-video { width: 100%; height: 100%; object-fit: cover; }
+        .vibe-ui {
+            position: absolute; inset: 0; padding: 40px 20px;
+            display: flex; flex-direction: column; justify-content: space-between;
+            background: linear-gradient(0deg, rgba(0,0,0,0.7) 0%, transparent 40%, transparent 60%, rgba(0,0,0,0.4) 100%);
+            pointer-events: none;
+        }
+        .vibe-header { display: flex; justify-content: space-between; align-items: center; pointer-events: auto; }
+        .vibe-badge { background: var(--tr-red); color: #fff; padding: 5px 12px; border-radius: 20px; font-weight: 900; font-size: 12px; letter-spacing: 1px; }
+        .vibe-info { pointer-events: auto; }
+        .vibe-info h4 { font-size: 18px; font-weight: 800; margin-bottom: 5px; color: var(--gold); }
+        .vibe-info p { font-size: 14px; opacity: 0.9; line-height: 1.4; max-width: 80%; }
+        .vibe-actions {
+            position: absolute; right: 15px; bottom: 100px;
+            display: flex; flex-direction: column; gap: 25px; align-items: center; pointer-events: auto;
+        }
+        .vibe-action-btn { background: none; border: none; color: #fff; display: flex; flex-direction: column; align-items: center; gap: 5px; cursor: pointer; }
+        .vibe-action-btn i { font-size: 28px; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.5)); }
+        .vibe-action-btn span { font-size: 10px; font-weight: 700; }
+        .close-vibe { font-size: 30px; color: #fff; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -306,8 +333,29 @@
             <button class="dock-item active"><i class="fa-solid fa-house-user"></i><span>ANA SAYFA</span></button>
             <button class="dock-item" onclick="openModal('profileModal')"><i class="fa-solid fa-circle-user"></i><span>PROFİL</span></button>
             <button class="dock-item" onclick="triggerPharmacySearch()"><i class="fa-solid fa-briefcase-medical"></i><span>ECZANE</span></button>
-            <button class="dock-item" onclick="window.location.href='mailto:support@laleturkey.com'"><i class="fa-solid fa-envelope-open-text"></i><span>İLETİŞİM</span></button>
+            <button class="dock-item" onclick="openVibes()"><i class="fa-solid fa-bolt"></i><span>VIBES</span></button>
         </nav>
+    </div>
+
+    <div id="vibe-overlay">
+        <div class="vibe-video-container">
+            <video id="vibePlayer" class="vibe-video" loop playsinline src="https://assets.mixkit.co/videos/preview/mixkit-tourist-taking-photos-of-the-city-of-istanbul-40232-large.mp4"></video>
+            <div class="vibe-ui">
+                <div class="vibe-header">
+                    <div class="vibe-badge">LALE ELITE VIBES</div>
+                    <i class="fa-solid fa-xmark close-vibe" onclick="closeVibes()"></i>
+                </div>
+                <div class="vibe-actions">
+                    <button class="vibe-action-btn" onclick="this.style.color='var(--gold)'"><i class="fa-solid fa-heart"></i><span>1.2K</span></button>
+                    <button class="vibe-action-btn"><i class="fa-solid fa-comment"></i><span>45</span></button>
+                    <button class="vibe-action-btn" onclick="shareVibe()"><i class="fa-solid fa-share-nodes"></i><span>Paylaş</span></button>
+                </div>
+                <div class="vibe-info">
+                    <h4>@lale_turkey</h4>
+                    <p id="vibeDesc">İstanbul'un en iyi manzarası Galata'dan başlar. Keşfetmeye hazır mısın? #LaleVibes #Istanbul</p>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div id="profileModal" class="glass-modal">
@@ -362,18 +410,45 @@
             document.getElementById('helloTitle').innerText = g;
         }
 
-        // SMART PHARMACY ELITE LOGIC (GEOLOCATION)
+        // LALE VIBES (SHORTS) LOGIC
+        const vibeList = [
+            { src: "https://assets.mixkit.co/videos/preview/mixkit-tourist-taking-photos-of-the-city-of-istanbul-40232-large.mp4", desc: "İstanbul'un en iyi manzarası Galata'dan başlar. #LaleVibes" },
+            { src: "https://assets.mixkit.co/videos/preview/mixkit-crowded-street-in-the-city-of-istanbul-40226-large.mp4", desc: "İstiklal'in bitmeyen enerjisi... Sizin favori caddeniz neresi? #EliteLifestyle" }
+        ];
+        let currentVibe = 0;
+
+        function openVibes() {
+            const overlay = document.getElementById('vibe-overlay');
+            const player = document.getElementById('vibePlayer');
+            overlay.style.display = 'flex';
+            player.play();
+        }
+
+        function closeVibes() {
+            const overlay = document.getElementById('vibe-overlay');
+            const player = document.getElementById('vibePlayer');
+            overlay.style.display = 'none';
+            player.pause();
+        }
+
+        function shareVibe() {
+            if (navigator.share) {
+                navigator.share({ title: 'Lale Vibes', text: 'Estambul Trends by Lale Turkey', url: window.location.href });
+            } else {
+                alert("Paylaşım linki kopyalandı!");
+            }
+        }
+
+        // SMART PHARMACY ELITE LOGIC
         function triggerPharmacySearch() {
             if (navigator.geolocation) {
                 alert("Konumunuz belirleniyor... En yakın nöbetçi eczaneler listeleniyor.");
                 navigator.geolocation.getCurrentPosition((position) => {
                     const lat = position.coords.latitude;
                     const lng = position.coords.longitude;
-                    // Búsqueda específica de farmacias de guardia (Nöbetçi Eczane) cerca de las coordenadas
                     const url = `https://www.google.com/maps/search/Nöbetçi+Eczane/@${lat},${lng},15z`;
                     window.open(url, '_blank');
                 }, () => {
-                    // Fallback si el usuario niega el permiso
                     window.open("https://www.google.com/maps/search/Nöbetçi+Eczane+Türkiye", '_blank');
                 });
             } else {
@@ -417,7 +492,7 @@
         // FOOTBALL MAPS
         function openMap(team) {
             const locations = {
-                'GS': 'https://www.google.com/maps/search/Galatasaray+Nevizade+Sokak',
+                'GS': 'https://www.google.com/maps/search/Galatasaray+Nevizade',
                 'FB': 'https://www.google.com/maps/search/Fenerbahçe+Bağdat+Caddesi',
                 'BJK': 'https://www.google.com/maps/search/Beşiktaş+Çarşı'
             };
@@ -454,12 +529,11 @@
         function captureFortune() {
             stopCamera();
             const results = [
-                "Tabağında belirten yollar, iş hayatında büyük bir yükselişin habercisi. Makine gibi tıkır tıkır işleyen bir döneme giriyorsun.",
-                "Yüreğin bir lale gibi ferahlıyor. Beklediğin o önemli telefon bugün gelebilir, hazırlıklı ol.",
-                "Hanene büyük bir bereket giriyor. Yatırımların meyvesini verme zamanı geldi.",
-                "Kısmetin zwei vakte kadar açılıyor. Yeni bir ortaklık veya proje kapında.",
-                "Bir dostundan alacağın destekle kafandaki tüm soru işaretleri silinecek.",
-                "Göz aydınlığı var! Uzun zamandır çözülmeyen bir mesele bugün çözüme kavuşuyor."
+                "Tabağında belirten yollar, iş hayatında büyük bir yükselişin habercisi.",
+                "Yüreğin bir lale gibi ferahlıyor. Beklediğin telefon bugün gelebilir.",
+                "Hanene büyük bir bereket giriyor. Yatırımların meyvesini verme zamanı.",
+                "Kısmetin iki vakte kadar açılıyor. Yeni bir proje kapında.",
+                "Göz aydınlığı var! Uzun zamandır çözülmeyen bir mesele bugün çözülüyor."
             ];
             document.getElementById('fortuneResult').innerText = results[Math.floor(Math.random()*results.length)];
             openModal('fortuneModal');
@@ -468,11 +542,10 @@
         // DYNAMIC TICKER NEWS
         function startTickerLoop() {
             const news = [
-                "Sanayi: Türkiye makine ihracatında Mart ayında %12 artış kaydetti.",
-                "Süper Lig: Hafta sonu oynanacak derbi biletleri tükendi!",
-                "Lale Pay: İstanbul Card yüklemelerinde Papara kullanıcılarına özel iade.",
-                "Hava Durumu: İstanbul'da bahar havası devam ediyor, hafta sonu güneşli.",
-                "Ekonomi: Yeni teşvik paketleri sanayici için yolda."
+                "Sanayi: Türkiye makine ihracatında yeni rekor!",
+                "Süper Lig: Derbi biletleri tükendi!",
+                "Lale Pay: İstanbul Card yüklemelerinde özel fırsat.",
+                "Hava Durumu: İstanbul'da bahar havası devam ediyor."
             ];
             let i = 0;
             setInterval(() => {
