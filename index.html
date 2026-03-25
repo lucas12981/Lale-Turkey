@@ -208,18 +208,18 @@
         }
         .vibe-video { 
             width: 100%; height: 100%; object-fit: cover;
-            filter: sepia(0.15) contrast(1.1) brightness(0.95);
+            filter: sepia(0.05) contrast(1.1) brightness(0.95);
         }
         .lale-ai-filter {
             position: absolute; inset: 0;
-            background: radial-gradient(circle at center, transparent 30%, rgba(255, 215, 0, 0.08) 60%, rgba(0,0,0,0.5) 100%);
+            background: radial-gradient(circle at center, transparent 30%, rgba(255, 215, 0, 0.05) 60%, rgba(0,0,0,0.4) 100%);
             mix-blend-mode: screen; pointer-events: none;
         }
         .vibe-ui-overlay {
             position: absolute; inset: 0;
             display: flex; flex-direction: column; justify-content: space-between;
             padding: 60px 20px 120px;
-            background: linear-gradient(0deg, rgba(0,0,0,0.85) 0%, transparent 40%, transparent 70%, rgba(0,0,0,0.5) 100%);
+            background: linear-gradient(0deg, rgba(0,0,0,0.8) 0%, transparent 40%, transparent 70%, rgba(0,0,0,0.4) 100%);
             pointer-events: none;
         }
         .vibe-upload-trigger {
@@ -414,7 +414,7 @@
     </div>
 
     <script>
-        // --- CONFIGURACIÓN DE FIREBASE (Tus Credenciales Reales) ---
+        // --- CONFIGURACIÓN DE FIREBASE ---
         const firebaseConfig = {
             apiKey: "AIzaSyCzVscBjU4afBXPY8rZ1UMw1Psj5FHL-9M",
             authDomain: "lale-c9c3a.firebaseapp.com",
@@ -449,29 +449,35 @@
             document.getElementById('helloTitle').innerText = g;
         }
 
-        // LALE VIBES (ELITE REELS) GLOBAL ENGINE
+        // --- LALE VIBES ENGINE (ESTILO TIKTOK) ---
         let eliteVibes = [];
+        let observer;
 
-        function openVibes() {
+        async function openVibes() {
             document.getElementById('vibe-overlay').style.display = 'flex';
-            loadVibesFromFirebase();
+            await loadVibesFromFirebase();
         }
 
         function closeVibes() {
             document.getElementById('vibe-overlay').style.display = 'none';
-            document.querySelectorAll('.vibe-video').forEach(v => v.pause());
+            document.querySelectorAll('.vibe-video').forEach(v => {
+                v.pause();
+                v.currentTime = 0;
+            });
         }
 
         async function loadVibesFromFirebase() {
             const container = document.getElementById('vibeScrollContainer');
-            container.innerHTML = '<div style="padding: 100px; text-align: center;"><i class="fa-solid fa-spinner fa-spin" style="font-size: 40px; color: var(--gold);"></i><p>Elite Vibes yükleniyor...</p></div>';
+            container.innerHTML = '<div style="padding: 100px; text-align: center;"><i class="fa-solid fa-spinner fa-spin" style="font-size: 40px; color: var(--gold);"></i><p style="margin-top:10px">Vibes yükleniyor...</p></div>';
 
             try {
+                // Ordenamos por fecha para ver lo más nuevo arriba
                 const snapshot = await db.collection("vibes").orderBy("timestamp", "desc").get();
                 eliteVibes = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 renderVibesFeed();
             } catch (error) {
                 console.error("Firebase error:", error);
+                container.innerHTML = '<div style="padding: 100px; text-align: center;">Yükleme hatası. Lütfen kuralları kontrol edin.</div>';
             }
         }
 
@@ -482,7 +488,8 @@
             document.getElementById('laleSuccessSound').play();
             alert("Video Lale Cloud'a yükleniyor... Lütfen bekleyin.");
 
-            const storageRef = storage.ref('vibes/' + Date.now() + "_" + file.name);
+            const fileName = Date.now() + "_" + file.name;
+            const storageRef = storage.ref('vibes/' + fileName);
             
             try {
                 const snapshot = await storageRef.put(file);
@@ -493,26 +500,27 @@
                     src: videoURL,
                     user: userName.split(' ')[0].toLowerCase(),
                     desc: "Lale Gold AI ile paylaşıldı. ✨ #MyLaleStyle",
-                    likes: Math.floor(Math.random() * 10),
+                    likes: 0,
                     timestamp: firebase.firestore.FieldValue.serverTimestamp()
                 });
 
-                loadVibesFromFirebase();
+                await loadVibesFromFirebase(); // Recargar feed tras subir
             } catch (error) {
-                alert("Yükleme hatası!");
+                console.error("Upload error:", error);
+                alert("Yükleme hatası! Lütfen Storage kurallarını kontrol edin.");
             }
         }
 
         function renderVibesFeed() {
             const container = document.getElementById('vibeScrollContainer');
             if(eliteVibes.length === 0) {
-                container.innerHTML = '<div style="padding: 100px; text-align: center;">Henüz video yok. İlk videoyu sen çek!</div>';
+                container.innerHTML = '<div style="padding: 100px; text-align: center; color:white;">Henüz video yok. İlk videoyu sen çek!</div>';
                 return;
             }
 
             container.innerHTML = eliteVibes.map((v, i) => `
-                <div class="vibe-card">
-                    <video class="vibe-video" loop playsinline onclick="this.paused ? this.play() : this.pause()">
+                <div class="vibe-card" data-id="${v.id}">
+                    <video class="vibe-video" loop playsinline preload="auto">
                         <source src="${v.src}" type="video/mp4">
                     </video>
                     <div class="lale-ai-filter"></div>
@@ -539,22 +547,35 @@
                 </div>
             `).join('');
             
-            const obs = new IntersectionObserver((entries) => {
+            setupTikTokScroll();
+        }
+
+        function setupTikTokScroll() {
+            // Eliminar observador anterior si existe
+            if(observer) observer.disconnect();
+
+            const options = { threshold: 0.7 };
+            observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     const vid = entry.target.querySelector('video');
-                    if (entry.isIntersecting) vid.play();
-                    else { vid.pause(); vid.currentTime = 0; }
+                    if (entry.isIntersecting) {
+                        vid.play().catch(e => console.log("Auto-play blocked"));
+                    } else {
+                        vid.pause();
+                        vid.currentTime = 0;
+                    }
                 });
-            }, { threshold: 0.7 });
-            document.querySelectorAll('.vibe-card').forEach(c => obs.observe(c));
+            }, options);
+
+            document.querySelectorAll('.vibe-card').forEach(c => observer.observe(c));
         }
 
         function handleLike(el, id) {
             const icon = el.querySelector('i');
             const span = el.querySelector('span');
-            if(icon.style.color === 'var(--tr-red)') return;
+            if(icon.style.color === 'rgb(227, 10, 23)') return; // Evitar multi-like visual
 
-            icon.style.color = 'var(--tr-red)';
+            icon.style.color = '#E30A17';
             icon.style.transform = 'scale(1.3)';
             span.innerText = parseInt(span.innerText) + 1;
             
@@ -573,18 +594,16 @@
 
         function handleComment() {
             const msg = prompt("Yorumunuzu yazın:");
-            if(msg) alert("Yorumunuz Lale Cloud'a iletildi!");
+            if(msg) alert("Yorumunuz iletildi!");
         }
 
-        // --- FUNCIONES DE UTILIDAD (ECZANE, PERFIL, ARENA) ---
+        // --- UTILIDADES ---
         function triggerPharmacySearch() {
             if (navigator.geolocation) {
-                alert("Konumunuz belirleniyor... En yakın nöbetçi eczaneler listeleniyor.");
                 navigator.geolocation.getCurrentPosition((position) => {
                     const lat = position.coords.latitude;
                     const lng = position.coords.longitude;
-                    const url = `https://www.google.com/maps/search/n%C3%B6bet%C3%A7i+eczane/@${lat},${lng},15z`;
-                    window.open(url, '_blank');
+                    window.open(`https://www.google.com/maps/search/n%C3%B6bet%C3%A7i+eczane/@${lat},${lng},14z`, '_blank');
                 });
             }
         }
@@ -620,8 +639,8 @@
         }
 
         function openMap(team) {
-            const locations = { 'GS': 'https://maps.google.com/?q=Galatasaray+Stadium', 'FB': 'https://maps.google.com/?q=Fenerbahce+Stadium', 'BJK': 'https://maps.google.com/?q=Besiktas+Stadium' };
-            window.open(locations[team], '_blank');
+            const queries = { 'GS': 'Nefizade+Galatasaray', 'FB': 'Bagdat+Caddesi+Fenerbahce', 'BJK': 'Besiktas+Carsi' };
+            window.open(`https://www.google.com/maps/search/${queries[team]}`, '_blank');
         }
 
         function smartDeepLink(appUri, webUrl) {
@@ -654,9 +673,12 @@
             const news = ["Sanayi: Türkiye makine ihracatında yeni rekor!", "Süper Lig: Derbi biletleri tükendi!", "Lale Pay: İstanbul Card yüklemelerinde özel fırsat.", "Hava Durumu: Bahar havası devam ediyor."];
             let i = 0;
             setInterval(() => {
-                document.getElementById('liveTicker').innerText = news[i];
-                i = (i + 1) % news.length;
-            }, 10000);
+                const ticker = document.getElementById('liveTicker');
+                if(ticker) {
+                    ticker.innerText = news[i];
+                    i = (i + 1) % news.length;
+                }
+            }, 8000);
         }
     </script>
 </body>
