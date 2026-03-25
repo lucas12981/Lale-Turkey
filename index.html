@@ -362,9 +362,23 @@
             document.getElementById('helloTitle').innerText = g;
         }
 
-        // SMART PHARMACY LOGIC
+        // SMART PHARMACY ELITE LOGIC (GEOLOCATION)
         function triggerPharmacySearch() {
-            window.open("https://www.google.com/maps/search/n%C3%B6bet%C3%A7i+eczane", '_blank');
+            if (navigator.geolocation) {
+                alert("Konumunuz belirleniyor... En yakın nöbetçi eczaneler listeleniyor.");
+                navigator.geolocation.getCurrentPosition((position) => {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    // Búsqueda específica de farmacias de guardia (Nöbetçi Eczane) cerca de las coordenadas
+                    const url = `https://www.google.com/maps/search/Nöbetçi+Eczane/@${lat},${lng},15z`;
+                    window.open(url, '_blank');
+                }, () => {
+                    // Fallback si el usuario niega el permiso
+                    window.open("https://www.google.com/maps/search/Nöbetçi+Eczane+Türkiye", '_blank');
+                });
+            } else {
+                window.open("https://www.google.com/maps/search/Nöbetçi+Eczane+Türkiye", '_blank');
+            }
         }
 
         // PROFILE ENGINE
@@ -403,19 +417,16 @@
         // FOOTBALL MAPS
         function openMap(team) {
             const locations = {
-                'GS': 'https://www.google.com/maps/search/Galatasaray+Nevizade',
-                'FB': 'https://www.google.com/maps/search/Fenerbah%C3%A7e+Ba%C4%9Fdat+Caddesi',
-                'BJK': 'https://www.google.com/maps/search/Be%C5%9Fikta%C5%9F+%C3%87ar%C5%9F%C4%B1'
+                'GS': 'https://www.google.com/maps/search/Galatasaray+Nevizade+Sokak',
+                'FB': 'https://www.google.com/maps/search/Fenerbahçe+Bağdat+Caddesi',
+                'BJK': 'https://www.google.com/maps/search/Beşiktaş+Çarşı'
             };
             window.open(locations[team], '_blank');
         }
 
-        // SMART DEEP LINKING (FUNCIONA EN MÓVIL Y PC)
+        // SMART DEEP LINKING
         function smartDeepLink(appUri, webUrl) {
-            // Intentar abrir la app
             window.location.href = appUri;
-            
-            // Si el usuario sigue en la página después de 2 segundos, abrir la web
             setTimeout(() => {
                 if (!document.hidden) {
                     window.open(webUrl, '_blank');
@@ -446,7 +457,7 @@
                 "Tabağında belirten yollar, iş hayatında büyük bir yükselişin habercisi. Makine gibi tıkır tıkır işleyen bir döneme giriyorsun.",
                 "Yüreğin bir lale gibi ferahlıyor. Beklediğin o önemli telefon bugün gelebilir, hazırlıklı ol.",
                 "Hanene büyük bir bereket giriyor. Yatırımların meyvesini verme zamanı geldi.",
-                "Kısmetin iki vakte kadar açılıyor. Yeni bir ortaklık veya proje kapında.",
+                "Kısmetin zwei vakte kadar açılıyor. Yeni bir ortaklık veya proje kapında.",
                 "Bir dostundan alacağın destekle kafandaki tüm soru işaretleri silinecek.",
                 "Göz aydınlığı var! Uzun zamandır çözülmeyen bir mesele bugün çözüme kavuşuyor."
             ];
