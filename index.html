@@ -5,9 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Lale Turkey | Industrial & Lifestyle Elite App</title>
     
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -93,7 +91,6 @@
         }
         .profile-img { width: 100%; height: 100%; border-radius: 50%; border: 2px solid #000; object-fit: cover; }
 
-        /* --- SCROLLABLE CONTENT --- */
         .content-area {
             flex: 1; overflow-y: auto; padding: 10px 20px 130px;
             scrollbar-width: none;
@@ -104,7 +101,6 @@
         .welcome-block h2 { font-size: 28px; font-weight: 800; color: var(--gold); }
         .welcome-block p { font-size: 15px; font-weight: 500; opacity: 0.8; }
 
-        /* --- LIVE TICKER SYSTEM --- */
         .news-ticker {
             background: rgba(227, 10, 23, 0.15); border: 1px solid var(--tr-red);
             border-radius: 20px; padding: 12px 18px; margin-top: 20px;
@@ -114,7 +110,6 @@
         .ticker-text-scroll { font-size: 11px; font-weight: 700; white-space: nowrap; transition: 0.5s ease-in-out; }
         @keyframes pulse { 0% { opacity: 1; box-shadow: 0 0 0 0 rgba(0,255,0,0.7); } 70% { opacity: 0.5; box-shadow: 0 0 0 10px rgba(0,255,0,0); } 100% { opacity: 1; } }
 
-        /* --- CARDS & UI ELEMENTS --- */
         .section-box {
             background: var(--card-bg); border: 1px solid var(--glass-border);
             border-radius: 32px; padding: 24px; margin-bottom: 20px;
@@ -140,12 +135,10 @@
         .btn-premium i { font-size: 26px; color: var(--gold); margin-bottom: 10px; display: block; filter: drop-shadow(0 0 5px var(--gold-glow)); }
         .btn-premium span { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
 
-        /* --- PHARMACY SPECIAL UI --- */
         .pharmacy-active { border: 1px solid var(--pharmacy) !important; box-shadow: 0 0 20px rgba(46, 204, 113, 0.2); }
         .pharmacy-btn { background: var(--pharmacy) !important; color: #fff; font-weight: 900; border-radius: 18px; padding: 18px; border: none; width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px; transition: 0.3s; }
         .pharmacy-btn:active { transform: scale(0.95); filter: brightness(1.2); }
 
-        /* --- MODALS --- */
         .glass-modal {
             position: fixed; inset: 0; background: rgba(0,0,0,0.95);
             z-index: 999999; display: none; justify-content: center; align-items: center;
@@ -165,7 +158,6 @@
             border: none; border-radius: 15px; font-weight: 900; cursor: pointer; font-size: 14px;
         }
 
-        /* --- NAVIGATION BAR --- */
         .nav-dock {
             position: fixed; bottom: 30px; left: 20px; right: 20px;
             height: 85px; background: rgba(0,0,0,0.9); border-radius: 30px;
@@ -182,7 +174,6 @@
         .dock-item i { font-size: 22px; }
         .dock-item span { font-size: 10px; font-weight: 800; }
 
-        /* --- CAMERA LAYER --- */
         #cam-overlay { position: fixed; inset: 0; z-index: 2000000; display: none; background: #000; }
         #video-preview { width: 100%; height: 100%; object-fit: cover; }
         .cam-shutter {
@@ -191,7 +182,6 @@
             background: transparent;
         }
 
-        /* --- LALE VIBES (SHORTS) ELITE SYSTEM --- */
         #vibe-overlay {
             position: fixed; inset: 0; background: #000; z-index: 2000001;
             display: none; flex-direction: column;
@@ -414,19 +404,11 @@
     </div>
 
     <script>
-        // --- CONFIGURACIÓN DE FIREBASE ---
-        const firebaseConfig = {
-            apiKey: "AIzaSyCzVscBjU4afBXPY8rZ1UMw1Psj5FHL-9M",
-            authDomain: "lale-c9c3a.firebaseapp.com",
-            projectId: "lale-c9c3a",
-            storageBucket: "lale-c9c3a.firebasestorage.app",
-            messagingSenderId: "729695007839",
-            appId: "1:729695007839:web:be318850a043de4fa8d7ea"
-        };
-
-        firebase.initializeApp(firebaseConfig);
-        const storage = firebase.storage();
-        const db = firebase.firestore();
+        // --- CONFIGURACIÓN DE SUPABASE (Inyectada desde Vercel) ---
+        const SUPABASE_URL = 'https://ropsrvzdyhyfftdfzvmk.supabase.co';
+        const SUPABASE_KEY = 'TU_SUPABASE_ANON_KEY'; // Vercel usará la variable de entorno automáticamente si usas process.env en frameworks, pero para HTML plano lo manejamos vía constantes o inyección.
+        
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         // APP INITIALIZATION
         document.addEventListener('DOMContentLoaded', () => {
@@ -449,13 +431,13 @@
             document.getElementById('helloTitle').innerText = g;
         }
 
-        // --- LALE VIBES ENGINE (ESTILO TIKTOK) ---
+        // --- LALE VIBES ENGINE (SUPABASE EDITION) ---
         let eliteVibes = [];
         let observer;
 
         async function openVibes() {
             document.getElementById('vibe-overlay').style.display = 'flex';
-            await loadVibesFromFirebase();
+            await loadVibesFromSupabase();
         }
 
         function closeVibes() {
@@ -466,18 +448,22 @@
             });
         }
 
-        async function loadVibesFromFirebase() {
+        async function loadVibesFromSupabase() {
             const container = document.getElementById('vibeScrollContainer');
             container.innerHTML = '<div style="padding: 100px; text-align: center;"><i class="fa-solid fa-spinner fa-spin" style="font-size: 40px; color: var(--gold);"></i><p style="margin-top:10px">Vibes yükleniyor...</p></div>';
 
             try {
-                // Ordenamos por fecha para ver lo más nuevo arriba
-                const snapshot = await db.collection("vibes").orderBy("timestamp", "desc").get();
-                eliteVibes = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                const { data, error } = await _supabase
+                    .from('vibes')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+                eliteVibes = data;
                 renderVibesFeed();
             } catch (error) {
-                console.error("Firebase error:", error);
-                container.innerHTML = '<div style="padding: 100px; text-align: center;">Yükleme hatası. Lütfen kuralları kontrol edin.</div>';
+                console.error("Supabase error:", error);
+                container.innerHTML = '<div style="padding: 100px; text-align: center;">Yükleme hatası. Lütfen Supabase ayarlarını kontrol edin.</div>';
             }
         }
 
@@ -486,28 +472,42 @@
             if (!file) return;
 
             document.getElementById('laleSuccessSound').play();
-            alert("Video Lale Cloud'a yükleniyor... Lütfen bekleyin.");
+            alert("Video Lale Cloud (Supabase) yükleniyor...");
 
-            const fileName = Date.now() + "_" + file.name;
-            const storageRef = storage.ref('vibes/' + fileName);
+            const fileName = `${Date.now()}_${file.name}`;
             
             try {
-                const snapshot = await storageRef.put(file);
-                const videoURL = await snapshot.ref.getDownloadURL();
+                // 1. Subir al Bucket "Vídeos"
+                const { data: uploadData, error: uploadError } = await _supabase.storage
+                    .from('Vídeos')
+                    .upload(fileName, file);
+
+                if (uploadError) throw uploadError;
+
+                // 2. Obtener URL pública
+                const { data: urlData } = _supabase.storage
+                    .from('Vídeos')
+                    .getPublicUrl(fileName);
+
+                const videoURL = urlData.publicUrl;
                 const userName = localStorage.getItem('lale_name') || "Elite User";
 
-                await db.collection("vibes").add({
-                    src: videoURL,
-                    user: userName.split(' ')[0].toLowerCase(),
-                    desc: "Lale Gold AI ile paylaşıldı. ✨ #MyLaleStyle",
-                    likes: 0,
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                });
+                // 3. Guardar en tabla "vibes"
+                const { error: dbError } = await _supabase
+                    .from('vibes')
+                    .insert([{
+                        src: videoURL,
+                        user_name: userName.split(' ')[0].toLowerCase(),
+                        description: "Lale Gold AI ile paylaşıldı. ✨ #MyLaleStyle",
+                        likes: 0
+                    }]);
 
-                await loadVibesFromFirebase(); // Recargar feed tras subir
+                if (dbError) throw dbError;
+
+                await loadVibesFromSupabase();
             } catch (error) {
                 console.error("Upload error:", error);
-                alert("Yükleme hatası! Lütfen Storage kurallarını kontrol edin.");
+                alert("Yükleme hatası! Lote: " + error.message);
             }
         }
 
@@ -540,8 +540,8 @@
                         </div>
 
                         <div class="vibe-user-info">
-                            <h4>@${v.user.replace('@','')}</h4>
-                            <p>${v.desc}</p>
+                            <h4>@${(v.user_name || 'user').replace('@','')}</h4>
+                            <p>${v.description || ''}</p>
                         </div>
                     </div>
                 </div>
@@ -551,37 +551,34 @@
         }
 
         function setupTikTokScroll() {
-            // Eliminar observador anterior si existe
             if(observer) observer.disconnect();
-
             const options = { threshold: 0.7 };
             observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     const vid = entry.target.querySelector('video');
                     if (entry.isIntersecting) {
-                        vid.play().catch(e => console.log("Auto-play blocked"));
+                        vid.play().catch(e => console.log("Play blocked"));
                     } else {
                         vid.pause();
                         vid.currentTime = 0;
                     }
                 });
             }, options);
-
             document.querySelectorAll('.vibe-card').forEach(c => observer.observe(c));
         }
 
-        function handleLike(el, id) {
+        async function handleLike(el, id) {
             const icon = el.querySelector('i');
             const span = el.querySelector('span');
-            if(icon.style.color === 'rgb(227, 10, 23)') return; // Evitar multi-like visual
+            if(icon.style.color === 'rgb(227, 10, 23)') return;
 
             icon.style.color = '#E30A17';
             icon.style.transform = 'scale(1.3)';
-            span.innerText = parseInt(span.innerText) + 1;
+            const newLikes = parseInt(span.innerText) + 1;
+            span.innerText = newLikes;
             
-            db.collection("vibes").doc(id).update({
-                likes: firebase.firestore.FieldValue.increment(1)
-            });
+            // Actualizar en Supabase (RPC o Update simple)
+            await _supabase.from('vibes').update({ likes: newLikes }).eq('id', id);
         }
 
         function shareVibe() {
@@ -603,7 +600,7 @@
                 navigator.geolocation.getCurrentPosition((position) => {
                     const lat = position.coords.latitude;
                     const lng = position.coords.longitude;
-                    window.open(`https://www.google.com/maps/search/n%C3%B6bet%C3%A7i+eczane/@${lat},${lng},14z`, '_blank');
+                    window.open(`https://www.google.com/maps/search/Eczane/@${lat},${lng},14z`, '_blank');
                 });
             }
         }
@@ -683,5 +680,3 @@
     </script>
 </body>
 </html>
-
-Aqui esta el codigo completo.  Agregalo aqui con la clave api
