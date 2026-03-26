@@ -202,6 +202,15 @@
         .dock-item.active { color: var(--tr-red); }
         .dock-item i { font-size: 22px; }
         .dock-item span { font-size: 10px; font-weight: 800; }
+
+        /* --- EXIT ANIMATION --- */
+        .fade-exit {
+            opacity: 0 !important;
+            transform: scale(1.15);
+            filter: blur(20px);
+            transition: all 1.8s cubic-bezier(0.19, 1, 0.22, 1) !important;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
@@ -213,7 +222,7 @@
             <div class="petal-3d p-3"></div>
         </div>
         <h2 style="margin-top: 40px; letter-spacing: 5px; font-size: 18px; font-weight: 900;">LALE TURKEY</h2>
-        <p style="font-size: 10px; opacity: 0.5; margin-top: 10px;">GEN Z ELITE EXPERIENCE</p>
+        <p id="preloader-text" style="font-size: 10px; opacity: 0.5; margin-top: 10px;">GEN Z ELITE EXPERIENCE</p>
     </div>
 
     <div class="hero-bg">
@@ -246,7 +255,7 @@
                     <h3><i class="fa-solid fa-camera-retro"></i> Lale Spot & Drop</h3>
                     <span style="font-size: 9px; background: var(--tr-red); padding: 4px 8px; border-radius: 20px; font-weight: 900;">YENİ</span>
                 </div>
-                <p style="font-size: 12px; opacity: 0.8; margin-bottom: 20px; line-height: 1.5;">İstanbul'un en "trendy" mekanlarını visual bir feed'de keşfet. Like at, kaydet ve kendi spotunu yakala.</p>
+                <p style="font-size: 12px; opacity: 0.8; margin-bottom: 20px; line-height: 1.5;">İstanbul'un en "trendy" mekanlarını visual bir feed'de keşfet. Like at, kaydet y kendi spotunu yakala.</p>
                 <button class="btn-confirm" onclick="openSpotFeed()" style="background: linear-gradient(45deg, var(--gold), #fff); box-shadow: 0 5px 20px var(--gold-glow);">KEŞFETMEYE BAŞLA</button>
             </section>
 
@@ -301,12 +310,16 @@
             <input type="text" id="nameIn" placeholder="Adınız">
             <input type="file" id="photoIn" accept="image/*">
             <button class="btn-confirm" onclick="saveUserData()">KAYDET</button>
-            <p onclick="closeModal('profileModal')" style="margin-top: 20px; cursor: pointer;">Kapat</p>
+            
+            <button onclick="terminateSession()" style="margin-top: 30px; background: none; border: 1px solid var(--tr-red); color: var(--tr-red); padding: 12px 25px; border-radius: 15px; font-weight: 800; font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%;">
+                <i class="fa-solid fa-power-off"></i> OTURUMU KAPAT
+            </button>
+            
+            <p onclick="closeModal('profileModal')" style="margin-top: 20px; cursor: pointer; opacity: 0.6; font-size: 12px;">Kapat</p>
         </div>
     </div>
 
     <script>
-        // DATOS REALES E IMÁGENES ESTABLES
         const mockSpots = [
             { id: 1, img: 'https://images.pexels.com/photos/1549326/pexels-photo-1549326.jpeg?auto=compress&cs=tinysrgb&w=400', title: 'Galata Rooftop', loc: 'Karaköy' },
             { id: 2, img: 'https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg?auto=compress&cs=tinysrgb&w=400', title: 'Specialty Coffee', loc: 'Beşiktaş' },
@@ -331,7 +344,6 @@
             document.getElementById('helloTitle').innerText = greeting;
         }
 
-        /* --- FUNCIONALIDAD REAL: LALE SPOT --- */
         function openSpotFeed() {
             document.getElementById('spot-overlay').style.display = 'flex';
             renderSpotFeed();
@@ -390,21 +402,19 @@
             reader.readAsDataURL(file);
         }
 
-        /* --- FUNCIONALIDAD REAL: FARMACIA GPS --- */
         function triggerPharmacySearch() {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(p => {
-                    const url = `https://www.google.com/maps/search/Nöbetçi+Eczane/@${p.coords.latitude},${p.coords.longitude},14z`;
+                    const url = `https://www.google.com/maps/search/n%C3%B6bet%C3%A7i+eczane/@${p.coords.latitude},${p.coords.longitude},14z`;
                     window.open(url, '_blank');
                 }, () => {
-                    window.open('https://www.google.com/maps/search/Nöbetçi+Eczane+İstanbul', '_blank');
+                    window.open('https://www.google.com/maps/search/n%C3%B6bet%C3%A7i+eczane', '_blank');
                 });
             } else {
-                window.open('https://www.google.com/maps/search/Nöbetçi+Eczane+İstanbul', '_blank');
+                window.open('https://www.google.com/maps/search/n%C3%B6bet%C3%A7i+eczane', '_blank');
             }
         }
 
-        /* --- CORE UTILS --- */
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
         
@@ -445,6 +455,28 @@
                     setTimeout(() => { t.innerText = n[i]; t.style.opacity = '1'; i = (i + 1) % n.length; }, 500); 
                 }
             }, 8000);
+        }
+
+        /* --- TERMINATE SESSION LOGIC --- */
+        function terminateSession() {
+            closeModal('profileModal');
+            const preloader = document.getElementById('lale-preloader');
+            const app = document.getElementById('laleApp');
+            const text = document.getElementById('preloader-text');
+            
+            app.classList.add('fade-exit');
+            
+            setTimeout(() => {
+                preloader.style.display = 'flex';
+                preloader.style.opacity = '1';
+                text.innerText = "Görüşmek üzere..."; 
+                
+                setTimeout(() => {
+                    // Si quieres que el usuario empiece de cero la próxima vez, descomenta estas líneas:
+                    // localStorage.clear();
+                    window.location.reload();
+                }, 2000);
+            }, 600);
         }
     </script>
 </body>
