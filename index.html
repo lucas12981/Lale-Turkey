@@ -116,11 +116,6 @@
             border-radius: 32px; padding: 24px; margin-bottom: 20px;
             backdrop-filter: blur(25px); position: relative; overflow: hidden;
         }
-        .section-box::before {
-            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%);
-            pointer-events: none;
-        }
 
         .box-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .box-header h3 { font-size: 15px; font-weight: 800; color: var(--gold); letter-spacing: 1px; display: flex; align-items: center; gap: 10px; }
@@ -138,8 +133,36 @@
 
         .pharmacy-active { border: 1px solid var(--pharmacy) !important; box-shadow: 0 0 20px rgba(46, 204, 113, 0.2); }
         .pharmacy-btn { background: var(--pharmacy) !important; color: #fff; font-weight: 900; border-radius: 18px; padding: 18px; border: none; width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px; transition: 0.3s; }
-        .pharmacy-btn:active { transform: scale(0.95); filter: brightness(1.2); }
 
+        /* --- LALE VISION AI OVERLAY (NEW REPLACEMENT) --- */
+        #vision-overlay {
+            position: fixed; inset: 0; background: #000; z-index: 2000001;
+            display: none; flex-direction: column;
+        }
+        .vision-header {
+            position: absolute; top: 0; width: 100%; padding: 60px 25px 20px;
+            display: flex; justify-content: space-between; align-items: center; z-index: 10;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+        }
+        .vision-container { width: 100%; height: 100%; position: relative; overflow: hidden; }
+        #vision-cam { width: 100%; height: 100%; object-fit: cover; transition: filter 0.5s; }
+        .vision-filter-label {
+            position: absolute; bottom: 160px; left: 50%; transform: translateX(-50%);
+            background: rgba(227, 10, 23, 0.9); padding: 10px 25px; border-radius: 30px;
+            font-size: 12px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase;
+            box-shadow: 0 0 20px rgba(227, 10, 23, 0.4);
+        }
+        .vision-controls {
+            position: absolute; bottom: 40px; left: 0; right: 0;
+            display: flex; justify-content: center; gap: 25px; align-items: center;
+        }
+        .filter-dot {
+            width: 55px; height: 55px; border-radius: 50%; border: 3px solid #fff;
+            cursor: pointer; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .filter-dot.active { transform: scale(1.25); border-color: var(--gold); box-shadow: 0 0 25px var(--gold); }
+
+        /* --- MODALS & DOCK --- */
         .glass-modal {
             position: fixed; inset: 0; background: rgba(0,0,0,0.95);
             z-index: 999999; display: none; justify-content: center; align-items: center;
@@ -148,15 +171,14 @@
         .modal-body {
             background: #111; border: 1px solid var(--gold);
             padding: 35px; border-radius: 40px; width: 100%; max-width: 380px; text-align: center;
-            box-shadow: 0 0 40px rgba(0,0,0,1);
         }
         .modal-body input {
             width: 100%; background: #1a1a1a; border: 1px solid var(--glass-border);
-            padding: 16px; border-radius: 15px; color: #fff; margin-bottom: 15px; font-size: 14px;
+            padding: 16px; border-radius: 15px; color: #fff; margin-bottom: 15px;
         }
         .btn-confirm {
             width: 100%; padding: 18px; background: var(--gold); color: #000;
-            border: none; border-radius: 15px; font-weight: 900; cursor: pointer; font-size: 14px;
+            border: none; border-radius: 15px; font-weight: 900;
         }
 
         .nav-dock {
@@ -164,12 +186,10 @@
             height: 85px; background: rgba(0,0,0,0.9); border-radius: 30px;
             border: 1px solid var(--glass-border); display: flex; justify-content: space-around;
             align-items: center; backdrop-filter: blur(30px); z-index: 10000;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
         }
         .dock-item {
             background: none; border: none; color: rgba(255,255,255,0.4);
-            display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer;
-            transition: 0.3s;
+            display: flex; flex-direction: column; align-items: center; gap: 6px;
         }
         .dock-item.active { color: var(--tr-red); }
         .dock-item i { font-size: 22px; }
@@ -177,67 +197,6 @@
 
         #cam-overlay { position: fixed; inset: 0; z-index: 2000000; display: none; background: #000; }
         #video-preview { width: 100%; height: 100%; object-fit: cover; }
-        .cam-shutter {
-            position: absolute; bottom: 50px; left: 50%; transform: translateX(-50%);
-            width: 80px; height: 80px; border: 6px solid #fff; border-radius: 50%;
-            background: transparent;
-        }
-
-        #vibe-overlay {
-            position: fixed; inset: 0; background: #000; z-index: 2000001;
-            display: none; flex-direction: column;
-        }
-        .vibe-feed {
-            width: 100%; height: 100%;
-            overflow-y: scroll; scroll-snap-type: y mandatory;
-            scrollbar-width: none;
-        }
-        .vibe-feed::-webkit-scrollbar { display: none; }
-        .vibe-card {
-            width: 100%; height: 100vh; scroll-snap-align: start;
-            position: relative; overflow: hidden;
-        }
-        .vibe-video { 
-            width: 100%; height: 100%; object-fit: cover;
-            filter: sepia(0.05) contrast(1.1) brightness(0.95);
-        }
-        .lale-ai-filter {
-            position: absolute; inset: 0;
-            background: radial-gradient(circle at center, transparent 30%, rgba(255, 215, 0, 0.05) 60%, rgba(0,0,0,0.4) 100%);
-            mix-blend-mode: screen; pointer-events: none;
-        }
-        .vibe-ui-overlay {
-            position: absolute; inset: 0;
-            display: flex; flex-direction: column; justify-content: space-between;
-            padding: 60px 20px 120px;
-            background: linear-gradient(0deg, rgba(0,0,0,0.8) 0%, transparent 40%, transparent 70%, rgba(0,0,0,0.4) 100%);
-            pointer-events: none;
-        }
-        .vibe-upload-trigger {
-            position: absolute; top: 110px; right: 20px;
-            width: 55px; height: 55px;
-            background: linear-gradient(45deg, var(--gold), #fff);
-            border-radius: 18px; display: flex; align-items: center; justify-content: center;
-            color: #000; font-size: 26px; z-index: 100;
-            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
-            cursor: pointer; pointer-events: auto;
-            animation: glowPulse 2.5s infinite;
-        }
-        @keyframes glowPulse {
-            0% { transform: scale(1); box-shadow: 0 0 10px var(--gold-glow); }
-            50% { transform: scale(1.1); box-shadow: 0 0 30px var(--gold-glow); }
-            100% { transform: scale(1); box-shadow: 0 0 10px var(--gold-glow); }
-        }
-        .vibe-actions-right {
-            position: absolute; right: 20px; bottom: 180px;
-            display: flex; flex-direction: column; gap: 28px; pointer-events: auto;
-        }
-        .action-btn { display: flex; flex-direction: column; align-items: center; gap: 6px; color: #fff; text-shadow: 0 2px 10px #000; transition: 0.3s; }
-        .action-btn i { font-size: 34px; }
-        .action-btn span { font-size: 11px; font-weight: 800; }
-        .vibe-user-info { pointer-events: auto; padding-right: 60px; }
-        .vibe-user-info h4 { color: var(--gold); font-size: 19px; font-weight: 900; margin-bottom: 6px; }
-        .vibe-user-info p { font-size: 14px; opacity: 0.95; line-height: 1.5; font-weight: 500; }
     </style>
 </head>
 <body>
@@ -271,12 +230,9 @@
             <div class="welcome-block">
                 <h2 id="helloTitle">Merhaba</h2>
                 <p id="userNameDisplay">Lale Elite Üyesi</p>
-                
                 <div class="news-ticker">
                     <div class="live-dot"></div>
-                    <div class="ticker-text-scroll" id="liveTicker">
-                        Süper Lig: Derbi heyecanı Lale Arena'da canlı skorlarla! • Sanayi: Türkiye makine ihracatında yeni rekor! • Lale VIP: İstanbul Card yüklemelerinde özel fırsatlar...
-                    </div>
+                    <div class="ticker-text-scroll" id="liveTicker">Sanayi: Türkiye ihracat rekoru kırıyor! • VIP: İstanbul Kart kampanyası başladı.</div>
                 </div>
             </div>
 
@@ -285,145 +241,108 @@
                     <h3><i class="fa-solid fa-house-medical"></i> Akıllı Eczane</h3>
                     <span style="font-size: 9px; background: var(--pharmacy); padding: 4px 8px; border-radius: 20px; font-weight: 800;">7/24 AKTİF</span>
                 </div>
-                <p style="font-size: 12px; opacity: 0.8; margin-bottom: 20px; line-height: 1.4;">
-                    Konumunuzu kullanarak şu an açık olan en yakın <b>Nöbetçi Eczaneyi</b> anında bulun.
-                </p>
                 <button class="pharmacy-btn" onclick="triggerPharmacySearch()">
                     <i class="fa-solid fa-map-location-dot"></i> NÖBETÇİ ECZANE BUL
                 </button>
             </section>
 
-            <section class="section-box">
+            <section class="section-box" style="border-color: var(--gold); background: linear-gradient(135deg, rgba(20,20,20,0.9), rgba(40,40,40,0.5));">
                 <div class="box-header">
-                    <h3><i class="fa-solid fa-futbol"></i> Lale Arena</h3>
-                    <i class="fa-solid fa-ranking-star" style="color: var(--gold);"></i>
+                    <h3><i class="fa-solid fa-eye"></i> Lale Vision AI</h3>
                 </div>
-                <div class="action-grid">
-                    <div class="btn-premium" onclick="openMap('GS')">
-                        <i class="fa-solid fa-location-dot" style="color: #FFB500;"></i>
-                        <span style="color: #FFB500;">GS: Nevizade</span>
-                    </div>
-                    <div class="btn-premium" onclick="openMap('FB')">
-                        <i class="fa-solid fa-location-dot" style="color: #FBED21;"></i>
-                        <span style="color: #FBED21;">FB: Bağdat Cad.</span>
-                    </div>
-                    <div class="btn-premium" onclick="openMap('BJK')">
-                        <i class="fa-solid fa-location-dot" style="color: #fff;"></i>
-                        <span>BJK: Çarşı</span>
-                    </div>
-                    <div class="btn-premium" onclick="window.open('https://m.mackolik.com/canli-sonuclar', '_blank')">
-                        <i class="fa-solid fa-star" style="color: #1db954;"></i>
-                        <span style="color: #1db954;">CANLI SKOR</span>
-                    </div>
-                </div>
+                <p style="font-size: 12px; opacity: 0.8; margin-bottom: 20px; line-height: 1.5;">Gelişmiş AR filtreleri ve 360° şehir vizyonu ile Estambul'u yeniden keşfedin.</p>
+                <button class="btn-confirm" onclick="openVision()" style="background: linear-gradient(45deg, var(--gold), #fff); box-shadow: 0 5px 20px var(--gold-glow);">VİZYONU BAŞLAT</button>
             </section>
 
-            <section class="section-box" style="border-color: var(--gold);">
-                <div class="box-header">
-                    <h3><i class="fa-solid fa-wand-magic-sparkles"></i> Yapay Zeka Falı</h3>
+            <section class="section-box">
+                <div class="box-header"><h3><i class="fa-solid fa-futbol"></i> Lale Arena</h3></div>
+                <div class="action-grid">
+                    <div class="btn-premium" onclick="openMap('GS')"><i class="fa-solid fa-location-dot" style="color: #FFB500;"></i><span>NEVİZADE</span></div>
+                    <div class="btn-premium" onclick="openMap('FB')"><i class="fa-solid fa-location-dot" style="color: #FBED21;"></i><span>BAĞDAT CAD.</span></div>
                 </div>
-                <button class="btn-confirm" onclick="initFortuneCamera()" style="background: linear-gradient(45deg, var(--gold), #fff); box-shadow: 0 5px 20px var(--gold-glow);">
-                    FİNCAN RESMİ ÇEK
-                </button>
             </section>
 
             <section class="section-box">
                 <div class="box-header"><h3><i class="fa-solid fa-wallet"></i> Lale VIP Pay</h3></div>
                 <div class="action-grid">
-                    <div class="btn-premium" onclick="smartDeepLink('papara://', 'https://www.papara.com')">
-                        <i class="fa-solid fa-qrcode"></i><span>PAPARA</span>
-                    </div>
-                    <div class="btn-premium" onclick="smartDeepLink('istanbulcard://', 'https://www.istanbulkart.istanbul')">
-                        <i class="fa-solid fa-credit-card"></i><span>ISTANBUL CARD</span>
-                    </div>
-                    <div class="btn-premium" onclick="smartDeepLink('tosla://', 'https://tosla.com')">
-                        <i class="fa-solid fa-wallet"></i><span>TOSLA</span>
-                    </div>
-                    <div class="btn-premium" onclick="smartDeepLink('pep://', 'https://peple.com.tr')">
-                        <i class="fa-solid fa-coins"></i><span>PEP</span>
-                    </div>
+                    <div class="btn-premium" onclick="smartDeepLink('papara://', 'https://www.papara.com')"><i class="fa-solid fa-qrcode"></i><span>PAPARA</span></div>
+                    <div class="btn-premium" onclick="smartDeepLink('istanbulcard://', 'https://www.istanbulkart.istanbul')"><i class="fa-solid fa-credit-card"></i><span>ISTANBUL CARD</span></div>
+                    <div class="btn-premium" onclick="smartDeepLink('tosla://', 'https://tosla.com')"><i class="fa-solid fa-wallet"></i><span>TOSLA</span></div>
+                    <div class="btn-premium" onclick="smartDeepLink('pep://', 'https://peple.com.tr')"><i class="fa-solid fa-coins"></i><span>PEP</span></div>
                 </div>
             </section>
 
             <section class="section-box">
                 <div class="box-header"><h3><i class="fa-solid fa-utensils"></i> Lale Yemek</h3></div>
                 <div class="action-grid">
-                    <div class="btn-premium" onclick="smartDeepLink('getir://', 'https://getir.com')">
-                        <i class="fa-solid fa-bag-shopping"></i><span>GETİR</span>
-                    </div>
-                    <div class="btn-premium" onclick="smartDeepLink('yemeksepeti://', 'https://www.yemeksepeti.com')">
-                        <i class="fa-solid fa-motorcycle"></i><span>YEMEKSEPETİ</span>
-                    </div>
+                    <div class="btn-premium" onclick="smartDeepLink('getir://', 'https://getir.com')"><i class="fa-solid fa-bag-shopping"></i><span>GETİR</span></div>
+                    <div class="btn-premium" onclick="smartDeepLink('yemeksepeti://', 'https://www.yemeksepeti.com')"><i class="fa-solid fa-motorcycle"></i><span>YEMEKSEPETİ</span></div>
                 </div>
             </section>
 
-            <p style="text-align: center; font-size: 10px; opacity: 0.3; padding-bottom: 20px;">LALE TURKEY V4.0 - PREMIUM EDITION</p>
+            <section class="section-box" style="border-color: var(--gold);">
+                <div class="box-header"><h3><i class="fa-solid fa-wand-magic-sparkles"></i> Yapay Zeka Falı</h3></div>
+                <button class="btn-confirm" onclick="initFortuneCamera()">FİNCAN RESMİ ÇEK</button>
+            </section>
+
+            <p style="text-align: center; font-size: 10px; opacity: 0.3; padding-bottom: 20px;">LALE TURKEY V4.5 - ELITE REVISION</p>
         </main>
 
         <nav class="nav-dock">
             <button class="dock-item active"><i class="fa-solid fa-house-user"></i><span>ANA SAYFA</span></button>
             <button class="dock-item" onclick="openModal('profileModal')"><i class="fa-solid fa-circle-user"></i><span>PROFİL</span></button>
             <button class="dock-item" onclick="triggerPharmacySearch()"><i class="fa-solid fa-briefcase-medical"></i><span>ECZANE</span></button>
-            <button class="dock-item" onclick="openVibes()"><i class="fa-solid fa-bolt"></i><span>VIBES</span></button>
+            <button class="dock-item" onclick="openVision()"><i class="fa-solid fa-expand"></i><span>VISION AI</span></button>
         </nav>
     </div>
 
-    <div id="vibe-overlay">
-        <audio id="laleSuccessSound" src="https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3"></audio>
-        <input type="file" id="laleVideoIn" accept="video/*" style="display: none;" onchange="processLaleVideo(event)">
-        
-        <div class="vibe-upload-trigger" onclick="document.getElementById('laleVideoIn').click()">
-            <i class="fa-solid fa-camera-retro"></i>
+    <div id="vision-overlay">
+        <div class="vision-header">
+            <div class="logo-text" style="font-size: 18px;">LALE VISION</div>
+            <i class="fa-solid fa-circle-xmark" onclick="closeVision()" style="font-size: 40px; color: #fff; cursor: pointer;"></i>
         </div>
-
-        <div class="vibe-feed" id="vibeScrollContainer">
+        <div class="vision-container">
+            <video id="vision-cam" autoplay playsinline></video>
+            <div class="vision-filter-label" id="filterName">ELITE VISION</div>
+            <div class="vision-controls">
+                <div class="filter-dot active" style="background-color: #FFD700;" onclick="setFilter('none', 'Elite Vision', this)"></div>
+                <div class="filter-dot" style="background-color: #E30A17;" onclick="setFilter('sepia(1) hue-rotate(-50deg) saturate(3)', 'Ottoman Red', this)"></div>
+                <div class="filter-dot" style="background-color: #00e5ff;" onclick="setFilter('invert(1) hue-rotate(180deg)', 'Future Tech', this)"></div>
+                <div class="filter-dot" style="background-image: url('https://cdn-icons-png.flaticon.com/512/814/814587.png'); background-size: cover; border-color: var(--gold);" onclick="toggle360()"></div>
+            </div>
         </div>
     </div>
 
     <div id="profileModal" class="glass-modal">
         <div class="modal-body">
             <h2 style="color: var(--gold); margin-bottom: 10px;">Profil Ayarları</h2>
-            <p style="font-size: 12px; opacity: 0.6; margin-bottom: 25px;">Bilgilerini güncelle ve deneyimi özelleştir.</p>
             <input type="text" id="nameIn" placeholder="Adınız">
             <input type="text" id="surnameIn" placeholder="Soyadınız">
-            <div style="text-align: left; margin-bottom: 15px;">
-                <label style="font-size: 11px; color: var(--gold); font-weight: 800;">PROFİL FOTOĞRAFI:</label>
-                <input type="file" id="photoIn" accept="image/*" style="margin-top: 5px; border: none; padding: 0;">
-            </div>
+            <input type="file" id="photoIn" accept="image/*">
             <button class="btn-confirm" onclick="saveUserData()">GÜNCELLE</button>
-            <p style="margin-top: 20px; font-size: 12px; cursor: pointer;" onclick="closeModal('profileModal')">Vazgeç</p>
+            <p onclick="closeModal('profileModal')" style="margin-top: 20px; cursor: pointer; opacity: 0.6;">Kapat</p>
         </div>
     </div>
 
     <div id="fortuneModal" class="glass-modal">
         <div class="modal-body">
-            <i class="fa-solid fa-sun" style="font-size: 50px; color: var(--gold); margin-bottom: 20px;"></i>
-            <h3 id="fortuneTitle" style="color: var(--gold); margin-bottom: 15px;">FALINIZ ÇIKTI</h3>
-            <p id="fortuneResult" style="font-size: 14px; line-height: 1.6; font-weight: 500;"></p>
-            <button class="btn-confirm" style="margin-top: 25px;" onclick="closeModal('fortuneModal')">TAMAM</button>
+            <h3 id="fortuneResult" style="color: var(--gold);">Geleceğiniz yükleniyor...</h3>
+            <button class="btn-confirm" style="margin-top: 20px;" onclick="closeModal('fortuneModal')">TAMAM</button>
         </div>
     </div>
 
     <div id="cam-overlay">
         <video id="video-preview" autoplay playsinline></video>
-        <div class="cam-shutter" onclick="captureFortune()"></div>
+        <div onclick="captureFortune()" style="position: absolute; bottom: 50px; left: 50%; transform: translateX(-50%); width: 80px; height: 80px; border: 5px solid #fff; border-radius: 50%;"></div>
         <button onclick="stopCamera()" style="position: absolute; top: 40px; right: 20px; background: none; border: none; color: #fff; font-size: 30px;"><i class="fa-solid fa-xmark"></i></button>
     </div>
 
     <script>
-        // --- SUPABASE CONFIG ---
-        const SUPABASE_URL = 'https://ropsrvzdyhyfftdfzvmk.supabase.co';
-        const SUPABASE_KEY = 'YOUR_ANON_KEY'; // Buraya kendi anon keyini koymalısın
-        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
         document.addEventListener('DOMContentLoaded', () => {
             updateGreeting(); loadProfile(); startTickerLoop();
             setTimeout(() => {
                 document.getElementById('lale-preloader').style.opacity = '0';
-                setTimeout(() => {
-                    document.getElementById('lale-preloader').style.display = 'none';
-                    document.getElementById('laleApp').classList.add('visible');
-                }, 1000);
+                setTimeout(() => { document.getElementById('lale-preloader').style.display = 'none'; document.getElementById('laleApp').classList.add('visible'); }, 1000);
             }, 3000);
         });
 
@@ -433,129 +352,114 @@
             document.getElementById('helloTitle').innerText = greeting;
         }
 
-        // --- LALE VIBES ENGINE (REPLACED) ---
-        let eliteVibes = [];
-        let observer;
-
-        async function openVibes() {
-            document.getElementById('vibe-overlay').style.display = 'flex';
-            await loadVibesFromSupabase();
-        }
-
-        function closeVibes() {
-            document.getElementById('vibe-overlay').style.display = 'none';
-            document.querySelectorAll('.vibe-video').forEach(v => { v.pause(); v.currentTime = 0; });
-        }
-
-        async function loadVibesFromSupabase() {
-            const container = document.getElementById('vibeScrollContainer');
-            container.innerHTML = '<div style="padding:100px;text-align:center;"><i class="fa-solid fa-spinner fa-spin" style="font-size:40px;color:var(--gold);"></i></div>';
+        /* --- VISION AI ENGINE --- */
+        async function openVision() {
+            document.getElementById('vision-overlay').style.display = 'flex';
             try {
-                const { data, error } = await _supabase.from('vibes').select('*').order('created_at', { ascending: false });
-                if (error) throw error;
-                eliteVibes = data;
-                renderVibesFeed();
-            } catch (error) { container.innerHTML = '<div style="padding:100px;text-align:center;">Hata oluştu.</div>'; }
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+                document.getElementById('vision-cam').srcObject = stream;
+            } catch (err) { alert("Kamera izni gerekiyor."); }
         }
 
-        async function processLaleVideo(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            document.getElementById('laleSuccessSound').play();
-            const fileName = `${Date.now()}_${file.name}`;
-            try {
-                const { data: uploadData, error: upErr } = await _supabase.storage.from('Vídeos').upload(fileName, file);
-                if (upErr) throw upErr;
-                const { data: urlData } = _supabase.storage.from('Vídeos').getPublicUrl(fileName);
-                const userName = localStorage.getItem('lale_name') || "Elite User";
-                await _supabase.from('vibes').insert([{ src: urlData.publicUrl, user_name: userName.split(' ')[0], description: "Lale Vibes ✨ #Istanbul", likes: 0 }]);
-                await loadVibesFromSupabase();
-            } catch (e) { alert("Yükleme başarısız."); }
+        function closeVision() {
+            const stream = document.getElementById('vision-cam').srcObject;
+            if(stream) stream.getTracks().forEach(t => t.stop());
+            document.getElementById('vision-overlay').style.display = 'none';
         }
 
-        function renderVibesFeed() {
-            const container = document.getElementById('vibeScrollContainer');
-            container.innerHTML = eliteVibes.map(v => `
-                <div class="vibe-card" data-id="${v.id}">
-                    <video class="vibe-video" loop playsinline><source src="${v.src}" type="video/mp4"></video>
-                    <div class="lale-ai-filter"></div>
-                    <div class="vibe-ui-overlay">
-                        <div style="display:flex;justify-content:space-between;pointer-events:auto;align-items:center;">
-                            <span style="background:rgba(0,0,0,0.6);border:1px solid var(--gold);padding:8px 16px;border-radius:14px;font-weight:900;font-size:11px;color:var(--gold);">LALE GOLD AI</span>
-                            <i class="fa-solid fa-circle-xmark" onclick="closeVibes()" style="font-size:38px;color:#fff;cursor:pointer;"></i>
-                        </div>
-                        <div class="vibe-actions-right">
-                            <div class="action-btn" onclick="handleLike(this, '${v.id}')"><i class="fa-solid fa-heart"></i><span>${v.likes || 0}</span></div>
-                            <div class="action-btn" onclick="handleComment()"><i class="fa-solid fa-comment-dots"></i><span>118</span></div>
-                            <div class="action-btn" onclick="shareVibe()"><i class="fa-solid fa-share-nodes"></i><span>Paylaş</span></div>
-                        </div>
-                        <div class="vibe-user-info"><h4>@${(v.user_name || 'user').toLowerCase()}</h4><p>${v.description || ''}</p></div>
-                    </div>
-                </div>
-            `).join('');
-            setupTikTokScroll();
+        function setFilter(f, name, el) {
+            document.getElementById('vision-cam').style.filter = f;
+            document.getElementById('filterName').innerText = name;
+            document.querySelectorAll('.filter-dot').forEach(d => d.classList.remove('active'));
+            el.classList.add('active');
         }
 
-        function setupTikTokScroll() {
-            if(observer) observer.disconnect();
-            observer = new IntersectionObserver((entries) => {
-                entries.forEach(e => {
-                    const vid = e.target.querySelector('video');
-                    if (e.isIntersecting) vid.play().catch(x => {}); else { vid.pause(); vid.currentTime = 0; }
-                });
-            }, { threshold: 0.7 });
-            document.querySelectorAll('.vibe-card').forEach(c => observer.observe(c));
+        function toggle360() {
+            window.open('https://www.google.com/maps/@41.0082,28.9784,3a,75y,280h,90t/data=!3m8!1e1!3m6!1sAF1QipN3-y0x!', '_blank');
         }
 
-        async function handleLike(el, id) {
-            const icon = el.querySelector('i'); const span = el.querySelector('span');
-            if(icon.style.color === 'rgb(227, 10, 23)') return;
-            icon.style.color = '#E30A17'; icon.style.transform = 'scale(1.2)';
-            const newLikes = parseInt(span.innerText) + 1; span.innerText = newLikes;
-            await _supabase.from('vibes').update({ likes: newLikes }).eq('id', id);
-        }
-
-        function shareVibe() { navigator.share ? navigator.share({ title: 'Lale Vibes', url: window.location.href }) : alert("Link kopyalandı!"); }
-        function handleComment() { const m = prompt("Yorum yap:"); if(m) alert("Yorum iletildi."); }
-
-        // --- UTILS ---
+        /* --- UTILITIES --- */
         function triggerPharmacySearch() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(p => {
-                    window.open(`https://www.google.com/maps/search/nöbetçi+eczane/@$${p.coords.latitude},${p.coords.longitude},14z`, '_blank');
-                });
-            }
+            navigator.geolocation.getCurrentPosition(p => {
+                window.open(`https://www.google.com/maps/search/nöbetçi+eczane/@${p.coords.latitude},${p.coords.longitude},14z`, '_blank');
+            });
         }
+
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
         function saveUserData() {
-            const n = document.getElementById('nameIn').value; const s = document.getElementById('surnameIn').value;
+            const n = document.getElementById('nameIn').value;
+            const s = document.getElementById('surnameIn').value;
+            if(n) { 
+                const full = n + " " + s;
+                localStorage.setItem('lale_name', full); 
+                document.getElementById('userNameDisplay').innerText = "Hoş Geldiniz, " + full; 
+            }
             const f = document.getElementById('photoIn').files[0];
-            if(n) { const full = n + " " + (s || ""); localStorage.setItem('lale_name', full); document.getElementById('userNameDisplay').innerText = "Hoş Geldiniz, " + full; }
-            if(f) { const r = new FileReader(); r.onload = (e) => { localStorage.setItem('lale_pic', e.target.result); document.getElementById('avatarImg').src = e.target.result; }; r.readAsDataURL(f); }
+            if(f) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    localStorage.setItem('lale_pic', e.target.result);
+                    document.getElementById('avatarImg').src = e.target.result;
+                };
+                reader.readAsDataURL(f);
+            }
             closeModal('profileModal');
         }
+
         function loadProfile() {
-            const n = localStorage.getItem('lale_name'); const p = localStorage.getItem('lale_pic');
+            const n = localStorage.getItem('lale_name');
+            const p = localStorage.getItem('lale_pic');
             if(n) document.getElementById('userNameDisplay').innerText = "Hoş Geldiniz, " + n;
             if(p) document.getElementById('avatarImg').src = p;
         }
+
         function openMap(team) {
-            const q = { 'GS': 'Nefizade+Galatasaray', 'FB': 'Bagdat+Caddesi+Fenerbahce', 'BJK': 'Besiktas+Carsi' };
-            window.open(`https://www.google.com/maps/search/$${q[team]}`, '_blank');
+            const q = { 'GS': 'Nevizade+Galatasaray', 'FB': 'Bagdat+Caddesi' };
+            window.open(`https://www.google.com/maps/search/${q[team]}`, '_blank');
         }
-        function smartDeepLink(u, w) { window.location.href = u; setTimeout(() => { if (!document.hidden) window.open(w, '_blank'); }, 2000); }
+
+        function smartDeepLink(u, w) {
+            window.location.href = u;
+            setTimeout(() => { if (!document.hidden) window.open(w, '_blank'); }, 2000);
+        }
+
         async function initFortuneCamera() {
-            try { const s = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } }); document.getElementById('video-preview').srcObject = s; document.getElementById('cam-overlay').style.display = 'block'; } catch (e) { alert("Kamera izni gerekli."); }
+            try {
+                const s = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+                document.getElementById('video-preview').srcObject = s;
+                document.getElementById('cam-overlay').style.display = 'block';
+            } catch (e) { alert("İzin gerekli."); }
         }
-        function stopCamera() { const s = document.getElementById('video-preview').srcObject; if(s) s.getTracks().forEach(t => t.stop()); document.getElementById('cam-overlay').style.display = 'none'; }
+
+        function stopCamera() {
+            const s = document.getElementById('video-preview').srcObject;
+            if(s) s.getTracks().forEach(t => t.stop());
+            document.getElementById('cam-overlay').style.display = 'none';
+        }
+
         function captureFortune() {
-            stopCamera(); const r = ["Yolların açılıyor.", "Haber yakında.", "Bereket geliyor.", "Kısmetin parlıyor.", "Sürpriz var."];
-            document.getElementById('fortuneResult').innerText = r[Math.floor(Math.random()*r.length)]; openModal('fortuneModal');
+            stopCamera();
+            const r = ["Yolların aydınlık.", "Büyük bir kısmet yolda.", "Haberlerin en iyisi gelecek.", "Kısa sürede bir sürpriz var."];
+            document.getElementById('fortuneResult').innerText = r[Math.floor(Math.random()*r.length)];
+            openModal('fortuneModal');
         }
+
         function startTickerLoop() {
-            const n = ["Sanayi: İhracat rekoru!", "Süper Lig: Derbi heyecanı!", "Lale Pay: Özel indirimler.", "Hava: İstanbul güneşli."];
-            let i = 0; setInterval(() => { const t = document.getElementById('liveTicker'); if(t) { t.style.opacity = '0'; setTimeout(() => { t.innerText = n[i]; t.style.opacity = '1'; i = (i + 1) % n.length; }, 500); } }, 8000);
+            const news = ["Sanayi: Yerli üretimde dev adım!", "Turizm: İstanbul'a ziyaretçi akını!", "Spor: Derbi biletleri satışta!"];
+            let i = 0;
+            setInterval(() => {
+                const t = document.getElementById('liveTicker');
+                if(t) {
+                    t.style.opacity = '0';
+                    setTimeout(() => {
+                        t.innerText = news[i];
+                        t.style.opacity = '1';
+                        i = (i + 1) % news.length;
+                    }, 500);
+                }
+            }, 8000);
         }
     </script>
 </body>
