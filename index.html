@@ -88,6 +88,7 @@
             width: 50px; height: 50px; border-radius: 50%;
             padding: 2px; background: linear-gradient(45deg, var(--gold), #fff);
             box-shadow: 0 0 15px var(--gold-glow); cursor: pointer;
+            overflow: hidden;
         }
         .profile-img { width: 100%; height: 100%; border-radius: 50%; border: 2px solid #000; object-fit: cover; }
 
@@ -335,6 +336,12 @@
                     <div class="btn-premium" onclick="smartDeepLink('istanbulcard://', 'https://www.istanbulkart.istanbul')">
                         <i class="fa-solid fa-credit-card"></i><span>ISTANBUL CARD</span>
                     </div>
+                    <div class="btn-premium" onclick="smartDeepLink('tosla://', 'https://tosla.com')">
+                        <i class="fa-solid fa-wallet"></i><span>TOSLA</span>
+                    </div>
+                    <div class="btn-premium" onclick="smartDeepLink('pep://', 'https://peple.com.tr')">
+                        <i class="fa-solid fa-coins"></i><span>PEP</span>
+                    </div>
                 </div>
             </section>
 
@@ -406,7 +413,7 @@
     <script>
         // --- CONFIGURACIÓN DE SUPABASE (Inyectada desde Vercel) ---
         const SUPABASE_URL = 'https://ropsrvzdyhyfftdfzvmk.supabase.co';
-        const SUPABASE_KEY = 'TU_SUPABASE_ANON_KEY'; // Vercel usará la variable de entorno automáticamente si usas process.env en frameworks, pero para HTML plano lo manejamos vía constantes o inyección.
+        const SUPABASE_KEY = 'TU_SUPABASE_ANON_KEY'; 
         
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -427,8 +434,13 @@
 
         function updateGreeting() {
             const h = new Date().getHours();
-            let g = (h < 12) ? "Günaydın" : (h < 18) ? "Tünaydın" : "İyi Akşamlar";
-            document.getElementById('helloTitle').innerText = g;
+            let greeting = "";
+            if (h >= 5 && h < 12) greeting = "Günaydın";
+            else if (h >= 12 && h < 18) greeting = "Tünaydın";
+            else if (h >= 18 && h < 22) greeting = "İyi Akşamlar";
+            else greeting = "İyi Geceler";
+            
+            document.getElementById('helloTitle').innerText = greeting;
         }
 
         // --- LALE VIBES ENGINE (SUPABASE EDITION) ---
@@ -477,14 +489,12 @@
             const fileName = `${Date.now()}_${file.name}`;
             
             try {
-                // 1. Subir al Bucket "Vídeos"
                 const { data: uploadData, error: uploadError } = await _supabase.storage
                     .from('Vídeos')
                     .upload(fileName, file);
 
                 if (uploadError) throw uploadError;
 
-                // 2. Obtener URL pública
                 const { data: urlData } = _supabase.storage
                     .from('Vídeos')
                     .getPublicUrl(fileName);
@@ -492,7 +502,6 @@
                 const videoURL = urlData.publicUrl;
                 const userName = localStorage.getItem('lale_name') || "Elite User";
 
-                // 3. Guardar en tabla "vibes"
                 const { error: dbError } = await _supabase
                     .from('vibes')
                     .insert([{
@@ -577,7 +586,6 @@
             const newLikes = parseInt(span.innerText) + 1;
             span.innerText = newLikes;
             
-            // Actualizar en Supabase (RPC o Update simple)
             await _supabase.from('vibes').update({ likes: newLikes }).eq('id', id);
         }
 
@@ -600,7 +608,7 @@
                 navigator.geolocation.getCurrentPosition((position) => {
                     const lat = position.coords.latitude;
                     const lng = position.coords.longitude;
-                    window.open(`https://www.google.com/maps/search/Eczane/@${lat},${lng},14z`, '_blank');
+                    window.open(`https://www.google.com/maps/search/nöbetçi+eczane/@${lat},${lng},14z`, '_blank');
                 });
             }
         }
@@ -612,6 +620,7 @@
             const name = document.getElementById('nameIn').value;
             const sur = document.getElementById('surnameIn').value;
             const photo = document.getElementById('photoIn').files[0];
+            
             if(name) {
                 const full = name + " " + (sur || "");
                 localStorage.setItem('lale_name', full);
@@ -661,19 +670,23 @@
 
         function captureFortune() {
             stopCamera();
-            const results = ["Tabağında belirten yollar, yükselişin habercisi.", "Yüreğin ferahlıyor.", "Hanene bereket giriyor.", "Kısmetin açılıyor.", "Göz aydınlığı var!"];
+            const results = ["Tabağında beliren yollar, büyük bir yükselişin habercisi.", "Yüreğin ferahlıyor, beklediğin haber yakında geliyor.", "Hanene bereket ve huzur giriyor, hazırlıklı ol.", "Kısmetin altın gibi parlıyor, yeni bir kapı açılacak.", "Göz aydınlığı var! Sevdiğin birinden sürpriz var."];
             document.getElementById('fortuneResult').innerText = results[Math.floor(Math.random()*results.length)];
             openModal('fortuneModal');
         }
 
         function startTickerLoop() {
-            const news = ["Sanayi: Türkiye makine ihracatında yeni rekor!", "Süper Lig: Derbi biletleri tükendi!", "Lale Pay: İstanbul Card yüklemelerinde özel fırsat.", "Hava Durumu: Bahar havası devam ediyor."];
+            const news = ["Sanayi: Türkiye makine ihracatında yeni rekor!", "Süper Lig: Derbi biletleri tükendi!", "Lale Pay: İstanbul Card yüklemelerinde özel fırsat.", "Hava Durumu: Bahar havası tüm İstanbul'da hissediliyor."];
             let i = 0;
             setInterval(() => {
                 const ticker = document.getElementById('liveTicker');
                 if(ticker) {
-                    ticker.innerText = news[i];
-                    i = (i + 1) % news.length;
+                    ticker.style.opacity = '0';
+                    setTimeout(() => {
+                        ticker.innerText = news[i];
+                        ticker.style.opacity = '1';
+                        i = (i + 1) % news.length;
+                    }, 500);
                 }
             }, 8000);
         }
