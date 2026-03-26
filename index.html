@@ -19,6 +19,7 @@
             --glass-border: rgba(255, 255, 255, 0.12);
             --pharmacy: #2ecc71;
             --font-main: 'Plus Jakarta Sans', sans-serif;
+            --coffee: #bc8f8f;
         }
 
         /* --- BASE STYLES --- */
@@ -131,7 +132,7 @@
         .pharmacy-active { border: 1px solid var(--pharmacy) !important; box-shadow: 0 0 20px rgba(46, 204, 113, 0.2); }
         .pharmacy-btn { background: var(--pharmacy) !important; color: #fff; font-weight: 900; border-radius: 18px; padding: 18px; border: none; width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px; transition: 0.3s; }
 
-        /* --- GEN Z SPOT & DROP (REAL FUNCTIONALITY) --- */
+        /* --- GEN Z SPOT & DROP --- */
         #spot-overlay {
             position: fixed; inset: 0; background: #000; z-index: 2000001;
             display: none; flex-direction: column; padding: 60px 0 100px;
@@ -186,7 +187,7 @@
         }
         .btn-confirm {
             width: 100%; padding: 18px; background: var(--gold); color: #000;
-            border: none; border-radius: 15px; font-weight: 900;
+            border: none; border-radius: 15px; font-weight: 900; cursor: pointer;
         }
 
         .nav-dock {
@@ -203,14 +204,9 @@
         .dock-item i { font-size: 22px; }
         .dock-item span { font-size: 10px; font-weight: 800; }
 
-        /* --- EXIT ANIMATION --- */
-        .fade-exit {
-            opacity: 0 !important;
-            transform: scale(1.15);
-            filter: blur(20px);
-            transition: all 1.8s cubic-bezier(0.19, 1, 0.22, 1) !important;
-            pointer-events: none;
-        }
+        /* --- EXIT & SCAN ANIMATIONS --- */
+        .fade-exit { opacity: 0 !important; transform: scale(1.15); filter: blur(20px); transition: all 1.8s cubic-bezier(0.19, 1, 0.22, 1) !important; pointer-events: none; }
+        @keyframes scanMove { 0% { left: -50%; } 100% { left: 100%; } }
     </style>
 </head>
 <body>
@@ -250,12 +246,30 @@
                 </div>
             </div>
 
+            <section class="section-box" style="border: 2px solid var(--tr-red); background: linear-gradient(135deg, rgba(227, 10, 23, 0.2), rgba(0,0,0,0.9));">
+                <div class="box-header">
+                    <h3 style="color: #fff;"><i class="fa-solid fa-truck-medical"></i> Lale Acil Yardım</h3>
+                    <span style="font-size: 9px; background: #fff; color: var(--tr-red); padding: 4px 8px; border-radius: 20px; font-weight: 900;">24/7 LIVE</span>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button onclick="openModal('emergency-modal')" class="btn-confirm" style="flex: 1; background: var(--tr-red); font-size: 11px; color: #fff;">EN YAKIN HASTANE</button>
+                    <button onclick="window.location.href='tel:112'" class="btn-confirm" style="flex: 0.4; background: #fff; color: var(--tr-red);"><i class="fa-solid fa-phone"></i> 112</button>
+                </div>
+            </section>
+
+            <section class="section-box" style="border-color: var(--coffee); background: linear-gradient(135deg, rgba(44, 24, 16, 0.9), rgba(20, 20, 20, 0.8));">
+                <div class="box-header">
+                    <h3 style="color: var(--coffee);"><i class="fa-solid fa-wand-sparkles"></i> Kahve Falı AI</h3>
+                </div>
+                <p style="font-size: 11px; opacity: 0.8; margin-bottom: 15px;">Fincanın fotoğrafını çek, Lale AI geleceğini fısıldasın.</p>
+                <button class="btn-confirm" onclick="startCoffeeReading()" style="background: var(--coffee); color: #fff;">FOTOĞRAF GÖNDER</button>
+            </section>
+
             <section class="section-box" style="border-color: var(--gold); background: linear-gradient(135deg, rgba(20,20,20,0.9), rgba(40,40,40,0.5));">
                 <div class="box-header">
                     <h3><i class="fa-solid fa-camera-retro"></i> Lale Spot & Drop</h3>
-                    <span style="font-size: 9px; background: var(--tr-red); padding: 4px 8px; border-radius: 20px; font-weight: 900;">YENİ</span>
                 </div>
-                <p style="font-size: 12px; opacity: 0.8; margin-bottom: 20px; line-height: 1.5;">İstanbul'un en "trendy" mekanlarını visual bir feed'de keşfet. Like at, kaydet y kendi spotunu yakala.</p>
+                <p style="font-size: 12px; opacity: 0.8; margin-bottom: 20px;">İstanbul'un en "trendy" mekanlarını keşfet.</p>
                 <button class="btn-confirm" onclick="openSpotFeed()" style="background: linear-gradient(45deg, var(--gold), #fff); box-shadow: 0 5px 20px var(--gold-glow);">KEŞFETMEYE BAŞLA</button>
             </section>
 
@@ -291,16 +305,32 @@
         </nav>
     </div>
 
-    <div id="spot-overlay">
-        <div class="spot-header">
-            <div class="logo-text" style="font-size: 18px;">LALE SPOT</div>
-            <i class="fa-solid fa-circle-xmark" onclick="closeSpotFeed()" style="font-size: 35px; color: #fff; cursor: pointer;"></i>
+    <div id="emergency-modal" class="glass-modal">
+        <div class="modal-body" style="border-color: var(--tr-red);">
+            <i class="fa-solid fa-hospital-user" style="font-size: 40px; color: var(--tr-red); margin-bottom: 15px;"></i>
+            <h2 style="font-size: 18px; margin-bottom: 20px;">Acil Durum Tipi</h2>
+            <button onclick="executeEmergencySearch('hastane')" class="btn-confirm" style="margin-bottom: 10px; background: #222; border: 1px solid var(--glass-border); color: #fff;">Genel Acil</button>
+            <button onclick="executeEmergencySearch('çocuk hastanesi')" class="btn-confirm" style="margin-bottom: 10px; background: #222; border: 1px solid var(--glass-border); color: #fff;">Çocuk Acil</button>
+            <button onclick="executeEmergencySearch('diş hastanesi')" class="btn-confirm" style="margin-bottom: 20px; background: #222; border: 1px solid var(--glass-border); color: #fff;">Diş Acil (24h)</button>
+            <p onclick="closeModal('emergency-modal')" style="cursor: pointer; opacity: 0.5;">Vazgeç</p>
         </div>
-        <div class="spot-feed" id="spotFeedContainer"></div>
-        <audio id="laleSuccessSound" src="https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3"></audio>
-        <input type="file" id="spotPhotoIn" accept="image/*" style="display: none;" onchange="processSpotPhoto(event)">
-        <div class="spot-upload-trigger" onclick="document.getElementById('spotPhotoIn').click()">
-            <i class="fa-solid fa-camera"></i>
+    </div>
+
+    <div id="ai-oracle-overlay" class="glass-modal">
+        <div class="modal-body" style="border-color: var(--coffee);">
+            <div id="scan-container">
+                <div class="tulip-3d" style="animation-duration: 1s; margin: 0 auto;">
+                    <div class="petal-3d p-1" style="background: var(--coffee);"></div>
+                </div>
+                <h3 id="oracle-status" style="margin-top: 20px; color: var(--coffee);">AI ANALİZ EDİLİYOR...</h3>
+                <div style="width: 100%; height: 2px; background: var(--coffee); margin-top: 10px; position: relative; overflow: hidden;">
+                    <div style="position: absolute; width: 50%; height: 100%; background: #fff; animation: scanMove 2s infinite;"></div>
+                </div>
+            </div>
+            <div id="oracle-result" style="display: none; text-align: left; font-size: 13px; line-height: 1.6;">
+                <p id="fortune-text" style="font-style: italic;"></p>
+                <button class="btn-confirm" onclick="closeModal('ai-oracle-overlay')" style="margin-top: 20px; background: var(--coffee); color: #fff;">TEŞEKKÜRLER</button>
+            </div>
         </div>
     </div>
 
@@ -310,21 +340,28 @@
             <input type="text" id="nameIn" placeholder="Adınız">
             <input type="file" id="photoIn" accept="image/*">
             <button class="btn-confirm" onclick="saveUserData()">KAYDET</button>
-            
             <button onclick="terminateSession()" style="margin-top: 30px; background: none; border: 1px solid var(--tr-red); color: var(--tr-red); padding: 12px 25px; border-radius: 15px; font-weight: 800; font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%;">
                 <i class="fa-solid fa-power-off"></i> OTURUMU KAPAT
             </button>
-            
-            <p onclick="closeModal('profileModal')" style="margin-top: 20px; cursor: pointer; opacity: 0.6; font-size: 12px;">Kapat</p>
+            <p onclick="closeModal('profileModal')" style="margin-top: 20px; cursor: pointer; opacity: 0.6;">Kapat</p>
         </div>
+    </div>
+
+    <div id="spot-overlay">
+        <div class="spot-header">
+            <div class="logo-text" style="font-size: 18px;">LALE SPOT</div>
+            <i class="fa-solid fa-circle-xmark" onclick="closeSpotFeed()" style="font-size: 35px; color: #fff; cursor: pointer;"></i>
+        </div>
+        <div class="spot-feed" id="spotFeedContainer"></div>
+        <audio id="laleSuccessSound" src="https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3"></audio>
+        <input type="file" id="spotPhotoIn" accept="image/*" style="display: none;" onchange="processSpotPhoto(event)">
+        <div class="spot-upload-trigger" onclick="document.getElementById('spotPhotoIn').click()"><i class="fa-solid fa-camera"></i></div>
     </div>
 
     <script>
         const mockSpots = [
             { id: 1, img: 'https://images.pexels.com/photos/1549326/pexels-photo-1549326.jpeg?auto=compress&cs=tinysrgb&w=400', title: 'Galata Rooftop', loc: 'Karaköy' },
-            { id: 2, img: 'https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg?auto=compress&cs=tinysrgb&w=400', title: 'Specialty Coffee', loc: 'Beşiktaş' },
-            { id: 3, img: 'https://images.pexels.com/photos/1647121/pexels-photo-1647121.jpeg?auto=compress&cs=tinysrgb&w=400', title: 'Street Art Wall', loc: 'Kadıköy' },
-            { id: 4, img: 'https://images.pexels.com/photos/2108813/pexels-photo-2108813.jpeg?auto=compress&cs=tinysrgb&w=400', title: 'Vintage Shop', loc: 'Balat' }
+            { id: 2, img: 'https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg?auto=compress&cs=tinysrgb&w=400', title: 'Specialty Coffee', loc: 'Beşiktaş' }
         ];
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -344,75 +381,39 @@
             document.getElementById('helloTitle').innerText = greeting;
         }
 
-        function openSpotFeed() {
-            document.getElementById('spot-overlay').style.display = 'flex';
-            renderSpotFeed();
-        }
-
-        function closeSpotFeed() { document.getElementById('spot-overlay').style.display = 'none'; }
-
-        function renderSpotFeed() {
-            const container = document.getElementById('spotFeedContainer');
-            const savedLikes = JSON.parse(localStorage.getItem('lale_likes') || '{}');
-            const savedBookmarks = JSON.parse(localStorage.getItem('lale_bookmarks') || '{}');
-
-            container.innerHTML = mockSpots.map(spot => `
-                <div class="spot-card">
-                    <img src="${spot.img}" class="spot-img" onerror="this.src='https://via.placeholder.com/200x300?text=Lale+Spot'">
-                    <div class="spot-actions">
-                        <div class="spot-action-btn ${savedLikes[spot.id] ? 'liked' : ''}" onclick="toggleLike(${spot.id}, this)">
-                            <i class="fa-solid fa-heart"></i>
-                        </div>
-                        <div class="spot-action-btn" onclick="toggleBookmark(${spot.id}, this)" style="color: ${savedBookmarks[spot.id] ? 'var(--gold)' : '#fff'}">
-                            <i class="${savedBookmarks[spot.id] ? 'fa-solid' : 'fa-regular'} fa-bookmark"></i>
-                        </div>
-                    </div>
-                    <div class="spot-info">
-                        <p class="spot-title">${spot.title}</p>
-                        <p class="spot-loc"><i class="fa-solid fa-location-dot"></i> ${spot.loc}</p>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function toggleLike(id, el) {
-            let likes = JSON.parse(localStorage.getItem('lale_likes') || '{}');
-            likes[id] = !likes[id];
-            localStorage.setItem('lale_likes', JSON.stringify(likes));
-            el.classList.toggle('liked');
-        }
-
-        function toggleBookmark(id, el) {
-            let books = JSON.parse(localStorage.getItem('lale_bookmarks') || '{}');
-            books[id] = !books[id];
-            localStorage.setItem('lale_bookmarks', JSON.stringify(books));
-            renderSpotFeed();
-        }
-
-        function processSpotPhoto(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const newSpot = { id: Date.now(), img: e.target.result, title: 'Yeni Keşif', loc: 'İstanbul' };
-                mockSpots.unshift(newSpot);
-                renderSpotFeed();
-                document.getElementById('laleSuccessSound').play();
-            };
-            reader.readAsDataURL(file);
-        }
-
-        function triggerPharmacySearch() {
+        /* --- LALE ACIL LOGIC --- */
+        function executeEmergencySearch(type) {
             if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(p => {
-                    const url = `https://www.google.com/maps/search/n%C3%B6bet%C3%A7i+eczane/@${p.coords.latitude},${p.coords.longitude},14z`;
+                navigator.geolocation.getCurrentPosition(pos => {
+                    const url = `https://www.google.com/maps/search/${type}+açık/@${pos.coords.latitude},${pos.coords.longitude},14z`;
                     window.open(url, '_blank');
-                }, () => {
-                    window.open('https://www.google.com/maps/search/n%C3%B6bet%C3%A7i+eczane', '_blank');
-                });
-            } else {
-                window.open('https://www.google.com/maps/search/n%C3%B6bet%C3%A7i+eczane', '_blank');
+                }, () => { window.open(`https://www.google.com/maps/search/${type}+istanbul`, '_blank'); });
             }
+            closeModal('emergency-modal');
+        }
+
+        /* --- KAHVE FALI LOGIC --- */
+        function startCoffeeReading() {
+            const inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'image/*';
+            inp.onchange = () => {
+                openModal('ai-oracle-overlay');
+                document.getElementById('scan-container').style.display = 'block';
+                document.getElementById('oracle-result').style.display = 'none';
+                setTimeout(() => {
+                    const fortunes = [
+                        "Nazar var ama dualarla geçecek. Üç vakte kadar büyük bir kapı açılıyor.",
+                        "Yolun açık, bir kuş haber getiriyor. Maddi bir ferahlık kapıda.",
+                        "Kalbindeki o kişi seni düşünüyor. Yeni bir başlangıç simgesi görüyorum.",
+                        "Fincanında bir balık var, kısmetin taşıyor! Sabırlı ol.",
+                        "Bir dost görünen düşman var, çevrene dikkat et."
+                    ];
+                    document.getElementById('scan-container').style.display = 'none';
+                    document.getElementById('oracle-result').style.display = 'block';
+                    document.getElementById('fortune-text').innerText = fortunes[Math.floor(Math.random()*fortunes.length)];
+                    document.getElementById('laleSuccessSound').play();
+                }, 4000);
+            };
+            inp.click();
         }
 
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
@@ -447,36 +448,33 @@
 
         function startTickerLoop() {
             const n = ["Spot: Karaköy'deki yeni rooftop eklendi!", "Trend: Vintage giyim Balat'ta yükselişte.", "Lale Pay: Papara indirimleri aktif."];
-            let i = 0; 
-            setInterval(() => {
+            let i = 0; setInterval(() => {
                 const t = document.getElementById('liveTicker');
-                if(t) { 
-                    t.style.opacity = '0'; 
-                    setTimeout(() => { t.innerText = n[i]; t.style.opacity = '1'; i = (i + 1) % n.length; }, 500); 
-                }
+                if(t) { t.style.opacity = '0'; setTimeout(() => { t.innerText = n[i]; t.style.opacity = '1'; i = (i + 1) % n.length; }, 500); }
             }, 8000);
         }
 
-        /* --- TERMINATE SESSION LOGIC --- */
         function terminateSession() {
             closeModal('profileModal');
-            const preloader = document.getElementById('lale-preloader');
-            const app = document.getElementById('laleApp');
-            const text = document.getElementById('preloader-text');
-            
-            app.classList.add('fade-exit');
-            
+            document.getElementById('laleApp').classList.add('fade-exit');
             setTimeout(() => {
-                preloader.style.display = 'flex';
-                preloader.style.opacity = '1';
-                text.innerText = "Görüşmek üzere..."; 
-                
-                setTimeout(() => {
-                    // Si quieres que el usuario empiece de cero la próxima vez, descomenta estas líneas:
-                    // localStorage.clear();
-                    window.location.reload();
-                }, 2000);
+                const p = document.getElementById('lale-preloader');
+                p.style.display = 'flex'; p.style.opacity = '1';
+                document.getElementById('preloader-text').innerText = "Görüşmek üzere..."; 
+                setTimeout(() => { window.location.reload(); }, 2000);
             }, 600);
+        }
+
+        function openSpotFeed() { document.getElementById('spot-overlay').style.display = 'flex'; renderSpotFeed(); }
+        function closeSpotFeed() { document.getElementById('spot-overlay').style.display = 'none'; }
+        function renderSpotFeed() {
+            const container = document.getElementById('spotFeedContainer');
+            container.innerHTML = mockSpots.map(spot => `
+                <div class="spot-card">
+                    <img src="${spot.img}" class="spot-img">
+                    <div class="spot-info"><p class="spot-title">${spot.title}</p><p class="spot-loc">${spot.loc}</p></div>
+                </div>
+            `).join('');
         }
     </script>
 </body>
