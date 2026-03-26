@@ -411,18 +411,13 @@
     </div>
 
     <script>
-        // --- CONFIGURACIÓN DE SUPABASE (Inyectada desde Vercel) ---
+        // --- SUPABASE CONFIG ---
         const SUPABASE_URL = 'https://ropsrvzdyhyfftdfzvmk.supabase.co';
-        const SUPABASE_KEY = 'TU_SUPABASE_ANON_KEY'; 
-        
+        const SUPABASE_KEY = 'YOUR_ANON_KEY'; // Buraya kendi anon keyini koymalısın
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // APP INITIALIZATION
         document.addEventListener('DOMContentLoaded', () => {
-            updateGreeting();
-            loadProfile();
-            startTickerLoop();
-            
+            updateGreeting(); loadProfile(); startTickerLoop();
             setTimeout(() => {
                 document.getElementById('lale-preloader').style.opacity = '0';
                 setTimeout(() => {
@@ -434,16 +429,11 @@
 
         function updateGreeting() {
             const h = new Date().getHours();
-            let greeting = "";
-            if (h >= 5 && h < 12) greeting = "Günaydın";
-            else if (h >= 12 && h < 18) greeting = "Tünaydın";
-            else if (h >= 18 && h < 22) greeting = "İyi Akşamlar";
-            else greeting = "İyi Geceler";
-            
+            let greeting = h >= 5 && h < 12 ? "Günaydın" : h >= 12 && h < 18 ? "Tünaydın" : h >= 18 && h < 22 ? "İyi Akşamlar" : "İyi Geceler";
             document.getElementById('helloTitle').innerText = greeting;
         }
 
-        // --- LALE VIBES ENGINE (SUPABASE EDITION) ---
+        // --- LALE VIBES ENGINE (REPLACED) ---
         let eliteVibes = [];
         let observer;
 
@@ -454,241 +444,118 @@
 
         function closeVibes() {
             document.getElementById('vibe-overlay').style.display = 'none';
-            document.querySelectorAll('.vibe-video').forEach(v => {
-                v.pause();
-                v.currentTime = 0;
-            });
+            document.querySelectorAll('.vibe-video').forEach(v => { v.pause(); v.currentTime = 0; });
         }
 
         async function loadVibesFromSupabase() {
             const container = document.getElementById('vibeScrollContainer');
-            container.innerHTML = '<div style="padding: 100px; text-align: center;"><i class="fa-solid fa-spinner fa-spin" style="font-size: 40px; color: var(--gold);"></i><p style="margin-top:10px">Vibes yükleniyor...</p></div>';
-
+            container.innerHTML = '<div style="padding:100px;text-align:center;"><i class="fa-solid fa-spinner fa-spin" style="font-size:40px;color:var(--gold);"></i></div>';
             try {
-                const { data, error } = await _supabase
-                    .from('vibes')
-                    .select('*')
-                    .order('created_at', { ascending: false });
-
+                const { data, error } = await _supabase.from('vibes').select('*').order('created_at', { ascending: false });
                 if (error) throw error;
                 eliteVibes = data;
                 renderVibesFeed();
-            } catch (error) {
-                console.error("Supabase error:", error);
-                container.innerHTML = '<div style="padding: 100px; text-align: center;">Yükleme hatası. Lütfen Supabase ayarlarını kontrol edin.</div>';
-            }
+            } catch (error) { container.innerHTML = '<div style="padding:100px;text-align:center;">Hata oluştu.</div>'; }
         }
 
         async function processLaleVideo(event) {
             const file = event.target.files[0];
             if (!file) return;
-
             document.getElementById('laleSuccessSound').play();
-            alert("Video Lale Cloud (Supabase) yükleniyor...");
-
             const fileName = `${Date.now()}_${file.name}`;
-            
             try {
-                const { data: uploadData, error: uploadError } = await _supabase.storage
-                    .from('Vídeos')
-                    .upload(fileName, file);
-
-                if (uploadError) throw uploadError;
-
-                const { data: urlData } = _supabase.storage
-                    .from('Vídeos')
-                    .getPublicUrl(fileName);
-
-                const videoURL = urlData.publicUrl;
+                const { data: uploadData, error: upErr } = await _supabase.storage.from('Vídeos').upload(fileName, file);
+                if (upErr) throw upErr;
+                const { data: urlData } = _supabase.storage.from('Vídeos').getPublicUrl(fileName);
                 const userName = localStorage.getItem('lale_name') || "Elite User";
-
-                const { error: dbError } = await _supabase
-                    .from('vibes')
-                    .insert([{
-                        src: videoURL,
-                        user_name: userName.split(' ')[0].toLowerCase(),
-                        description: "Lale Gold AI ile paylaşıldı. ✨ #MyLaleStyle",
-                        likes: 0
-                    }]);
-
-                if (dbError) throw dbError;
-
+                await _supabase.from('vibes').insert([{ src: urlData.publicUrl, user_name: userName.split(' ')[0], description: "Lale Vibes ✨ #Istanbul", likes: 0 }]);
                 await loadVibesFromSupabase();
-            } catch (error) {
-                console.error("Upload error:", error);
-                alert("Yükleme hatası! Lote: " + error.message);
-            }
+            } catch (e) { alert("Yükleme başarısız."); }
         }
 
         function renderVibesFeed() {
             const container = document.getElementById('vibeScrollContainer');
-            if(eliteVibes.length === 0) {
-                container.innerHTML = '<div style="padding: 100px; text-align: center; color:white;">Henüz video yok. İlk videoyu sen çek!</div>';
-                return;
-            }
-
-            container.innerHTML = eliteVibes.map((v, i) => `
+            container.innerHTML = eliteVibes.map(v => `
                 <div class="vibe-card" data-id="${v.id}">
-                    <video class="vibe-video" loop playsinline preload="auto">
-                        <source src="${v.src}" type="video/mp4">
-                    </video>
+                    <video class="vibe-video" loop playsinline><source src="${v.src}" type="video/mp4"></video>
                     <div class="lale-ai-filter"></div>
                     <div class="vibe-ui-overlay">
-                        <div style="display: flex; justify-content: space-between; pointer-events: auto; align-items:center;">
-                            <span style="background:rgba(0,0,0,0.6); border:1px solid var(--gold); padding:8px 16px; border-radius:14px; font-weight:900; font-size:11px; color:var(--gold);">LALE GOLD AI</span>
-                            <i class="fa-solid fa-circle-xmark" onclick="closeVibes()" style="font-size: 38px; color: #fff; cursor:pointer;"></i>
+                        <div style="display:flex;justify-content:space-between;pointer-events:auto;align-items:center;">
+                            <span style="background:rgba(0,0,0,0.6);border:1px solid var(--gold);padding:8px 16px;border-radius:14px;font-weight:900;font-size:11px;color:var(--gold);">LALE GOLD AI</span>
+                            <i class="fa-solid fa-circle-xmark" onclick="closeVibes()" style="font-size:38px;color:#fff;cursor:pointer;"></i>
                         </div>
-                        
                         <div class="vibe-actions-right">
-                            <div class="action-btn" onclick="handleLike(this, '${v.id}')">
-                                <i class="fa-solid fa-heart"></i>
-                                <span>${v.likes || 0}</span>
-                            </div>
+                            <div class="action-btn" onclick="handleLike(this, '${v.id}')"><i class="fa-solid fa-heart"></i><span>${v.likes || 0}</span></div>
                             <div class="action-btn" onclick="handleComment()"><i class="fa-solid fa-comment-dots"></i><span>118</span></div>
                             <div class="action-btn" onclick="shareVibe()"><i class="fa-solid fa-share-nodes"></i><span>Paylaş</span></div>
                         </div>
-
-                        <div class="vibe-user-info">
-                            <h4>@${(v.user_name || 'user').replace('@','')}</h4>
-                            <p>${v.description || ''}</p>
-                        </div>
+                        <div class="vibe-user-info"><h4>@${(v.user_name || 'user').toLowerCase()}</h4><p>${v.description || ''}</p></div>
                     </div>
                 </div>
             `).join('');
-            
             setupTikTokScroll();
         }
 
         function setupTikTokScroll() {
             if(observer) observer.disconnect();
-            const options = { threshold: 0.7 };
             observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    const vid = entry.target.querySelector('video');
-                    if (entry.isIntersecting) {
-                        vid.play().catch(e => console.log("Play blocked"));
-                    } else {
-                        vid.pause();
-                        vid.currentTime = 0;
-                    }
+                entries.forEach(e => {
+                    const vid = e.target.querySelector('video');
+                    if (e.isIntersecting) vid.play().catch(x => {}); else { vid.pause(); vid.currentTime = 0; }
                 });
-            }, options);
+            }, { threshold: 0.7 });
             document.querySelectorAll('.vibe-card').forEach(c => observer.observe(c));
         }
 
         async function handleLike(el, id) {
-            const icon = el.querySelector('i');
-            const span = el.querySelector('span');
+            const icon = el.querySelector('i'); const span = el.querySelector('span');
             if(icon.style.color === 'rgb(227, 10, 23)') return;
-
-            icon.style.color = '#E30A17';
-            icon.style.transform = 'scale(1.3)';
-            const newLikes = parseInt(span.innerText) + 1;
-            span.innerText = newLikes;
-            
+            icon.style.color = '#E30A17'; icon.style.transform = 'scale(1.2)';
+            const newLikes = parseInt(span.innerText) + 1; span.innerText = newLikes;
             await _supabase.from('vibes').update({ likes: newLikes }).eq('id', id);
         }
 
-        function shareVibe() {
-            if (navigator.share) {
-                navigator.share({ title: 'Lale Vibes', text: 'Elite Istanbul Style', url: window.location.href });
-            } else {
-                alert("Paylaşım linki kopyalandı!");
-            }
-        }
+        function shareVibe() { navigator.share ? navigator.share({ title: 'Lale Vibes', url: window.location.href }) : alert("Link kopyalandı!"); }
+        function handleComment() { const m = prompt("Yorum yap:"); if(m) alert("Yorum iletildi."); }
 
-        function handleComment() {
-            const msg = prompt("Yorumunuzu yazın:");
-            if(msg) alert("Yorumunuz iletildi!");
-        }
-
-        // --- UTILIDADES ---
+        // --- UTILS ---
         function triggerPharmacySearch() {
             if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition((position) => {
-                    const lat = position.coords.latitude;
-                    const lng = position.coords.longitude;
-                    window.open(`https://www.google.com/maps/search/nöbetçi+eczane/@${lat},${lng},14z`, '_blank');
+                navigator.geolocation.getCurrentPosition(p => {
+                    window.open(`https://www.google.com/maps/search/nöbetçi+eczane/@$${p.coords.latitude},${p.coords.longitude},14z`, '_blank');
                 });
             }
         }
-
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-
         function saveUserData() {
-            const name = document.getElementById('nameIn').value;
-            const sur = document.getElementById('surnameIn').value;
-            const photo = document.getElementById('photoIn').files[0];
-            
-            if(name) {
-                const full = name + " " + (sur || "");
-                localStorage.setItem('lale_name', full);
-                document.getElementById('userNameDisplay').innerText = "Hoş Geldiniz, " + full;
-            }
-            if(photo) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    localStorage.setItem('lale_pic', e.target.result);
-                    document.getElementById('avatarImg').src = e.target.result;
-                };
-                reader.readAsDataURL(photo);
-            }
+            const n = document.getElementById('nameIn').value; const s = document.getElementById('surnameIn').value;
+            const f = document.getElementById('photoIn').files[0];
+            if(n) { const full = n + " " + (s || ""); localStorage.setItem('lale_name', full); document.getElementById('userNameDisplay').innerText = "Hoş Geldiniz, " + full; }
+            if(f) { const r = new FileReader(); r.onload = (e) => { localStorage.setItem('lale_pic', e.target.result); document.getElementById('avatarImg').src = e.target.result; }; r.readAsDataURL(f); }
             closeModal('profileModal');
         }
-
         function loadProfile() {
-            const n = localStorage.getItem('lale_name');
-            const p = localStorage.getItem('lale_pic');
+            const n = localStorage.getItem('lale_name'); const p = localStorage.getItem('lale_pic');
             if(n) document.getElementById('userNameDisplay').innerText = "Hoş Geldiniz, " + n;
             if(p) document.getElementById('avatarImg').src = p;
         }
-
         function openMap(team) {
-            const queries = { 'GS': 'Nefizade+Galatasaray', 'FB': 'Bagdat+Caddesi+Fenerbahce', 'BJK': 'Besiktas+Carsi' };
-            window.open(`https://www.google.com/maps/search/${queries[team]}`, '_blank');
+            const q = { 'GS': 'Nefizade+Galatasaray', 'FB': 'Bagdat+Caddesi+Fenerbahce', 'BJK': 'Besiktas+Carsi' };
+            window.open(`https://www.google.com/maps/search/$${q[team]}`, '_blank');
         }
-
-        function smartDeepLink(appUri, webUrl) {
-            window.location.href = appUri;
-            setTimeout(() => { if (!document.hidden) window.open(webUrl, '_blank'); }, 2000);
-        }
-
+        function smartDeepLink(u, w) { window.location.href = u; setTimeout(() => { if (!document.hidden) window.open(w, '_blank'); }, 2000); }
         async function initFortuneCamera() {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-                document.getElementById('video-preview').srcObject = stream;
-                document.getElementById('cam-overlay').style.display = 'block';
-            } catch (err) { alert("Kamera izni gerekiyor."); }
+            try { const s = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } }); document.getElementById('video-preview').srcObject = s; document.getElementById('cam-overlay').style.display = 'block'; } catch (e) { alert("Kamera izni gerekli."); }
         }
-
-        function stopCamera() {
-            const stream = document.getElementById('video-preview').srcObject;
-            if(stream) stream.getTracks().forEach(t => t.stop());
-            document.getElementById('cam-overlay').style.display = 'none';
-        }
-
+        function stopCamera() { const s = document.getElementById('video-preview').srcObject; if(s) s.getTracks().forEach(t => t.stop()); document.getElementById('cam-overlay').style.display = 'none'; }
         function captureFortune() {
-            stopCamera();
-            const results = ["Tabağında beliren yollar, büyük bir yükselişin habercisi.", "Yüreğin ferahlıyor, beklediğin haber yakında geliyor.", "Hanene bereket ve huzur giriyor, hazırlıklı ol.", "Kısmetin altın gibi parlıyor, yeni bir kapı açılacak.", "Göz aydınlığı var! Sevdiğin birinden sürpriz var."];
-            document.getElementById('fortuneResult').innerText = results[Math.floor(Math.random()*results.length)];
-            openModal('fortuneModal');
+            stopCamera(); const r = ["Yolların açılıyor.", "Haber yakında.", "Bereket geliyor.", "Kısmetin parlıyor.", "Sürpriz var."];
+            document.getElementById('fortuneResult').innerText = r[Math.floor(Math.random()*r.length)]; openModal('fortuneModal');
         }
-
         function startTickerLoop() {
-            const news = ["Sanayi: Türkiye makine ihracatında yeni rekor!", "Süper Lig: Derbi biletleri tükendi!", "Lale Pay: İstanbul Card yüklemelerinde özel fırsat.", "Hava Durumu: Bahar havası tüm İstanbul'da hissediliyor."];
-            let i = 0;
-            setInterval(() => {
-                const ticker = document.getElementById('liveTicker');
-                if(ticker) {
-                    ticker.style.opacity = '0';
-                    setTimeout(() => {
-                        ticker.innerText = news[i];
-                        ticker.style.opacity = '1';
-                        i = (i + 1) % news.length;
-                    }, 500);
-                }
-            }, 8000);
+            const n = ["Sanayi: İhracat rekoru!", "Süper Lig: Derbi heyecanı!", "Lale Pay: Özel indirimler.", "Hava: İstanbul güneşli."];
+            let i = 0; setInterval(() => { const t = document.getElementById('liveTicker'); if(t) { t.style.opacity = '0'; setTimeout(() => { t.innerText = n[i]; t.style.opacity = '1'; i = (i + 1) % n.length; }, 500); } }, 8000);
         }
     </script>
 </body>
