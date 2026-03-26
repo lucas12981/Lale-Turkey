@@ -131,7 +131,7 @@
         .pharmacy-active { border: 1px solid var(--pharmacy) !important; box-shadow: 0 0 20px rgba(46, 204, 113, 0.2); }
         .pharmacy-btn { background: var(--pharmacy) !important; color: #fff; font-weight: 900; border-radius: 18px; padding: 18px; border: none; width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px; transition: 0.3s; }
 
-        /* --- GEN Z SPOT & DROP (NEW WINNER FUNCTION) --- */
+        /* --- GEN Z SPOT & DROP (REAL FUNCTIONALITY) --- */
         #spot-overlay {
             position: fixed; inset: 0; background: #000; z-index: 2000001;
             display: none; flex-direction: column; padding: 60px 0 100px;
@@ -158,7 +158,7 @@
         .spot-action-btn {
             width: 35px; height: 35px; border-radius: 50%; background: rgba(0,0,0,0.7);
             border: 1px solid var(--glass-border); display: flex; align-items: center; justify-content: center;
-            color: #fff; font-size: 16px; pointer-events: auto; cursor: pointer;
+            color: #fff; font-size: 16px; pointer-events: auto; cursor: pointer; transition: 0.3s;
         }
         .spot-action-btn.liked i { color: var(--tr-red); }
         
@@ -167,7 +167,7 @@
             background: linear-gradient(45deg, var(--gold), #fff); border-radius: 50%;
             display: flex; align-items: center; justify-content: center; color: #000;
             font-size: 24px; box-shadow: 0 10px 30px var(--gold-glow); z-index: 2000002;
-            cursor: pointer; animation: glowPulse 2s infinite;
+            cursor: pointer;
         }
 
         /* --- CORE UTILS & NAV --- */
@@ -202,9 +202,6 @@
         .dock-item.active { color: var(--tr-red); }
         .dock-item i { font-size: 22px; }
         .dock-item span { font-size: 10px; font-weight: 800; }
-
-        #cam-overlay { position: fixed; inset: 0; z-index: 2000000; display: none; background: #000; }
-        #video-preview { width: 100%; height: 100%; object-fit: cover; }
     </style>
 </head>
 <body>
@@ -288,12 +285,9 @@
     <div id="spot-overlay">
         <div class="spot-header">
             <div class="logo-text" style="font-size: 18px;">LALE SPOT</div>
-            <i class="fa-solid fa-circle-xmark" onclick="closeSpotFeed()" style="font-size: 35px; color: #fff; cursor: pointer; pointer-events: auto;"></i>
+            <i class="fa-solid fa-circle-xmark" onclick="closeSpotFeed()" style="font-size: 35px; color: #fff; cursor: pointer;"></i>
         </div>
-        
-        <div class="spot-feed" id="spotFeedContainer">
-            </div>
-
+        <div class="spot-feed" id="spotFeedContainer"></div>
         <audio id="laleSuccessSound" src="https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3"></audio>
         <input type="file" id="spotPhotoIn" accept="image/*" style="display: none;" onchange="processSpotPhoto(event)">
         <div class="spot-upload-trigger" onclick="document.getElementById('spotPhotoIn').click()">
@@ -312,11 +306,22 @@
     </div>
 
     <script>
+        // DATOS REALES E IMÁGENES ESTABLES
+        const mockSpots = [
+            { id: 1, img: 'https://images.pexels.com/photos/1549326/pexels-photo-1549326.jpeg?auto=compress&cs=tinysrgb&w=400', title: 'Galata Rooftop', loc: 'Karaköy' },
+            { id: 2, img: 'https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg?auto=compress&cs=tinysrgb&w=400', title: 'Specialty Coffee', loc: 'Beşiktaş' },
+            { id: 3, img: 'https://images.pexels.com/photos/1647121/pexels-photo-1647121.jpeg?auto=compress&cs=tinysrgb&w=400', title: 'Street Art Wall', loc: 'Kadıköy' },
+            { id: 4, img: 'https://images.pexels.com/photos/2108813/pexels-photo-2108813.jpeg?auto=compress&cs=tinysrgb&w=400', title: 'Vintage Shop', loc: 'Balat' }
+        ];
+
         document.addEventListener('DOMContentLoaded', () => {
             updateGreeting(); loadProfile(); startTickerLoop();
             setTimeout(() => {
                 document.getElementById('lale-preloader').style.opacity = '0';
-                setTimeout(() => { document.getElementById('lale-preloader').style.display = 'none'; document.getElementById('laleApp').classList.add('visible'); }, 1000);
+                setTimeout(() => { 
+                    document.getElementById('lale-preloader').style.display = 'none'; 
+                    document.getElementById('laleApp').classList.add('visible'); 
+                }, 1000);
             }, 3000);
         });
 
@@ -326,14 +331,7 @@
             document.getElementById('helloTitle').innerText = greeting;
         }
 
-        /* --- GEN Z SPOT & DROP LOGIC (FREE & VISUAL) --- */
-        const mockSpots = [
-            { id: 1, img: 'https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?q=80', title: 'Galata Rooftop', loc: 'Karaköy' },
-            { id: 2, img: 'https://images.unsplash.com/photo-1622547853917-cf8640705f9c?q=80', title: 'Specialty Coffee', loc: 'Beşiktaş' },
-            { id: 3, img: 'https://images.unsplash.com/photo-1541432901042-2d8bd64b4a9b?q=80', title: 'Street Art Wall', loc: 'Kadıköy' },
-            { id: 4, img: 'https://images.unsplash.com/photo-1605641775793-9c8846c483a9?q=80', title: 'Vintage Shop', loc: 'Balat' }
-        ];
-
+        /* --- FUNCIONALIDAD REAL: LALE SPOT --- */
         function openSpotFeed() {
             document.getElementById('spot-overlay').style.display = 'flex';
             renderSpotFeed();
@@ -343,13 +341,19 @@
 
         function renderSpotFeed() {
             const container = document.getElementById('spotFeedContainer');
-            // Mantenemos la cantidad de líneas generando el HTML robusto
+            const savedLikes = JSON.parse(localStorage.getItem('lale_likes') || '{}');
+            const savedBookmarks = JSON.parse(localStorage.getItem('lale_bookmarks') || '{}');
+
             container.innerHTML = mockSpots.map(spot => `
                 <div class="spot-card">
-                    <img src="${spot.img}" class="spot-img">
+                    <img src="${spot.img}" class="spot-img" onerror="this.src='https://via.placeholder.com/200x300?text=Lale+Spot'">
                     <div class="spot-actions">
-                        <div class="spot-action-btn" onclick="handleSpotLike(this)"><i class="fa-solid fa-heart"></i></div>
-                        <div class="spot-action-btn" onclick="handleSpotSave(this)"><i class="fa-solid fa-bookmark"></i></div>
+                        <div class="spot-action-btn ${savedLikes[spot.id] ? 'liked' : ''}" onclick="toggleLike(${spot.id}, this)">
+                            <i class="fa-solid fa-heart"></i>
+                        </div>
+                        <div class="spot-action-btn" onclick="toggleBookmark(${spot.id}, this)" style="color: ${savedBookmarks[spot.id] ? 'var(--gold)' : '#fff'}">
+                            <i class="${savedBookmarks[spot.id] ? 'fa-solid' : 'fa-regular'} fa-bookmark"></i>
+                        </div>
                     </div>
                     <div class="spot-info">
                         <p class="spot-title">${spot.title}</p>
@@ -359,47 +363,87 @@
             `).join('');
         }
 
-        function handleSpotLike(el) { el.classList.toggle('liked'); }
-        function handleSpotSave(el) { 
-            el.innerHTML = el.innerHTML.includes('fa-solid') ? '<i class="fa-regular fa-bookmark"></i>' : '<i class="fa-solid fa-bookmark"></i>';
-            if(el.innerHTML.includes('fa-solid')) el.style.color = '#FFD700'; else el.style.color = '#fff';
+        function toggleLike(id, el) {
+            let likes = JSON.parse(localStorage.getItem('lale_likes') || '{}');
+            likes[id] = !likes[id];
+            localStorage.setItem('lale_likes', JSON.stringify(likes));
+            el.classList.toggle('liked');
+        }
+
+        function toggleBookmark(id, el) {
+            let books = JSON.parse(localStorage.getItem('lale_bookmarks') || '{}');
+            books[id] = !books[id];
+            localStorage.setItem('lale_bookmarks', JSON.stringify(books));
+            renderSpotFeed();
         }
 
         function processSpotPhoto(event) {
             const file = event.target.files[0];
             if (!file) return;
-            document.getElementById('laleSuccessSound').play();
-            alert("Harika Spot! Lale AI resmi analiz ediyor ve feed'e ekliyor. (Simüle edildi)");
-            // Aquí iría la lógica de añadir al feed, pero la mantenemos extensa
-            setTimeout(() => { closeSpotFeed(); }, 1500);
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const newSpot = { id: Date.now(), img: e.target.result, title: 'Yeni Keşif', loc: 'İstanbul' };
+                mockSpots.unshift(newSpot);
+                renderSpotFeed();
+                document.getElementById('laleSuccessSound').play();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        /* --- FUNCIONALIDAD REAL: FARMACIA GPS --- */
+        function triggerPharmacySearch() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(p => {
+                    const url = `https://www.google.com/maps/search/Nöbetçi+Eczane/@${p.coords.latitude},${p.coords.longitude},14z`;
+                    window.open(url, '_blank');
+                }, () => {
+                    window.open('https://www.google.com/maps/search/Nöbetçi+Eczane+İstanbul', '_blank');
+                });
+            } else {
+                window.open('https://www.google.com/maps/search/Nöbetçi+Eczane+İstanbul', '_blank');
+            }
         }
 
         /* --- CORE UTILS --- */
-        function triggerPharmacySearch() {
-            navigator.geolocation.getCurrentPosition(p => {
-                window.open(`https://www.google.com/maps/search/nöbetçi+eczane/@${p.coords.latitude},${p.coords.longitude},14z`, '_blank');
-            });
-        }
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        
         function saveUserData() {
             const n = document.getElementById('nameIn').value;
             if(n) { localStorage.setItem('lale_name', n); document.getElementById('userNameDisplay').innerText = "Selam, " + n; }
             const f = document.getElementById('photoIn').files[0];
-            if(f) { const reader = new FileReader(); reader.onload = (e) => { localStorage.setItem('lale_pic', e.target.result); document.getElementById('avatarImg').src = e.target.result; }; reader.readAsDataURL(f); }
+            if(f) { 
+                const reader = new FileReader(); 
+                reader.onload = (e) => { 
+                    localStorage.setItem('lale_pic', e.target.result); 
+                    document.getElementById('avatarImg').src = e.target.result; 
+                }; 
+                reader.readAsDataURL(f); 
+            }
             closeModal('profileModal');
         }
+
         function loadProfile() {
-            const n = localStorage.getItem('lale_name'); const p = localStorage.getItem('lale_pic');
+            const n = localStorage.getItem('lale_name'); 
+            const p = localStorage.getItem('lale_pic');
             if(n) document.getElementById('userNameDisplay').innerText = "Selam, " + n;
             if(p) document.getElementById('avatarImg').src = p;
         }
-        function smartDeepLink(u, w) { window.location.href = u; setTimeout(() => { if (!document.hidden) window.open(w, '_blank'); }, 2000); }
+
+        function smartDeepLink(u, w) { 
+            window.location.href = u; 
+            setTimeout(() => { if (!document.hidden) window.open(w, '_blank'); }, 2000); 
+        }
+
         function startTickerLoop() {
             const n = ["Spot: Karaköy'deki yeni rooftop eklendi!", "Trend: Vintage giyim Balat'ta yükselişte.", "Lale Pay: Papara indirimleri aktif."];
-            let i = 0; setInterval(() => {
+            let i = 0; 
+            setInterval(() => {
                 const t = document.getElementById('liveTicker');
-                if(t) { t.style.opacity = '0'; setTimeout(() => { t.innerText = n[i]; t.style.opacity = '1'; i = (i + 1) % n.length; }, 500); }
+                if(t) { 
+                    t.style.opacity = '0'; 
+                    setTimeout(() => { t.innerText = n[i]; t.style.opacity = '1'; i = (i + 1) % n.length; }, 500); 
+                }
             }, 8000);
         }
     </script>
