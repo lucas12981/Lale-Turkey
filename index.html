@@ -6,7 +6,7 @@
     
     <meta name="google-site-verification" content="7GHX9o3zNvKSbTA8OGdvzWBzPglOKKzhVGpN9cSyOt8" />
     <title>Lale Turkey | Gen Z Elite Lifestyle & İstanbul Rehberi</title>
-    <meta name="description" content="İstanbul'un en şık mekanlarını keşfedin, yapay zeka ile kahve falınıza baktırın ve elit bir deneyim yaşayın. Neural Focus gururla sunar.">
+    <meta name="description" content="İstanbul'un en şık mekanlarını keşfedin, yapay zeka ile kahve falınıza baktırın y elit bir deneyim yaşayın. Neural Focus gururla sunar.">
     <meta name="keywords" content="Lale Turkey, İstanbul Elite, Kahve Falı AI, Lale Spot, Gen Z Turkey, Neural Focus">
     <link rel="alternate" hreflang="tr-tr" href="https://lale-turkey.vercel.app/" />
     
@@ -155,6 +155,7 @@
             position: fixed; inset: 0; background: #000; z-index: 2000001;
             display: none; flex-direction: column; padding: 60px 25px;
             backdrop-filter: blur(20px);
+            transition: background 0.2s ease;
         }
         .mission-card {
             background: var(--card-bg); border: 2px solid var(--mission);
@@ -164,29 +165,11 @@
         .mission-icon { font-size: 50px; color: var(--mission); margin-bottom: 20px; text-shadow: 0 0 20px var(--mission); }
         .mission-points { background: var(--mission); color: #000; padding: 5px 15px; border-radius: 20px; font-weight: 900; font-size: 12px; margin-bottom: 15px; display: inline-block; }
 
-        /* --- MODALS --- */
-        .glass-modal {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.95);
-            z-index: 999999; display: none; justify-content: center; align-items: center;
-            padding: 30px; backdrop-filter: blur(15px);
-        }
-        .modal-body {
-            background: #111; border: 1px solid var(--gold);
-            padding: 35px; border-radius: 40px; width: 100%; max-width: 380px; text-align: center;
-        }
-        .modal-body input {
-            width: 100%; background: #1a1a1a; border: 1px solid var(--glass-border);
-            padding: 16px; border-radius: 15px; color: #fff; margin-bottom: 15px;
-        }
-        .btn-confirm {
-            width: 100%; padding: 18px; background: var(--gold); color: #000;
-            border: none; border-radius: 15px; font-weight: 900; cursor: pointer;
-        }
-
         /* --- CAMERA VIEW --- */
         .camera-full {
-            width: 100%; height: 300px; background: #000; border-radius: 25px;
-            margin: 20px 0; object-fit: cover; border: 1px solid var(--glass-border);
+            width: 100%; height: 280px; background: #111; border-radius: 25px;
+            margin: 20px 0; object-fit: cover; border: 2px solid var(--mission);
+            box-shadow: 0 0 15px var(--mission);
         }
 
         .nav-dock {
@@ -297,7 +280,7 @@
                 </div>
             </section>
 
-            <p style="text-align: center; font-size: 10px; opacity: 0.3; padding-bottom: 20px;">LALE TURKEY V5.0 - MISSION EDITION</p>
+            <p style="text-align: center; font-size: 10px; opacity: 0.3; padding-bottom: 20px;">LALE TURKEY V5.2 - MISSION ELITE EDITION</p>
         </main>
 
         <nav class="nav-dock">
@@ -316,15 +299,14 @@
 
         <div id="mission-content">
             <div class="mission-card">
-                <div class="mission-points">+50 LP</div>
-                <div class="mission-icon" id="m-icon"><i class="fa-solid fa-mug-hot"></i></div>
-                <h2 id="m-title" style="font-size: 24px; margin-bottom: 10px;">Kahve Keyfi</h2>
-                <p id="m-desc" style="opacity: 0.7; font-size: 14px;">Beşiktaş'ta herhangi bir kafede fotoğraf çekil.</p>
+                <div class="mission-points" id="m-pts-badge">+0 LP</div>
+                <div class="mission-icon" id="m-icon"><i class="fa-solid fa-camera"></i></div>
+                <h2 id="m-title" style="font-size: 24px; margin-bottom: 10px;">Yükleniyor...</h2>
+                <p id="m-desc" style="opacity: 0.7; font-size: 14px; margin-bottom: 10px;">Görevin hazırlanıyor.</p>
                 
-                <video id="mission-camera" class="camera-full" autoplay playsinline style="display:none;"></video>
-                <div id="mission-photo-preview" class="camera-full" style="display:none; background-size: cover; background-position: center;"></div>
+                <video id="mission-camera" class="camera-full" autoplay playsinline muted style="display:none;"></video>
 
-                <button id="m-action-btn" class="btn-confirm" style="margin-top: 25px; background: var(--mission); color:#000;" onclick="startMissionCamera()">GÖREVE BAŞLA</button>
+                <button id="m-action-btn" class="btn-confirm" style="margin-top: 15px; background: var(--mission); color:#000;" onclick="handleMissionClick()">GÖREVE BAŞLA</button>
             </div>
         </div>
 
@@ -345,14 +327,12 @@
 
     <div id="ai-oracle-overlay" class="glass-modal">
         <div class="modal-body" style="border-color: var(--coffee); max-width: 450px;">
-            <video id="coffee-camera-view" autoplay playsinline></video>
-            
+            <video id="coffee-camera-view" autoplay playsinline muted></video>
             <div id="scan-container">
                 <div class="tulip-3d" id="ai-loading-icon" style="animation-duration: 1s; margin: 0 auto;"><div class="petal-3d p-1" style="background: var(--coffee);"></div></div>
                 <h3 id="ai-status-text" style="margin-top: 20px; color: var(--coffee);">KAMERA HAZIRLANIYOR...</h3>
                 <button id="capture-btn" class="btn-confirm" style="display:none; background: var(--coffee); color:white; margin-top:15px;">FOTOĞRAF ÇEK</button>
             </div>
-
             <div id="oracle-result" style="display: none; text-align: center; font-size: 14px;">
                 <h4 style="color: var(--coffee); margin-bottom: 10px;">LALE AI DİYOR Kİ:</h4>
                 <p id="fortune-text" style="font-style: italic; line-height: 1.5;"></p>
@@ -391,11 +371,11 @@
         document.addEventListener('DOMContentLoaded', () => {
             updateGreeting(); loadProfile(); startTickerLoop(); updateScoreUI();
             setTimeout(() => {
-                document.getElementById('lale-preloader').style.opacity = '0';
-                setTimeout(() => { 
-                    document.getElementById('lale-preloader').style.display = 'none'; 
-                    document.getElementById('laleApp').classList.add('visible'); 
-                }, 1000);
+                const pre = document.getElementById('lale-preloader');
+                if(pre) {
+                    pre.style.opacity = '0';
+                    setTimeout(() => { pre.style.display = 'none'; document.getElementById('laleApp').classList.add('visible'); }, 1000);
+                }
             }, 3000);
         });
 
@@ -403,14 +383,11 @@
             document.getElementById('scoreDisplay').innerText = lalePoints + " LP";
             let progress = (lalePoints % 1000) / 10;
             document.getElementById('progressBar').style.width = progress + "%";
-            
-            let rank = "YENİ ÜYE";
-            if(lalePoints > 500) rank = "LALE ELITE";
-            if(lalePoints > 1500) rank = "BOSPHORUS LEGEND";
+            let rank = lalePoints > 1500 ? "BOSPHORUS LEGEND" : lalePoints > 500 ? "LALE ELITE" : "YENİ ÜYE";
             document.getElementById('rankTitle').innerText = rank;
         }
 
-        // --- NEW MISSION LOGIC INTEGRATED ---
+        // --- ENHANCED MISSION LOGIC ---
 
         function openMission() {
             document.getElementById('mission-overlay').style.display = 'flex';
@@ -419,7 +396,7 @@
             document.getElementById('m-title').innerText = currentMission.title;
             document.getElementById('m-desc').innerText = currentMission.desc;
             document.getElementById('m-icon').innerHTML = `<i class="${currentMission.icon}"></i>`;
-            document.querySelector('.mission-points').innerText = "+" + currentMission.pts + " LP";
+            document.getElementById('m-pts-badge').innerText = "+" + currentMission.pts + " LP";
             
             document.getElementById('mission-content').style.display = 'block';
             document.getElementById('mission-success').style.display = 'none';
@@ -428,57 +405,48 @@
             const btn = document.getElementById('m-action-btn');
             btn.innerText = "GÖREVE BAŞLA";
             btn.style.background = "var(--mission)";
-            btn.onclick = startMissionCamera;
         }
 
-        async function startMissionCamera() {
+        async function handleMissionClick() {
             const btn = document.getElementById('m-action-btn');
             const video = document.getElementById('mission-camera');
 
-            if(btn.innerText === "FOTOĞRAF ÇEK") {
+            if(btn.innerText === "GÖREVE BAŞLA") {
+                try {
+                    videoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+                    video.srcObject = videoStream;
+                    video.style.display = 'block';
+                    btn.innerText = "FOTOĞRAF ÇEK";
+                    btn.style.background = "#fff";
+                } catch (e) { alert("Lütfen kamera izni verin."); }
+            } 
+            else if(btn.innerText === "FOTOĞRAF ÇEK") {
                 // Flash effect
                 document.getElementById('mission-overlay').style.backgroundColor = "white";
                 setTimeout(() => { 
                     document.getElementById('mission-overlay').style.backgroundColor = "#000"; 
-                    prepareShareStep(); 
+                    stopCamera();
+                    video.style.display = 'none';
+                    document.getElementById('m-desc').innerText = "Harika! Şimdi ödülünü aktif etmek için bu anı paylaş.";
+                    btn.innerHTML = '<i class="fa-brands fa-instagram"></i> PAYLAŞ VE KAZAN';
+                    btn.style.background = "linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)";
+                    btn.style.color = "#fff";
                 }, 100);
-                return;
             }
-
-            try {
-                videoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-                video.srcObject = videoStream;
-                video.style.display = 'block';
-                btn.innerText = "FOTOĞRAF ÇEK";
-                btn.style.background = "#fff";
-            } catch (e) { alert("Kamera izni gerekiyor."); }
-        }
-
-        function prepareShareStep() {
-            stopCamera();
-            document.getElementById('mission-camera').style.display = 'none';
-            document.getElementById('m-desc').innerText = "Harika! Şimdi ödülünü aktif etmek için bu anı paylaş.";
-            
-            const btn = document.getElementById('m-action-btn');
-            btn.innerHTML = '<i class="fa-brands fa-instagram"></i> PAYLAŞ VE KAZAN';
-            btn.style.background = "linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)";
-            btn.style.color = "#fff";
-            btn.onclick = shareToSocial;
-        }
-
-        async function shareToSocial() {
-            const shareData = {
-                title: 'Lale Turkey',
-                text: `Lale Turkey ile ${currentMission.title} görevini tamamladım! 🇹🇷 #LaleElite`,
-                url: window.location.href
-            };
-
-            try {
-                await navigator.share(shareData);
-                unlockRewards();
-            } catch (err) {
-                // If share fails/cancels, we still reward to keep engagement
-                unlockRewards();
+            else {
+                // Share step
+                if (navigator.share) {
+                    try {
+                        await navigator.share({
+                            title: 'Lale Turkey',
+                            text: `Lale Turkey ile ${currentMission.title} görevini tamamladım! 🇹🇷 #LaleElite`,
+                            url: window.location.href
+                        });
+                        unlockRewards();
+                    } catch (e) { unlockRewards(); } // Give reward even if share is canceled
+                } else {
+                    unlockRewards();
+                }
             }
         }
 
@@ -494,24 +462,19 @@
             document.getElementById('reward-content').innerHTML = `
                 <div style="font-size: 80px; color: var(--gold); margin-bottom: 20px;">🌟</div>
                 <h2 style="font-size: 28px; color: var(--gold);">MÜKEMMEL!</h2>
-                <p style="margin-bottom: 20px; opacity: 0.8;">${currentMission.pts} LP Kazandın.</p>
-                
+                <p style="margin-bottom: 20px; opacity: 0.8;">${currentMission.pts} LP Hesabına Eklendi.</p>
                 <div style="background:var(--gold); color:#000; padding:20px; border-radius:20px; margin:20px 0; border:2px dashed #000;">
-                    <p style="font-weight:900; font-size:10px; letter-spacing:1px;">ÖZEL AVANTAJ:</p>
-                    <h3 style="font-size:22px; font-weight:800;">${currentMission.benefit}</h3>
+                    <p style="font-weight:900; font-size:10px; letter-spacing:1px;">ÖZEL AVANTAJIN:</p>
+                    <h3 style="font-size:20px; font-weight:800;">${currentMission.benefit}</h3>
                     <p style="font-size:14px; font-weight:800; margin-top:10px; background:#000; color:#fff; padding:5px; border-radius:10px;">KOD: LALE2026</p>
                 </div>
-
                 <button class="btn-confirm" style="background:#fff; color:#000;" onclick="closeMission()">ANA SAYFAYA DÖN</button>
             `;
         }
 
-        function closeMission() { 
-            stopCamera();
-            document.getElementById('mission-overlay').style.display = 'none'; 
-        }
+        function closeMission() { stopCamera(); document.getElementById('mission-overlay').style.display = 'none'; }
 
-        // --- ORIGINAL FUNCTIONS PRESERVED ---
+        // --- CORE UTILS ---
 
         function updateGreeting() {
             const h = new Date().getHours();
@@ -529,11 +492,9 @@
             scanContainer.style.display = 'block';
             resultArea.style.display = 'none';
             captureBtn.style.display = 'none';
-            statusText.innerText = "KAMERA HAZIRLANIYOR...";
             try {
                 videoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
                 video.srcObject = videoStream;
-                video.style.display = 'block';
                 statusText.innerText = "FİNCANI MERKEZLEYİN";
                 captureBtn.style.display = 'block';
                 captureBtn.onclick = () => {
@@ -541,11 +502,10 @@
                     statusText.innerText = "AI ANALİZ EDİLİYOR...";
                     document.getElementById('ai-loading-icon').style.display = 'block';
                     setTimeout(() => {
-                        video.style.display = 'none';
                         scanContainer.style.display = 'none';
                         resultArea.style.display = 'block';
-                        const fortunes = ["Nazar var ama dualarla geçecek. Temiz bir kalbin var.", "Yolun açık, bir kuş yakında çok güzel haberler getiriyor.", "Fincanında bir balık var, kısmetin her zamankinden fazla taşıyor!", "Üç vakte kadar beklediğin o telefon çalacak, hazırlıklı ol.", "Hane içinde bir sevinç var, lale gibi açılacağın bir döneme giriyorsun."];
-                        document.getElementById('fortune-text').innerText = fortunes[Math.floor(Math.random()*fortunes.length)];
+                        const f = ["Nazar var ama dualarla geçecek. Temiz bir kalbin var.", "Yolun açık, bir kuş yakında çok güzel haberler getiriyor.", "Fincanında bir balık var, kısmetin taşıyor!", "Üç vakte kadar beklediğin o telefon çalacak.", "Hane içinde bir sevinç var, lale gibi açılacaksın."];
+                        document.getElementById('fortune-text').innerText = f[Math.floor(Math.random()*f.length)];
                         document.getElementById('laleSuccessSound').play();
                         stopCamera();
                     }, 4000);
@@ -553,7 +513,7 @@
             } catch (e) { statusText.innerText = "Kamera hatası!"; }
         }
 
-        function stopCamera() { if (videoStream) { videoStream.getTracks().forEach(track => track.stop()); videoStream = null; } }
+        function stopCamera() { if (videoStream) { videoStream.getTracks().forEach(t => t.stop()); videoStream = null; } }
         function closeCoffeeModal() { stopCamera(); closeModal('ai-oracle-overlay'); }
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
@@ -581,7 +541,7 @@
                 if(t) { t.style.opacity = '0'; setTimeout(() => { t.innerText = n[i]; t.style.opacity = '1'; i = (i + 1) % n.length; }, 500); }
             }, 8000);
         }
-        function terminateSession() { document.getElementById('laleApp').classList.add('fade-exit'); setTimeout(() => { window.location.reload(); }, 1500); }
+        function terminateSession() { document.getElementById('laleApp').classList.add('fade-exit'); setTimeout(() => { localStorage.clear(); window.location.reload(); }, 1500); }
         function executeEmergencySearch(t) { window.open(`https://www.google.com/maps/search/${t}+açık`, '_blank'); closeModal('emergency-modal'); }
         function triggerPharmacySearch() { window.open('https://www.google.com/maps/search/nöbetçi+eczane', '_blank'); }
     </script>
