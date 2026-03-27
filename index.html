@@ -5,12 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
     <meta name="google-site-verification" content="7GHX9o3zNvKSbTA8OGdvzWBzPglOKKzhVGpN9cSyOt8" />
-
     <title>Lale Turkey | Gen Z Elite Lifestyle & İstanbul Rehberi</title>
     <meta name="description" content="İstanbul'un en şık mekanlarını keşfedin, yapay zeka ile kahve falınıza baktırın ve elit bir deneyim yaşayın. Neural Focus gururla sunar.">
     <meta name="keywords" content="Lale Turkey, İstanbul Elite, Kahve Falı AI, Lale Spot, Gen Z Turkey, Neural Focus">
     <link rel="alternate" hreflang="tr-tr" href="https://lale-turkey.vercel.app/" />
     
+    <link rel="icon" type="image/png" href="https://img.icons8.com/color/48/tulip.png">
+    <link rel="apple-touch-icon" href="https://img.icons8.com/color/144/tulip.png">
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -138,36 +140,18 @@
         .pharmacy-active { border: 1px solid var(--pharmacy) !important; box-shadow: 0 0 20px rgba(46, 204, 113, 0.2); }
         .pharmacy-btn { background: var(--pharmacy) !important; color: #fff; font-weight: 900; border-radius: 18px; padding: 18px; border: none; width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px; transition: 0.3s; }
 
-        /* --- GEN Z SPOT & DROP --- */
+        /* --- SPOT OVERLAY --- */
         #spot-overlay {
             position: fixed; inset: 0; background: #000; z-index: 2000001;
             display: none; flex-direction: column; padding: 60px 0 100px;
         }
-        .spot-header {
-            padding: 0 25px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
-        }
-        .spot-feed {
-            flex: 1; overflow-y: auto; scrollbar-width: none;
-            display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 0 15px;
-        }
-        .spot-feed::-webkit-scrollbar { display: none; }
-        .spot-card {
-            background: var(--card-bg); border: 1px solid var(--glass-border);
-            border-radius: 20px; overflow: hidden; position: relative;
-        }
+        .spot-header { padding: 0 25px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .spot-feed { flex: 1; overflow-y: auto; scrollbar-width: none; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 0 15px; }
+        .spot-card { background: var(--card-bg); border: 1px solid var(--glass-border); border-radius: 20px; overflow: hidden; position: relative; }
         .spot-img { width: 100%; height: 200px; object-fit: cover; }
         .spot-info { padding: 12px; }
         .spot-title { font-size: 12px; font-weight: 800; color: #fff; }
         .spot-loc { font-size: 10px; opacity: 0.6; color: var(--gold); }
-        .spot-actions {
-            position: absolute; top: 10px; right: 10px; display: flex; flex-direction: column; gap: 10px;
-        }
-        .spot-action-btn {
-            width: 35px; height: 35px; border-radius: 50%; background: rgba(0,0,0,0.7);
-            border: 1px solid var(--glass-border); display: flex; align-items: center; justify-content: center;
-            color: #fff; font-size: 16px; pointer-events: auto; cursor: pointer; transition: 0.3s;
-        }
-        .spot-action-btn.liked i { color: var(--tr-red); }
         
         .spot-upload-trigger {
             position: fixed; bottom: 120px; right: 30px; width: 60px; height: 60px;
@@ -177,7 +161,7 @@
             cursor: pointer;
         }
 
-        /* --- CORE UTILS & NAV --- */
+        /* --- MODALS --- */
         .glass-modal {
             position: fixed; inset: 0; background: rgba(0,0,0,0.95);
             z-index: 999999; display: none; justify-content: center; align-items: center;
@@ -202,17 +186,12 @@
             border: 1px solid var(--glass-border); display: flex; justify-content: space-around;
             align-items: center; backdrop-filter: blur(30px); z-index: 10000;
         }
-        .dock-item {
-            background: none; border: none; color: rgba(255,255,255,0.4);
-            display: flex; flex-direction: column; align-items: center; gap: 6px;
-        }
+        .dock-item { background: none; border: none; color: rgba(255,255,255,0.4); display: flex; flex-direction: column; align-items: center; gap: 6px; }
         .dock-item.active { color: var(--tr-red); }
         .dock-item i { font-size: 22px; }
         .dock-item span { font-size: 10px; font-weight: 800; }
 
-        /* --- EXIT & SCAN ANIMATIONS --- */
         .fade-exit { opacity: 0 !important; transform: scale(1.15); filter: blur(20px); transition: all 1.8s cubic-bezier(0.19, 1, 0.22, 1) !important; pointer-events: none; }
-        @keyframes scanMove { 0% { left: -50%; } 100% { left: 100%; } }
     </style>
 </head>
 <body>
@@ -313,11 +292,10 @@
 
     <div id="emergency-modal" class="glass-modal">
         <div class="modal-body" style="border-color: var(--tr-red);">
-            <i class="fa-solid fa-hospital-user" style="font-size: 40px; color: var(--tr-red); margin-bottom: 15px;"></i>
             <h2 style="font-size: 18px; margin-bottom: 20px;">Acil Durum Tipi</h2>
-            <button onclick="executeEmergencySearch('hastane')" class="btn-confirm" style="margin-bottom: 10px; background: #222; border: 1px solid var(--glass-border); color: #fff;">Genel Acil</button>
-            <button onclick="executeEmergencySearch('çocuk hastanesi')" class="btn-confirm" style="margin-bottom: 10px; background: #222; border: 1px solid var(--glass-border); color: #fff;">Çocuk Acil</button>
-            <button onclick="executeEmergencySearch('diş hastanesi')" class="btn-confirm" style="margin-bottom: 20px; background: #222; border: 1px solid var(--glass-border); color: #fff;">Diş Acil (24h)</button>
+            <button onclick="executeEmergencySearch('hastane')" class="btn-confirm" style="margin-bottom: 10px; background: #222; color: #fff;">Genel Acil</button>
+            <button onclick="executeEmergencySearch('çocuk hastanesi')" class="btn-confirm" style="margin-bottom: 10px; background: #222; color: #fff;">Çocuk Acil</button>
+            <button onclick="executeEmergencySearch('diş hastanesi')" class="btn-confirm" style="margin-bottom: 20px; background: #222; color: #fff;">Diş Acil</button>
             <p onclick="closeModal('emergency-modal')" style="cursor: pointer; opacity: 0.5;">Vazgeç</p>
         </div>
     </div>
@@ -325,30 +303,23 @@
     <div id="ai-oracle-overlay" class="glass-modal">
         <div class="modal-body" style="border-color: var(--coffee);">
             <div id="scan-container">
-                <div class="tulip-3d" style="animation-duration: 1s; margin: 0 auto;">
-                    <div class="petal-3d p-1" style="background: var(--coffee);"></div>
-                </div>
-                <h3 id="oracle-status" style="margin-top: 20px; color: var(--coffee);">AI ANALİZ EDİLİYOR...</h3>
-                <div style="width: 100%; height: 2px; background: var(--coffee); margin-top: 10px; position: relative; overflow: hidden;">
-                    <div style="position: absolute; width: 50%; height: 100%; background: #fff; animation: scanMove 2s infinite;"></div>
-                </div>
+                <div class="tulip-3d" style="animation-duration: 1s; margin: 0 auto;"><div class="petal-3d p-1" style="background: var(--coffee);"></div></div>
+                <h3 style="margin-top: 20px; color: var(--coffee);">AI ANALİZ EDİLİYOR...</h3>
             </div>
-            <div id="oracle-result" style="display: none; text-align: left; font-size: 13px; line-height: 1.6;">
+            <div id="oracle-result" style="display: none; text-align: left; font-size: 13px;">
                 <p id="fortune-text" style="font-style: italic;"></p>
-                <button class="btn-confirm" onclick="closeModal('ai-oracle-overlay')" style="margin-top: 20px; background: var(--coffee); color: #fff;">TEŞEKKÜRLER</button>
+                <button class="btn-confirm" onclick="closeModal('ai-oracle-overlay')" style="margin-top: 20px; background: var(--coffee); color: #fff;">TAMAM</button>
             </div>
         </div>
     </div>
 
     <div id="profileModal" class="glass-modal">
         <div class="modal-body">
-            <h2 style="color: var(--gold); margin-bottom: 10px;">Profil Ayarları</h2>
+            <h2 style="color: var(--gold); margin-bottom: 20px;">Profil Ayarları</h2>
             <input type="text" id="nameIn" placeholder="Adınız">
             <input type="file" id="photoIn" accept="image/*">
             <button class="btn-confirm" onclick="saveUserData()">KAYDET</button>
-            <button onclick="terminateSession()" style="margin-top: 30px; background: none; border: 1px solid var(--tr-red); color: var(--tr-red); padding: 12px 25px; border-radius: 15px; font-weight: 800; font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%;">
-                <i class="fa-solid fa-power-off"></i> OTURUMU KAPAT
-            </button>
+            <button onclick="terminateSession()" style="margin-top: 20px; background: none; border: 1px solid var(--tr-red); color: var(--tr-red); padding: 10px; width: 100%; border-radius: 15px;">OTURUMU KAPAT</button>
             <p onclick="closeModal('profileModal')" style="margin-top: 20px; cursor: pointer; opacity: 0.6;">Kapat</p>
         </div>
     </div>
@@ -359,15 +330,16 @@
             <i class="fa-solid fa-circle-xmark" onclick="closeSpotFeed()" style="font-size: 35px; color: #fff; cursor: pointer;"></i>
         </div>
         <div class="spot-feed" id="spotFeedContainer"></div>
-        <audio id="laleSuccessSound" src="https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3"></audio>
-        <input type="file" id="spotPhotoIn" accept="image/*" style="display: none;" onchange="processSpotPhoto(event)">
-        <div class="spot-upload-trigger" onclick="document.getElementById('spotPhotoIn').click()"><i class="fa-solid fa-camera"></i></div>
+        <div class="spot-upload-trigger" onclick="alert('Henüz fotoğraf yükleme aktif değil!')"><i class="fa-solid fa-camera"></i></div>
     </div>
+
+    <audio id="laleSuccessSound" src="https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3"></audio>
 
     <script>
         const mockSpots = [
             { id: 1, img: 'https://images.pexels.com/photos/1549326/pexels-photo-1549326.jpeg?auto=compress&cs=tinysrgb&w=400', title: 'Galata Rooftop', loc: 'Karaköy' },
-            { id: 2, img: 'https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg?auto=compress&cs=tinysrgb&w=400', title: 'Specialty Coffee', loc: 'Beşiktaş' }
+            { id: 2, img: 'https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg?auto=compress&cs=tinysrgb&w=400', title: 'Specialty Coffee', loc: 'Beşiktaş' },
+            { id: 3, img: 'https://images.pexels.com/photos/2048865/pexels-photo-2048865.jpeg?auto=compress&cs=tinysrgb&w=400', title: 'Bosphorus View', loc: 'Ortaköy' }
         ];
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -383,43 +355,28 @@
 
         function updateGreeting() {
             const h = new Date().getHours();
-            let greeting = h >= 5 && h < 12 ? "Günaydın" : h >= 12 && h < 18 ? "Tünaydın" : h >= 18 && h < 22 ? "İyi Akşamlar" : "İyi Geceler";
-            document.getElementById('helloTitle').innerText = greeting;
+            let g = h >= 5 && h < 12 ? "Günaydın" : h >= 12 && h < 18 ? "Tünaydın" : h >= 18 && h < 22 ? "İyi Akşamlar" : "İyi Geceler";
+            document.getElementById('helloTitle').innerText = g;
         }
 
-        /* --- LALE ACIL LOGIC --- */
-        function executeEmergencySearch(type) {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(pos => {
-                    const url = `https://www.google.com/maps/search/${type}+açık/@${pos.coords.latitude},${pos.coords.longitude},14z`;
-                    window.open(url, '_blank');
-                }, () => { window.open(`https://www.google.com/maps/search/${type}+istanbul`, '_blank'); });
-            }
+        function executeEmergencySearch(t) {
+            window.open(`https://www.google.com/maps/search/${t}+açık`, '_blank');
             closeModal('emergency-modal');
         }
 
-        /* --- KAHVE FALI LOGIC --- */
+        function triggerPharmacySearch() { window.open('https://www.google.com/maps/search/nöbetçi+eczane', '_blank'); }
+
         function startCoffeeReading() {
-            const inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'image/*';
-            inp.onchange = () => {
-                openModal('ai-oracle-overlay');
-                document.getElementById('scan-container').style.display = 'block';
-                document.getElementById('oracle-result').style.display = 'none';
-                setTimeout(() => {
-                    const fortunes = [
-                        "Nazar var ama dualarla geçecek. Üç vakte kadar büyük bir kapı açılıyor.",
-                        "Yolun açık, bir kuş haber getiriyor. Maddi bir ferahlık kapıda.",
-                        "Kalbindeki o kişi seni düşünüyor. Yeni bir başlangıç simgesi görüyorum.",
-                        "Fincanında bir balık var, kısmetin taşıyor! Sabırlı ol.",
-                        "Bir dost görünen düşman var, çevrene dikkat et."
-                    ];
-                    document.getElementById('scan-container').style.display = 'none';
-                    document.getElementById('oracle-result').style.display = 'block';
-                    document.getElementById('fortune-text').innerText = fortunes[Math.floor(Math.random()*fortunes.length)];
-                    document.getElementById('laleSuccessSound').play();
-                }, 4000);
-            };
-            inp.click();
+            openModal('ai-oracle-overlay');
+            document.getElementById('scan-container').style.display = 'block';
+            document.getElementById('oracle-result').style.display = 'none';
+            setTimeout(() => {
+                const f = ["Nazar var ama dualarla geçecek.", "Yolun açık, bir kuş haber getiriyor.", "Fincanında bir balık var, kısmetin taşıyor!"];
+                document.getElementById('scan-container').style.display = 'none';
+                document.getElementById('oracle-result').style.display = 'block';
+                document.getElementById('fortune-text').innerText = f[Math.floor(Math.random()*f.length)];
+                document.getElementById('laleSuccessSound').play();
+            }, 4000);
         }
 
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
@@ -430,12 +387,12 @@
             if(n) { localStorage.setItem('lale_name', n); document.getElementById('userNameDisplay').innerText = "Selam, " + n; }
             const f = document.getElementById('photoIn').files[0];
             if(f) { 
-                const reader = new FileReader(); 
-                reader.onload = (e) => { 
+                const r = new FileReader(); 
+                r.onload = (e) => { 
                     localStorage.setItem('lale_pic', e.target.result); 
                     document.getElementById('avatarImg').src = e.target.result; 
                 }; 
-                reader.readAsDataURL(f); 
+                r.readAsDataURL(f); 
             }
             closeModal('profileModal');
         }
@@ -447,39 +404,26 @@
             if(p) document.getElementById('avatarImg').src = p;
         }
 
-        function smartDeepLink(u, w) { 
-            window.location.href = u; 
-            setTimeout(() => { if (!document.hidden) window.open(w, '_blank'); }, 2000); 
-        }
+        function smartDeepLink(u, w) { window.location.href = u; setTimeout(() => { if (!document.hidden) window.open(w, '_blank'); }, 2000); }
 
         function startTickerLoop() {
-            const n = ["Spot: Karaköy'deki yeni rooftop eklendi!", "Trend: Vintage giyim Balat'ta yükselişte.", "Lale Pay: Papara indirimleri aktif."];
+            const n = ["Karaköy'deki yeni rooftop eklendi!", "Trend: Vintage giyim Balat'ta.", "Lale Pay indirimleri aktif."];
             let i = 0; setInterval(() => {
                 const t = document.getElementById('liveTicker');
-                if(t) { t.style.opacity = '0'; setTimeout(() => { t.innerText = n[i]; t.style.opacity = '1'; i = (i + 1) % n.length; }, 500); }
+                t.style.opacity = '0'; setTimeout(() => { t.innerText = n[i]; t.style.opacity = '1'; i = (i + 1) % n.length; }, 500);
             }, 8000);
         }
 
         function terminateSession() {
-            closeModal('profileModal');
             document.getElementById('laleApp').classList.add('fade-exit');
-            setTimeout(() => {
-                const p = document.getElementById('lale-preloader');
-                p.style.display = 'flex'; p.style.opacity = '1';
-                document.getElementById('preloader-text').innerText = "Görüşmek üzere..."; 
-                setTimeout(() => { window.location.reload(); }, 2000);
-            }, 600);
+            setTimeout(() => { window.location.reload(); }, 1500);
         }
 
         function openSpotFeed() { document.getElementById('spot-overlay').style.display = 'flex'; renderSpotFeed(); }
         function closeSpotFeed() { document.getElementById('spot-overlay').style.display = 'none'; }
         function renderSpotFeed() {
-            const container = document.getElementById('spotFeedContainer');
-            container.innerHTML = mockSpots.map(spot => `
-                <div class="spot-card">
-                    <img src="${spot.img}" class="spot-img">
-                    <div class="spot-info"><p class="spot-title">${spot.title}</p><p class="spot-loc">${spot.loc}</p></div>
-                </div>
+            document.getElementById('spotFeedContainer').innerHTML = mockSpots.map(s => `
+                <div class="spot-card"><img src="${s.img}" class="spot-img"><div class="spot-info"><p class="spot-title">${s.title}</p><p class="spot-loc">${s.loc}</p></div></div>
             `).join('');
         }
     </script>
