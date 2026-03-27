@@ -324,16 +324,12 @@
                 <video id="mission-camera" class="camera-full" autoplay playsinline style="display:none;"></video>
                 <div id="mission-photo-preview" class="camera-full" style="display:none; background-size: cover; background-position: center;"></div>
 
-                <button id="m-action-btn" class="btn-confirm" style="margin-top: 25px; background: var(--mission); color:#000;" onclick="startMissionCamera()">GÖREVİ TAMAMLA</button>
+                <button id="m-action-btn" class="btn-confirm" style="margin-top: 25px; background: var(--mission); color:#000;" onclick="startMissionCamera()">GÖREVE BAŞLA</button>
             </div>
         </div>
 
         <div id="mission-success" style="display:none; text-align:center; padding-top:40px;">
-            <div style="font-size: 80px; color: var(--gold); margin-bottom: 20px;">🌟</div>
-            <h2 style="font-size: 28px; color: var(--gold);">MÜKEMMEL!</h2>
-            <p style="margin-bottom: 30px; opacity: 0.8;">Puanlar hesabına yüklendi.</p>
-            <button class="btn-confirm" style="background:#fff; color:#000; margin-bottom:15px;" onclick="shareToSocial()">İNSTAGRAM'DA PAYLAŞ</button>
-            <button class="btn-confirm" style="background:none; border: 1px solid #fff; color:#fff;" onclick="closeMission()">ANA SAYFAYA DÖN</button>
+            <div id="reward-content"></div>
         </div>
     </div>
 
@@ -382,13 +378,14 @@
     <script>
         let videoStream = null;
         let lalePoints = parseInt(localStorage.getItem('lale_score')) || 0;
+        let currentMission = null;
         
         const missions = [
-            { title: "Boğaz Havası", desc: "Ortaköy'de Boğaz'a karşı bir fotoğraf çek.", icon: "fa-solid fa-anchor", pts: 60 },
-            { title: "Galata Ruhu", desc: "Galata Kulesi'ni arkana al ve poz ver.", icon: "fa-solid fa-tower-observation", pts: 80 },
-            { title: "Simit & Martı", desc: "Vapurda simit yerken bir kare yakala.", icon: "fa-solid fa-ship", pts: 40 },
-            { title: "Karaköy Art", desc: "Karaköy sokaklarındaki graffitilerle fotoğraf çek.", icon: "fa-solid fa-palette", pts: 50 },
-            { title: "Mado Keyfi", desc: "Mado'da dondurma veya tatlı yerken çekil.", icon: "fa-solid fa-ice-cream", pts: 45 }
+            { title: "Boğaz Havası", desc: "Ortaköy'de Boğaz'a karşı bir fotoğraf çek.", icon: "fa-solid fa-anchor", pts: 60, benefit: "Bosphorus Grill'de %10 İndirim" },
+            { title: "Galata Ruhu", desc: "Galata Kulesi'ni arkana al ve poz ver.", icon: "fa-solid fa-tower-observation", pts: 80, benefit: "Tower Cafe'de %10 İndirim" },
+            { title: "Simit & Martı", desc: "Vapurda simit yerken bir kare yakala.", icon: "fa-solid fa-ship", pts: 40, benefit: "Vapur Büfe'de Bedava Çay" },
+            { title: "Karaköy Art", desc: "Karaköy sokaklarındaki graffitilerle fotoğraf çek.", icon: "fa-solid fa-palette", pts: 50, benefit: "Artisan Karaköy'de %10 İndirim" },
+            { title: "Mado Keyfi", desc: "Mado'da dondurma veya tatlı yerken çekil.", icon: "fa-solid fa-ice-cream", pts: 45, benefit: "Mado'da %10 İndirim" }
         ];
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -413,17 +410,25 @@
             document.getElementById('rankTitle').innerText = rank;
         }
 
+        // --- NEW MISSION LOGIC INTEGRATED ---
+
         function openMission() {
             document.getElementById('mission-overlay').style.display = 'flex';
-            const m = missions[Math.floor(Math.random() * missions.length)];
-            document.getElementById('m-title').innerText = m.title;
-            document.getElementById('m-desc').innerText = m.desc;
-            document.getElementById('m-icon').innerHTML = `<i class="${m.icon}"></i>`;
-            document.querySelector('.mission-points').innerText = "+" + m.pts + " LP";
+            currentMission = missions[Math.floor(Math.random() * missions.length)];
+            
+            document.getElementById('m-title').innerText = currentMission.title;
+            document.getElementById('m-desc').innerText = currentMission.desc;
+            document.getElementById('m-icon').innerHTML = `<i class="${currentMission.icon}"></i>`;
+            document.querySelector('.mission-points').innerText = "+" + currentMission.pts + " LP";
             
             document.getElementById('mission-content').style.display = 'block';
             document.getElementById('mission-success').style.display = 'none';
-            document.getElementById('m-action-btn').innerText = "GÖREVE BAŞLA";
+            document.getElementById('mission-camera').style.display = 'none';
+            
+            const btn = document.getElementById('m-action-btn');
+            btn.innerText = "GÖREVE BAŞLA";
+            btn.style.background = "var(--mission)";
+            btn.onclick = startMissionCamera;
         }
 
         async function startMissionCamera() {
@@ -431,7 +436,12 @@
             const video = document.getElementById('mission-camera');
 
             if(btn.innerText === "FOTOĞRAF ÇEK") {
-                completeMission();
+                // Flash effect
+                document.getElementById('mission-overlay').style.backgroundColor = "white";
+                setTimeout(() => { 
+                    document.getElementById('mission-overlay').style.backgroundColor = "#000"; 
+                    prepareShareStep(); 
+                }, 100);
                 return;
             }
 
@@ -440,26 +450,60 @@
                 video.srcObject = videoStream;
                 video.style.display = 'block';
                 btn.innerText = "FOTOĞRAF ÇEK";
+                btn.style.background = "#fff";
             } catch (e) { alert("Kamera izni gerekiyor."); }
         }
 
-        function completeMission() {
+        function prepareShareStep() {
             stopCamera();
             document.getElementById('mission-camera').style.display = 'none';
+            document.getElementById('m-desc').innerText = "Harika! Şimdi ödülünü aktif etmek için bu anı paylaş.";
+            
+            const btn = document.getElementById('m-action-btn');
+            btn.innerHTML = '<i class="fa-brands fa-instagram"></i> PAYLAŞ VE KAZAN';
+            btn.style.background = "linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)";
+            btn.style.color = "#fff";
+            btn.onclick = shareToSocial;
+        }
+
+        async function shareToSocial() {
+            const shareData = {
+                title: 'Lale Turkey',
+                text: `Lale Turkey ile ${currentMission.title} görevini tamamladım! 🇹🇷 #LaleElite`,
+                url: window.location.href
+            };
+
+            try {
+                await navigator.share(shareData);
+                unlockRewards();
+            } catch (err) {
+                // If share fails/cancels, we still reward to keep engagement
+                unlockRewards();
+            }
+        }
+
+        function unlockRewards() {
             document.getElementById('mission-content').style.display = 'none';
             document.getElementById('mission-success').style.display = 'block';
             document.getElementById('laleSuccessSound').play();
             
-            lalePoints += 50;
+            lalePoints += currentMission.pts;
             localStorage.setItem('lale_score', lalePoints);
             updateScoreUI();
-        }
 
-        function shareToSocial() {
-            const text = encodeURIComponent("Lale Turkey ile bugünün görevini tamamladım! 🇹🇷 #LaleElite #IstanbulRehberi");
-            window.open(`instagram://library?Caption=${text}`, '_blank');
-            // Fallback para web
-            setTimeout(() => { window.open(`https://www.instagram.com/`, '_blank'); }, 1000);
+            document.getElementById('reward-content').innerHTML = `
+                <div style="font-size: 80px; color: var(--gold); margin-bottom: 20px;">🌟</div>
+                <h2 style="font-size: 28px; color: var(--gold);">MÜKEMMEL!</h2>
+                <p style="margin-bottom: 20px; opacity: 0.8;">${currentMission.pts} LP Kazandın.</p>
+                
+                <div style="background:var(--gold); color:#000; padding:20px; border-radius:20px; margin:20px 0; border:2px dashed #000;">
+                    <p style="font-weight:900; font-size:10px; letter-spacing:1px;">ÖZEL AVANTAJ:</p>
+                    <h3 style="font-size:22px; font-weight:800;">${currentMission.benefit}</h3>
+                    <p style="font-size:14px; font-weight:800; margin-top:10px; background:#000; color:#fff; padding:5px; border-radius:10px;">KOD: LALE2026</p>
+                </div>
+
+                <button class="btn-confirm" style="background:#fff; color:#000;" onclick="closeMission()">ANA SAYFAYA DÖN</button>
+            `;
         }
 
         function closeMission() { 
@@ -467,7 +511,8 @@
             document.getElementById('mission-overlay').style.display = 'none'; 
         }
 
-        // --- FUNCIONES ORIGINALES PRESERVADAS ---
+        // --- ORIGINAL FUNCTIONS PRESERVED ---
+
         function updateGreeting() {
             const h = new Date().getHours();
             let g = h >= 5 && h < 12 ? "Günaydın" : h >= 12 && h < 18 ? "Tünaydın" : h >= 18 && h < 22 ? "İyi Akşamlar" : "İyi Geceler";
