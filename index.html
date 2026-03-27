@@ -180,6 +180,12 @@
             border: none; border-radius: 15px; font-weight: 900; cursor: pointer;
         }
 
+        /* --- CAMERA VIEW --- */
+        #coffee-camera-view {
+            width: 100%; height: 250px; background: #000; border-radius: 20px;
+            margin-bottom: 20px; object-fit: cover; display: none;
+        }
+
         .nav-dock {
             position: fixed; bottom: 30px; left: 20px; right: 20px;
             height: 85px; background: rgba(0,0,0,0.9); border-radius: 30px;
@@ -247,7 +253,7 @@
                     <h3 style="color: var(--coffee);"><i class="fa-solid fa-wand-sparkles"></i> Kahve Falı AI</h3>
                 </div>
                 <p style="font-size: 11px; opacity: 0.8; margin-bottom: 15px;">Fincanın fotoğrafını çek, Lale AI geleceğini fısıldasın.</p>
-                <button class="btn-confirm" onclick="startCoffeeReading()" style="background: var(--coffee); color: #fff;">FOTOĞRAF GÖNDER</button>
+                <button class="btn-confirm" id="coffeeBtn" onclick="startCoffeeReading()" style="background: var(--coffee); color: #fff;">FALIMA BAK</button>
             </section>
 
             <section class="section-box" style="border-color: var(--gold); background: linear-gradient(135deg, rgba(20,20,20,0.9), rgba(40,40,40,0.5));">
@@ -301,15 +307,21 @@
     </div>
 
     <div id="ai-oracle-overlay" class="glass-modal">
-        <div class="modal-body" style="border-color: var(--coffee);">
+        <div class="modal-body" style="border-color: var(--coffee); max-width: 450px;">
+            <video id="coffee-camera-view" autoplay playsinline></video>
+            
             <div id="scan-container">
-                <div class="tulip-3d" style="animation-duration: 1s; margin: 0 auto;"><div class="petal-3d p-1" style="background: var(--coffee);"></div></div>
-                <h3 style="margin-top: 20px; color: var(--coffee);">AI ANALİZ EDİLİYOR...</h3>
+                <div class="tulip-3d" id="ai-loading-icon" style="animation-duration: 1s; margin: 0 auto;"><div class="petal-3d p-1" style="background: var(--coffee);"></div></div>
+                <h3 id="ai-status-text" style="margin-top: 20px; color: var(--coffee);">KAMERA HAZIRLANIYOR...</h3>
+                <button id="capture-btn" class="btn-confirm" style="display:none; background: var(--coffee); color:white; margin-top:15px;">FOTOĞRAF ÇEK</button>
             </div>
-            <div id="oracle-result" style="display: none; text-align: left; font-size: 13px;">
-                <p id="fortune-text" style="font-style: italic;"></p>
-                <button class="btn-confirm" onclick="closeModal('ai-oracle-overlay')" style="margin-top: 20px; background: var(--coffee); color: #fff;">TAMAM</button>
+
+            <div id="oracle-result" style="display: none; text-align: center; font-size: 14px;">
+                <h4 style="color: var(--coffee); margin-bottom: 10px;">LALE AI DİYOR Kİ:</h4>
+                <p id="fortune-text" style="font-style: italic; line-height: 1.5;"></p>
+                <button class="btn-confirm" onclick="closeCoffeeModal()" style="margin-top: 20px; background: var(--coffee); color: #fff;">TEŞEKKÜRLER</button>
             </div>
+            <p id="cancel-camera" onclick="closeCoffeeModal()" style="margin-top: 15px; cursor: pointer; opacity: 0.5;">İptal</p>
         </div>
     </div>
 
@@ -336,6 +348,7 @@
     <audio id="laleSuccessSound" src="https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3"></audio>
 
     <script>
+        let videoStream = null;
         const mockSpots = [
             { id: 1, img: 'https://images.pexels.com/photos/1549326/pexels-photo-1549326.jpeg?auto=compress&cs=tinysrgb&w=400', title: 'Galata Rooftop', loc: 'Karaköy' },
             { id: 2, img: 'https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg?auto=compress&cs=tinysrgb&w=400', title: 'Specialty Coffee', loc: 'Beşiktaş' },
@@ -359,24 +372,66 @@
             document.getElementById('helloTitle').innerText = g;
         }
 
-        function executeEmergencySearch(t) {
-            window.open(`https://www.google.com/maps/search/${t}+açık`, '_blank');
-            closeModal('emergency-modal');
+        async function startCoffeeReading() {
+            openModal('ai-oracle-overlay');
+            const video = document.getElementById('coffee-camera-view');
+            const statusText = document.getElementById('ai-status-text');
+            const captureBtn = document.getElementById('capture-btn');
+            const scanContainer = document.getElementById('scan-container');
+            const resultArea = document.getElementById('oracle-result');
+
+            scanContainer.style.display = 'block';
+            resultArea.style.display = 'none';
+            captureBtn.style.display = 'none';
+            statusText.innerText = "KAMERA HAZIRLANIYOR...";
+
+            try {
+                videoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+                video.srcObject = videoStream;
+                video.style.display = 'block';
+                statusText.innerText = "FİNCANI MERKEZLEYİN";
+                captureBtn.style.display = 'block';
+                
+                captureBtn.onclick = () => {
+                    captureBtn.style.display = 'none';
+                    statusText.innerText = "AI ANALİZ EDİLİYOR...";
+                    document.getElementById('ai-loading-icon').style.display = 'block';
+                    
+                    // Simulación de análisis
+                    setTimeout(() => {
+                        video.style.display = 'none';
+                        scanContainer.style.display = 'none';
+                        resultArea.style.display = 'block';
+                        
+                        const fortunes = [
+                            "Nazar var ama dualarla geçecek. Temiz bir kalbin var.",
+                            "Yolun açık, bir kuş yakında çok güzel haberler getiriyor.",
+                            "Fincanında bir balık var, kısmetin her zamankinden fazla taşıyor!",
+                            "Üç vakte kadar beklediğin o telefon çalacak, hazırlıklı ol.",
+                            "Hane içinde bir sevinç var, lale gibi açılacağın bir döneme giriyorsun."
+                        ];
+                        
+                        document.getElementById('fortune-text').innerText = fortunes[Math.floor(Math.random()*fortunes.length)];
+                        document.getElementById('laleSuccessSound').play();
+                        stopCamera();
+                    }, 4000);
+                };
+            } catch (e) {
+                statusText.innerText = "Kamera hatası! Lütfen izin verin.";
+            }
         }
 
-        function triggerPharmacySearch() { window.open('https://www.google.com/maps/search/nöbetçi+eczane', '_blank'); }
+        function stopCamera() {
+            if (videoStream) {
+                videoStream.getTracks().forEach(track => track.stop());
+                videoStream = null;
+            }
+        }
 
-        function startCoffeeReading() {
-            openModal('ai-oracle-overlay');
-            document.getElementById('scan-container').style.display = 'block';
-            document.getElementById('oracle-result').style.display = 'none';
-            setTimeout(() => {
-                const f = ["Nazar var ama dualarla geçecek.", "Yolun açık, bir kuş haber getiriyor.", "Fincanında bir balık var, kısmetin taşıyor!"];
-                document.getElementById('scan-container').style.display = 'none';
-                document.getElementById('oracle-result').style.display = 'block';
-                document.getElementById('fortune-text').innerText = f[Math.floor(Math.random()*f.length)];
-                document.getElementById('laleSuccessSound').play();
-            }, 4000);
+        function closeCoffeeModal() {
+            stopCamera();
+            closeModal('ai-oracle-overlay');
+            document.getElementById('coffee-camera-view').style.display = 'none';
         }
 
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
@@ -410,7 +465,9 @@
             const n = ["Karaköy'deki yeni rooftop eklendi!", "Trend: Vintage giyim Balat'ta.", "Lale Pay indirimleri aktif."];
             let i = 0; setInterval(() => {
                 const t = document.getElementById('liveTicker');
-                t.style.opacity = '0'; setTimeout(() => { t.innerText = n[i]; t.style.opacity = '1'; i = (i + 1) % n.length; }, 500);
+                if(t) {
+                    t.style.opacity = '0'; setTimeout(() => { t.innerText = n[i]; t.style.opacity = '1'; i = (i + 1) % n.length; }, 500);
+                }
             }, 8000);
         }
 
@@ -418,6 +475,13 @@
             document.getElementById('laleApp').classList.add('fade-exit');
             setTimeout(() => { window.location.reload(); }, 1500);
         }
+
+        function executeEmergencySearch(t) {
+            window.open(`https://www.google.com/maps/search/${t}+açık`, '_blank');
+            closeModal('emergency-modal');
+        }
+
+        function triggerPharmacySearch() { window.open('https://www.google.com/maps/search/nöbetçi+eczane', '_blank'); }
 
         function openSpotFeed() { document.getElementById('spot-overlay').style.display = 'flex'; renderSpotFeed(); }
         function closeSpotFeed() { document.getElementById('spot-overlay').style.display = 'none'; }
