@@ -7,6 +7,11 @@
     <meta name="google-site-verification" content="7GHX9o3zNvKSbTA8OGdvzWBzPglOKKzhVGpN9cSyOt8" />
     <link rel="canonical" href="https://lale-turkey.vercel.app/" />
     
+    <meta name="theme-color" content="#050505">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
     <meta name="geo.region" content="TR-34" />
     <meta name="geo.placename" content="Istanbul" />
     <meta name="geo.position" content="41.0082;28.9784" />
@@ -14,9 +19,6 @@
 
     <title>Lale Turkey | Gen Z Elite Lifestyle & İstanbul Rehberi</title>
     <meta name="description" content="İstanbul'un en şık mekanlarını keşfedin, yapay zeka ile kahve falınıza baktırın y elit bir deneyim yaşayın. Neural Focus gururla sunar.">
-    <meta name="keywords" content="Lale Turkey, İstanbul Elite, Kahve Falı AI, Lale Spot, Gen Z Turkey, Neural Focus">
-    
-    <link rel="alternate" hreflang="tr-tr" href="https://lale-turkey.vercel.app/" />
     
     <link rel="icon" type="image/png" href="https://img.icons8.com/color/48/tulip.png">
     <link rel="apple-touch-icon" href="https://img.icons8.com/color/144/tulip.png">
@@ -274,12 +276,12 @@
                 </div>
             </section>
 
-            <section class="section-box" style="border-color: var(--mission); background: linear-gradient(135deg, rgba(0, 242, 255, 0.08), rgba(0,0,0,0.9));">
+            <section class="section-box" id="missionBox" style="border-color: var(--mission); background: linear-gradient(135deg, rgba(0, 242, 255, 0.08), rgba(0,0,0,0.9)); transition: 0.5s;">
                 <div class="box-header">
                     <h3 style="color: var(--mission);"><i class="fa-solid fa-trophy"></i> Lale Missions</h3>
                 </div>
                 <p style="font-size: 12px; opacity: 0.7; margin-bottom: 20px; line-height: 1.4;">İstanbul'u keşfet, görevleri tamamla y özel ayrıcalıklar kazan.</p>
-                <button class="btn-confirm" onclick="openMission()" style="background: linear-gradient(45deg, var(--mission), #fff); color: #000; box-shadow: 0 10px 25px rgba(0, 242, 255, 0.3);">GÖREVE BAŞLA</button>
+                <button class="btn-confirm" id="missionMainBtn" onclick="openMission()" style="background: linear-gradient(45deg, var(--mission), #fff); color: #000; box-shadow: 0 10px 25px rgba(0, 242, 255, 0.3);">GÖREVE BAŞLA</button>
             </section>
 
             <section class="section-box" style="border-color: var(--coffee); background: linear-gradient(135deg, rgba(44, 24, 16, 0.8), rgba(10, 10, 10, 0.9));">
@@ -310,7 +312,7 @@
                 </div>
             </section>
 
-            <p style="text-align: center; font-size: 10px; opacity: 0.3; padding-bottom: 20px; letter-spacing: 1px;">LALE TURKEY V5.2 - PREMIERE EDITION</p>
+            <p style="text-align: center; font-size: 10px; opacity: 0.3; padding-bottom: 20px; letter-spacing: 1px;">LALE TURKEY V5.5 - ELITE RADAR EDITION</p>
         </main>
 
         <nav class="nav-dock">
@@ -326,23 +328,17 @@
             <div class="logo-text" style="font-size: 18px; color: var(--mission);">LALE MISSIONS</div>
             <i class="fa-solid fa-xmark" onclick="closeMission()" style="font-size: 28px; cursor: pointer; opacity: 0.6;"></i>
         </div>
-
         <div id="mission-content">
             <div class="mission-card">
                 <div class="mission-points" id="m-pts-badge">+0 LP</div>
                 <div class="mission-icon" id="m-icon"><i class="fa-solid fa-camera"></i></div>
                 <h2 id="m-title" style="font-size: 24px; margin-bottom: 12px; font-weight: 800;">Yükleniyor...</h2>
                 <p id="m-desc" style="opacity: 0.7; font-size: 14px; margin-bottom: 25px; line-height: 1.5;">Görevin hazırlanıyor.</p>
-                
                 <video id="mission-camera" class="camera-full" autoplay playsinline muted style="display:none;"></video>
-
                 <button id="m-action-btn" class="btn-confirm" style="background: var(--mission); color:#000;" onclick="handleMissionClick()">GÖREVE BAŞLA</button>
             </div>
         </div>
-
-        <div id="mission-success" style="display:none; text-align:center; padding-top:40px;">
-            <div id="reward-content"></div>
-        </div>
+        <div id="mission-success" style="display:none; text-align:center; padding-top:40px;"><div id="reward-content"></div></div>
     </div>
 
     <div id="emergency-modal" class="glass-modal">
@@ -400,8 +396,44 @@
             { title: "Mado Keyfi", desc: "Mado'da dondurma veya tatlı yerken çekil.", icon: "fa-solid fa-ice-cream", pts: 45, benefit: "Mado'da %10 İndirim" }
         ];
 
+        // --- NEW GEOLOCATION RADAR SYSTEM ---
+        const hotspots = [
+            { name: "Ortaköy", lat: 41.0473, lng: 29.0270, radius: 0.5 }, 
+            { name: "Galata", lat: 41.0256, lng: 28.9741, radius: 0.3 },
+            { name: "Karaköy", lat: 41.0225, lng: 28.9750, radius: 0.4 }
+        ];
+
+        function startGeoRadar() {
+            if (navigator.geolocation) {
+                navigator.geolocation.watchPosition((position) => {
+                    const userLat = position.coords.latitude;
+                    const userLng = position.coords.longitude;
+                    hotspots.forEach(spot => {
+                        const distance = calculateDistance(userLat, userLng, spot.lat, spot.lng);
+                        if (distance <= spot.radius) notifyHotspot(spot.name);
+                    });
+                }, (err) => console.log("Radar GPS Passive"), { enableHighAccuracy: true });
+            }
+        }
+
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; 
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c;
+        }
+
+        function notifyHotspot(name) {
+            const ticker = document.getElementById('liveTicker');
+            ticker.innerHTML = `<span style="color:var(--mission); font-weight:900;">📍 ${name} YAKININDASINIZ! GÖREVİ BAŞLATIN.</span>`;
+            document.getElementById('missionMainBtn').style.boxShadow = "0 0 30px var(--mission)";
+            document.getElementById('missionBox').style.borderColor = "#fff";
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
-            updateGreeting(); loadProfile(); startTickerLoop(); updateScoreUI();
+            updateGreeting(); loadProfile(); startTickerLoop(); updateScoreUI(); startGeoRadar();
             setTimeout(() => {
                 const pre = document.getElementById('lale-preloader');
                 if(pre) {
@@ -411,6 +443,7 @@
             }, 3000);
         });
 
+        // Core Functions (Missions, UI, etc)
         function updateScoreUI() {
             document.getElementById('scoreDisplay').innerText = lalePoints + " LP";
             let progress = (lalePoints % 1000) / 10;
