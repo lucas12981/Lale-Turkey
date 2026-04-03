@@ -395,7 +395,7 @@
         let lalePoints = parseInt(localStorage.getItem('lale_score')) || 0;
         let currentMission = null;
 
-        // --- MAP & RADAR SYSTEM (THE NEW INJECTION) ---
+        // --- MAP & RADAR SYSTEM (UPDATED ELITE SEARCH) ---
         function initLaleMap(lat, lng) {
             document.getElementById('lale-map-container').style.display = 'block';
             if (!map) {
@@ -427,18 +427,45 @@
                 initLaleMap(lat, lng);
 
                 try {
-                    const query = `[out:json];node["amenity"="pharmacy"](around:2000,${lat},${lng});out;`;
+                    // Query avanzada para capturar más detalles de la farmacia
+                    const query = `[out:json];node["amenity"="pharmacy"](around:3000,${lat},${lng});out;`;
                     const res = await fetch(`https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`);
                     const data = await res.json();
 
+                    // Limpiar capas previas si existen
+                    if (window.pharmacyLayer) map.removeLayer(window.pharmacyLayer);
+                    window.pharmacyLayer = L.layerGroup().addTo(map);
+
                     data.elements.forEach(p => {
-                        const m = L.marker([p.lat, p.lon]).addTo(map)
-                            .bindPopup(`<b>💊 ${p.tags.name || 'Eczane'}</b><br><button onclick="drawRoute(${lat},${lng},${p.lat},${p.lon})" style="background:var(--gold); border:none; padding:5px; border-radius:5px; margin-top:5px; font-weight:bold; width:100%;">YOL TARİFİ</button>`);
+                        const name = p.tags.name || 'Eczane';
+                        const phone = p.tags.phone || p.tags['contact:phone'] || null;
+                        const hours = p.tags.opening_hours || 'Bilgi yok (Verificar en local)';
+                        const address = p.tags['addr:street'] || 'Yakınlarda';
+
+                        const popupContent = `
+                            <div style="color:#000; font-family:'Plus Jakarta Sans',sans-serif; min-width:160px;">
+                                <b style="color:var(--tr-red); font-size:14px;">💊 ${name}</b><br>
+                                <small>📍 ${address}</small><br>
+                                <small>⏰ ${hours}</small><br>
+                                <hr style="margin:8px 0; border:0; border-top:1px solid #eee;">
+                                <button onclick="drawRoute(${lat},${lng},${p.lat},${p.lon})" 
+                                        style="background:var(--gold); border:none; padding:8px; border-radius:8px; width:100%; font-weight:800; cursor:pointer; margin-bottom:5px;">
+                                        YOL TARİFİ
+                                </button>
+                                ${phone ? `<a href="tel:${phone}" style="text-decoration:none;"><button style="background:#2ecc71; border:none; padding:8px; border-radius:8px; width:100%; font-weight:800; color:white; cursor:pointer;">📞 ARA</button></a>` : ''}
+                            </div>
+                        `;
+
+                        L.marker([p.lat, p.lon]).addTo(window.pharmacyLayer)
+                            .bindPopup(popupContent);
                     });
                     
                     ticker.innerText = `✅ ${data.elements.length} Eczane bulundu`;
                     if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
-                } catch (e) { ticker.innerText = "⚠️ Bağlantı hatası"; }
+                } catch (e) { 
+                    ticker.innerText = "⚠️ Bağlantı hatası"; 
+                    console.error(e);
+                }
             });
         }
 
@@ -451,6 +478,7 @@
             if (routeLine) map.removeLayer(routeLine);
             routeLine = L.polyline(coords, { color: 'var(--gold)', weight: 4 }).addTo(map);
             map.fitBounds(routeLine.getBounds(), { padding: [30, 30] });
+            map.closePopup(); // Cerrar popup al iniciar ruta
         }
 
         // --- MISSIONS & LOCATION DETECTION ---
