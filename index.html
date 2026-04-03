@@ -33,9 +33,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
     <style>
         :root {
             --tr-red: #E30A17;
@@ -74,14 +71,6 @@
             position: absolute; inset: 0;
             background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.9) 100%);
         }
-
-        /* --- MAP OVERLAY STYLE --- */
-        #lale-map-container {
-            display: none; height: 300px; width: 100%; border-radius: 25px;
-            margin-top: 15px; border: 1px solid var(--glass-border); overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-        .user-dot { background: var(--gold); border: 2px solid white; border-radius: 50%; box-shadow: 0 0 15px var(--gold-glow); }
 
         /* --- ELITE LOADER 3D --- */
         #lale-preloader {
@@ -155,7 +144,7 @@
         .ticker-text-scroll { font-size: 11px; font-weight: 700; white-space: nowrap; transition: 0.5s ease-in-out; }
         @keyframes pulse { 0% { opacity: 1; box-shadow: 0 0 0 0 rgba(0,255,0,0.7); } 70% { opacity: 0.5; box-shadow: 0 0 0 10px rgba(0,255,0,0); } 100% { opacity: 1; } }
 
-        /* --- SECTION BOXES --- */
+        /* --- IMPROVED SECTION & BUTTON UX --- */
         .section-box {
             background: var(--card-bg); border: 1px solid var(--glass-border);
             border-radius: 32px; padding: 24px; margin-bottom: 20px;
@@ -178,6 +167,7 @@
         .btn-premium i { font-size: 24px; color: var(--gold); filter: drop-shadow(0 0 8px var(--gold-glow)); }
         .btn-premium span { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #fff; }
 
+        /* --- MODERN ACTION BUTTONS --- */
         .btn-confirm {
             width: 100%; border: none; border-radius: 20px; padding: 18px;
             font-size: 13px; font-weight: 800; letter-spacing: 1px;
@@ -204,6 +194,7 @@
         .mission-icon { font-size: 55px; color: var(--mission); margin-bottom: 20px; text-shadow: 0 0 25px var(--mission); }
         .mission-points { background: var(--mission); color: #000; padding: 6px 16px; border-radius: 50px; font-weight: 900; font-size: 11px; margin-bottom: 20px; display: inline-block; }
 
+        /* --- CAMERA VIEW --- */
         .camera-full {
             width: 100%; height: 300px; background: #000; border-radius: 30px;
             margin: 20px 0; object-fit: cover; border: 2px solid var(--mission);
@@ -276,7 +267,7 @@
 
                 <div class="news-ticker">
                     <div class="live-dot"></div>
-                    <div class="ticker-text-scroll" id="liveTicker">Lale Radar Aktif: Çevrendeki fırsatları keşfet.</div>
+                    <div class="ticker-text-scroll" id="liveTicker">Keşfet: İstanbul'un en yeni görevleri Lale Missions'ta!</div>
                 </div>
             </div>
 
@@ -291,20 +282,12 @@
                 </div>
             </section>
 
-            <section class="section-box" id="missionBox" style="border-color: var(--mission); background: linear-gradient(135deg, rgba(0, 242, 255, 0.08), rgba(0,0,0,0.9));">
+            <section class="section-box" id="missionBox" style="border-color: var(--mission); background: linear-gradient(135deg, rgba(0, 242, 255, 0.08), rgba(0,0,0,0.9)); transition: 0.5s;">
                 <div class="box-header">
                     <h3 style="color: var(--mission);"><i class="fa-solid fa-trophy"></i> Lale Missions</h3>
                 </div>
-                <p style="font-size: 12px; opacity: 0.7; margin-bottom: 20px; line-height: 1.4;">Şehri keşfet, hedefleri tamamla ve ödülleri topla.</p>
-                <button class="btn-confirm" id="missionMainBtn" onclick="openMission()" style="background: linear-gradient(45deg, var(--mission), #fff); color: #000;">GÖREVE BAŞLA</button>
-            </section>
-
-            <section class="section-box pharmacy-active">
-                <div class="box-header"><h3><i class="fa-solid fa-house-medical"></i> Akıllı Eczane Radar</h3></div>
-                <button class="btn-confirm pharmacy-btn" id="pharmacyBtn" onclick="triggerPharmacySearch()"><i class="fa-solid fa-location-dot"></i> NÖBETÇİ ECZANE BUL</button>
-                <div id="lale-map-container">
-                    <div id="map" style="height: 100%; width: 100%;"></div>
-                </div>
+                <p style="font-size: 12px; opacity: 0.7; margin-bottom: 20px; line-height: 1.4;">İstanbul'u keşfet, görevleri tamamla y özel ayrıcalıklar kazan.</p>
+                <button class="btn-confirm" id="missionMainBtn" onclick="openMission()" style="background: linear-gradient(45deg, var(--mission), #fff); color: #000; box-shadow: 0 10px 25px rgba(0, 242, 255, 0.3);">GÖREVE BAŞLA</button>
             </section>
 
             <section class="section-box" style="border-color: var(--coffee); background: linear-gradient(135deg, rgba(44, 24, 16, 0.8), rgba(10, 10, 10, 0.9));">
@@ -312,6 +295,11 @@
                     <h3 style="color: var(--coffee);"><i class="fa-solid fa-wand-sparkles"></i> Kahve Falı AI</h3>
                 </div>
                 <button class="btn-confirm" id="coffeeBtn" onclick="startCoffeeReading()" style="background: var(--coffee); color: #fff;">FALIMA BAK</button>
+            </section>
+
+            <section class="section-box pharmacy-active">
+                <div class="box-header"><h3><i class="fa-solid fa-house-medical"></i> Akıllı Eczane</h3></div>
+                <button class="btn-confirm pharmacy-btn" onclick="triggerPharmacySearch()"><i class="fa-solid fa-location-dot"></i> NÖBETÇİ ECZANE BUL</button>
             </section>
 
             <section class="section-box">
@@ -330,7 +318,7 @@
                 </div>
             </section>
 
-            <p style="text-align: center; font-size: 10px; opacity: 0.3; padding-bottom: 20px; letter-spacing: 1px;">LALE TURKEY V5.6 - ELITE RADAR EDITION</p>
+            <p style="text-align: center; font-size: 10px; opacity: 0.3; padding-bottom: 20px; letter-spacing: 1px;">LALE TURKEY V5.5 - ELITE RADAR EDITION</p>
         </main>
 
         <nav class="nav-dock">
@@ -351,12 +339,24 @@
                 <div class="mission-points" id="m-pts-badge">+0 LP</div>
                 <div class="mission-icon" id="m-icon"><i class="fa-solid fa-camera"></i></div>
                 <h2 id="m-title" style="font-size: 24px; margin-bottom: 12px; font-weight: 800;">Yükleniyor...</h2>
-                <p id="m-desc" style="opacity: 0.7; font-size: 14px; margin-bottom: 25px; line-height: 1.5;">Konum tabanlı görev hazırlanıyor.</p>
+                <p id="m-desc" style="opacity: 0.7; font-size: 14px; margin-bottom: 25px; line-height: 1.5;">Görevin hazırlanıyor.</p>
                 <video id="mission-camera" class="camera-full" autoplay playsinline muted style="display:none;"></video>
                 <button id="m-action-btn" class="btn-confirm" style="background: var(--mission); color:#000;" onclick="handleMissionClick()">GÖREVE BAŞLA</button>
             </div>
         </div>
         <div id="mission-success" style="display:none; text-align:center; padding-top:40px;"><div id="reward-content"></div></div>
+    </div>
+
+    <div id="emergency-modal" class="glass-modal">
+        <div class="modal-body" style="border-top: 4px solid var(--tr-red);">
+            <h2 style="font-size: 20px; margin-bottom: 25px; font-weight: 900;">Acil Durum Tipi</h2>
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+                <button onclick="executeEmergencySearch('hastane')" class="btn-confirm" style="background: #222; color: #fff; border: 1px solid var(--glass-border);">Genel Acil</button>
+                <button onclick="executeEmergencySearch('çocuk hastanesi')" class="btn-confirm" style="background: #222; color: #fff; border: 1px solid var(--glass-border);">Çocuk Acil</button>
+                <button onclick="executeEmergencySearch('diş hastanesi')" class="btn-confirm" style="background: #222; color: #fff; border: 1px solid var(--glass-border);">Diş Acil</button>
+            </div>
+            <p onclick="closeModal('emergency-modal')" style="margin-top: 25px; cursor: pointer; opacity: 0.5; font-size: 13px; font-weight: 700;">Vazgeç</p>
+        </div>
     </div>
 
     <div id="ai-oracle-overlay" class="glass-modal">
@@ -390,131 +390,56 @@
     <audio id="laleSuccessSound" src="https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3"></audio>
 
     <script>
-        // --- CORE VARIABLES ---
-        let map, userMarker, routeLine, videoStream;
+        let videoStream = null;
         let lalePoints = parseInt(localStorage.getItem('lale_score')) || 0;
         let currentMission = null;
+        
+        const missions = [
+            { title: "Boğaz Havası", desc: "Ortaköy'de Boğaz'a karşı bir fotoğraf çek.", icon: "fa-solid fa-anchor", pts: 60, benefit: "Bosphorus Grill'de %10 İndirim" },
+            { title: "Galata Ruhu", desc: "Galata Kulesi'ni arkana al y poz ver.", icon: "fa-solid fa-tower-observation", pts: 80, benefit: "Tower Cafe'de %10 İndirim" },
+            { title: "Simit & Martı", desc: "Vapurda simit yerken bir kare yakala.", icon: "fa-solid fa-ship", pts: 40, benefit: "Vapur Büfe'de Bedava Çay" },
+            { title: "Karaköy Art", desc: "Karaköy sokaklarındaki graffitilerle fotoğraf çek.", icon: "fa-solid fa-palette", pts: 50, benefit: "Artisan Karaköy'de %10 İndirim" },
+            { title: "Mado Keyfi", desc: "Mado'da dondurma veya tatlı yerken çekil.", icon: "fa-solid fa-ice-cream", pts: 45, benefit: "Mado'da %10 İndirim" }
+        ];
 
-        // --- MAP & RADAR SYSTEM (UPDATED ELITE SEARCH) ---
-        function initLaleMap(lat, lng) {
-            document.getElementById('lale-map-container').style.display = 'block';
-            if (!map) {
-                map = L.map('map', { zoomControl: false }).setView([lat, lng], 15);
-                L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-                    attribution: '© Lale Turkey'
-                }).addTo(map);
-            } else {
-                map.setView([lat, lng], 15);
-            }
+        // --- NEW GEOLOCATION RADAR SYSTEM ---
+        const hotspots = [
+            { name: "Ortaköy", lat: 41.0473, lng: 29.0270, radius: 0.5 }, 
+            { name: "Galata", lat: 41.0256, lng: 28.9741, radius: 0.3 },
+            { name: "Karaköy", lat: 41.0225, lng: 28.9750, radius: 0.4 }
+        ];
 
-            if (!userMarker) {
-                const userIcon = L.divIcon({ className: 'user-dot', iconSize: [12, 12] });
-                userMarker = L.marker([lat, lng], { icon: userIcon }).addTo(map).bindPopup("<b>Buradasın</b>");
-            } else {
-                userMarker.setLatLng([lat, lng]);
-            }
-        }
-
-        async function triggerPharmacySearch() {
-            const ticker = document.getElementById('liveTicker');
-            if (!navigator.geolocation) return alert("GPS izni gerekli");
-
-            ticker.innerText = "🔍 En yakın eczaneler aranıyor...";
-            
-            navigator.geolocation.getCurrentPosition(async (pos) => {
-                const lat = pos.coords.latitude;
-                const lng = pos.coords.longitude;
-                initLaleMap(lat, lng);
-
-                try {
-                    // Query avanzada para capturar más detalles de la farmacia
-                    const query = `[out:json];node["amenity"="pharmacy"](around:3000,${lat},${lng});out;`;
-                    const res = await fetch(`https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`);
-                    const data = await res.json();
-
-                    // Limpiar capas previas si existen
-                    if (window.pharmacyLayer) map.removeLayer(window.pharmacyLayer);
-                    window.pharmacyLayer = L.layerGroup().addTo(map);
-
-                    data.elements.forEach(p => {
-                        const name = p.tags.name || 'Eczane';
-                        const phone = p.tags.phone || p.tags['contact:phone'] || null;
-                        const hours = p.tags.opening_hours || 'Bilgi yok (Verificar en local)';
-                        const address = p.tags['addr:street'] || 'Yakınlarda';
-
-                        const popupContent = `
-                            <div style="color:#000; font-family:'Plus Jakarta Sans',sans-serif; min-width:160px;">
-                                <b style="color:var(--tr-red); font-size:14px;">💊 ${name}</b><br>
-                                <small>📍 ${address}</small><br>
-                                <small>⏰ ${hours}</small><br>
-                                <hr style="margin:8px 0; border:0; border-top:1px solid #eee;">
-                                <button onclick="drawRoute(${lat},${lng},${p.lat},${p.lon})" 
-                                        style="background:var(--gold); border:none; padding:8px; border-radius:8px; width:100%; font-weight:800; cursor:pointer; margin-bottom:5px;">
-                                        YOL TARİFİ
-                                </button>
-                                ${phone ? `<a href="tel:${phone}" style="text-decoration:none;"><button style="background:#2ecc71; border:none; padding:8px; border-radius:8px; width:100%; font-weight:800; color:white; cursor:pointer;">📞 ARA</button></a>` : ''}
-                            </div>
-                        `;
-
-                        L.marker([p.lat, p.lon]).addTo(window.pharmacyLayer)
-                            .bindPopup(popupContent);
+        function startGeoRadar() {
+            if (navigator.geolocation) {
+                navigator.geolocation.watchPosition((position) => {
+                    const userLat = position.coords.latitude;
+                    const userLng = position.coords.longitude;
+                    hotspots.forEach(spot => {
+                        const distance = calculateDistance(userLat, userLng, spot.lat, spot.lng);
+                        if (distance <= spot.radius) notifyHotspot(spot.name);
                     });
-                    
-                    ticker.innerText = `✅ ${data.elements.length} Eczane bulundu`;
-                    if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
-                } catch (e) { 
-                    ticker.innerText = "⚠️ Bağlantı hatası"; 
-                    console.error(e);
-                }
-            });
+                }, (err) => console.log("Radar GPS Passive"), { enableHighAccuracy: true });
+            }
         }
 
-        async function drawRoute(lat, lng, dLat, dLng) {
-            const url = `https://router.project-osrm.org/route/v1/driving/${lng},${lat};${dLng},${dLat}?overview=full&geometries=geojson`;
-            const res = await fetch(url);
-            const data = await res.json();
-            const coords = data.routes[0].geometry.coordinates.map(c => [c[1], c[0]]);
-
-            if (routeLine) map.removeLayer(routeLine);
-            routeLine = L.polyline(coords, { color: 'var(--gold)', weight: 4 }).addTo(map);
-            map.fitBounds(routeLine.getBounds(), { padding: [30, 30] });
-            map.closePopup(); // Cerrar popup al iniciar ruta
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; 
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c;
         }
 
-        // --- MISSIONS & LOCATION DETECTION ---
-        async function getCityName(lat, lng) {
-            try {
-                const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`);
-                const data = await res.json();
-                return data.address.city || data.address.town || "İstanbul";
-            } catch { return "İstanbul"; }
+        function notifyHotspot(name) {
+            const ticker = document.getElementById('liveTicker');
+            ticker.innerHTML = `<span style="color:var(--mission); font-weight:900;">📍 ${name} YAKININDASINIZ! GÖREVİ BAŞLATIN.</span>`;
+            document.getElementById('missionMainBtn').style.boxShadow = "0 0 30px var(--mission)";
+            document.getElementById('missionBox').style.borderColor = "#fff";
         }
 
-        async function openMission() {
-            document.getElementById('mission-overlay').style.display = 'flex';
-            const btn = document.getElementById('missionMainBtn');
-            btn.innerText = "KONUM ALINIYOR...";
-
-            navigator.geolocation.getCurrentPosition(async (pos) => {
-                const city = await getCityName(pos.coords.latitude, pos.coords.longitude);
-                
-                const dynamicMissions = [
-                    { title: `${city} Kaşifi`, desc: `${city} merkezinde estetik bir fotoğraf çek.`, icon: "fa-solid fa-camera", pts: 50, benefit: "Kahve ikramı" },
-                    { title: "Yerel Rota", desc: `${city} sokaklarını keşfet ve bir kare yakala.`, icon: "fa-solid fa-map-location", pts: 60, benefit: "%10 İndirim" }
-                ];
-
-                currentMission = dynamicMissions[Math.floor(Math.random() * dynamicMissions.length)];
-                document.getElementById('m-title').innerText = currentMission.title;
-                document.getElementById('m-desc').innerText = currentMission.desc;
-                document.getElementById('m-icon').innerHTML = `<i class="${currentMission.icon}"></i>`;
-                document.getElementById('m-pts-badge').innerText = "+" + currentMission.pts + " LP";
-                btn.innerText = "GÖREVE BAŞLA";
-            });
-        }
-
-        // --- APP ENGINE ---
         document.addEventListener('DOMContentLoaded', () => {
-            updateGreeting(); loadProfile(); startTickerLoop(); updateScoreUI();
+            updateGreeting(); loadProfile(); startTickerLoop(); updateScoreUI(); startGeoRadar();
             setTimeout(() => {
                 const pre = document.getElementById('lale-preloader');
                 if(pre) {
@@ -524,10 +449,28 @@
             }, 3000);
         });
 
-        function updateGreeting() {
-            const h = new Date().getHours();
-            let g = h >= 5 && h < 12 ? "Günaydın" : h >= 12 && h < 18 ? "Tünaydın" : h >= 18 && h < 22 ? "İyi Akşamlar" : "İyi Geceler";
-            document.getElementById('helloTitle').innerText = g;
+        // Core Functions (Missions, UI, etc)
+        function updateScoreUI() {
+            document.getElementById('scoreDisplay').innerText = lalePoints + " LP";
+            let progress = (lalePoints % 1000) / 10;
+            document.getElementById('progressBar').style.width = progress + "%";
+            let rank = lalePoints > 1500 ? "BOSPHORUS LEGEND" : lalePoints > 500 ? "LALE ELITE" : "YENİ ÜYE";
+            document.getElementById('rankTitle').innerText = rank;
+        }
+
+        function openMission() {
+            document.getElementById('mission-overlay').style.display = 'flex';
+            currentMission = missions[Math.floor(Math.random() * missions.length)];
+            document.getElementById('m-title').innerText = currentMission.title;
+            document.getElementById('m-desc').innerText = currentMission.desc;
+            document.getElementById('m-icon').innerHTML = `<i class="${currentMission.icon}"></i>`;
+            document.getElementById('m-pts-badge').innerText = "+" + currentMission.pts + " LP";
+            document.getElementById('mission-content').style.display = 'block';
+            document.getElementById('mission-success').style.display = 'none';
+            document.getElementById('mission-camera').style.display = 'none';
+            const btn = document.getElementById('m-action-btn');
+            btn.innerText = "GÖREVE BAŞLA";
+            btn.style.background = "var(--mission)";
         }
 
         async function handleMissionClick() {
@@ -536,20 +479,36 @@
             if(btn.innerText === "GÖREVE BAŞLA") {
                 try {
                     videoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-                    video.srcObject = videoStream; video.style.display = 'block';
-                    btn.innerText = "FOTOĞRAF ÇEK"; btn.style.background = "#fff";
-                } catch (e) { alert("Kamera izni gerekli."); }
+                    video.srcObject = videoStream;
+                    video.style.display = 'block';
+                    btn.innerText = "FOTOĞRAF ÇEK";
+                    btn.style.background = "#fff";
+                } catch (e) { alert("Lütfen kamera izni verin."); }
             } 
             else if(btn.innerText === "FOTOĞRAF ÇEK") {
                 document.getElementById('mission-overlay').style.backgroundColor = "white";
                 setTimeout(() => { 
                     document.getElementById('mission-overlay').style.backgroundColor = "#000"; 
-                    stopCamera(); video.style.display = 'none';
+                    stopCamera();
+                    video.style.display = 'none';
+                    document.getElementById('m-desc').innerText = "Harika! Şimdi ödülünü aktif etmek için bu anı paylaş.";
                     btn.innerHTML = '<i class="fa-brands fa-instagram"></i> PAYLAŞ VE KAZAN';
-                    btn.style.background = "linear-gradient(45deg, #f09433, #dc2743, #bc1888)";
+                    btn.style.background = "linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)";
                     btn.style.color = "#fff";
                 }, 100);
-            } else { unlockRewards(); }
+            }
+            else {
+                if (navigator.share) {
+                    try {
+                        await navigator.share({
+                            title: 'Lale Turkey',
+                            text: `Lale Turkey ile ${currentMission.title} görevini tamamladım! 🇹🇷 #LaleElite`,
+                            url: window.location.href
+                        });
+                        unlockRewards();
+                    } catch (e) { unlockRewards(); }
+                } else { unlockRewards(); }
+            }
         }
 
         function unlockRewards() {
@@ -561,12 +520,21 @@
             updateScoreUI();
             document.getElementById('reward-content').innerHTML = `
                 <div style="font-size: 80px; color: var(--gold); margin-bottom: 20px;">🌟</div>
-                <h2 style="font-size: 28px; color: var(--gold); font-weight:900;">TEBRİKLER!</h2>
-                <div style="background:var(--gold); color:#000; padding:25px; border-radius:25px; margin:20px 0;">
-                    <h3 style="font-size:20px; font-weight:900;">${currentMission.benefit}</h3>
-                    <p style="font-size:14px; font-weight:900; background:#000; color:#fff; padding:8px; border-radius:12px; display:inline-block; margin-top:10px;">KOD: LALE2026</p>
+                <h2 style="font-size: 28px; color: var(--gold); font-weight:900;">MÜKEMMEL!</h2>
+                <p style="margin-bottom: 25px; opacity: 0.8;">${currentMission.pts} LP Hesabına Eklendi.</p>
+                <div style="background:var(--gold); color:#000; padding:25px; border-radius:25px; margin-bottom:30px; border:2px dashed #000;">
+                    <p style="font-weight:900; font-size:10px; letter-spacing:1px; text-transform:uppercase;">Özel Avantajın:</p>
+                    <h3 style="font-size:20px; font-weight:900; margin:10px 0;">${currentMission.benefit}</h3>
+                    <p style="font-size:14px; font-weight:900; background:#000; color:#fff; padding:8px; border-radius:12px; display:inline-block;">KOD: LALE2026</p>
                 </div>
-                <button class="btn-confirm" style="background:#fff; color:#000;" onclick="closeMission()">ANA SAYFAYA DÖN</button>`;
+                <button class="btn-confirm" style="background:#fff; color:#000;" onclick="closeMission()">ANA SAYFAYA DÖN</button>
+            `;
+        }
+
+        function updateGreeting() {
+            const h = new Date().getHours();
+            let g = h >= 5 && h < 12 ? "Günaydın" : h >= 12 && h < 18 ? "Tünaydın" : h >= 18 && h < 22 ? "İyi Akşamlar" : "İyi Geceler";
+            document.getElementById('helloTitle').innerText = g;
         }
 
         async function startCoffeeReading() {
@@ -574,17 +542,26 @@
             const video = document.getElementById('coffee-camera-view');
             const statusText = document.getElementById('ai-status-text');
             const captureBtn = document.getElementById('capture-btn');
+            const scanContainer = document.getElementById('scan-container');
+            const resultArea = document.getElementById('oracle-result');
+            scanContainer.style.display = 'block';
+            resultArea.style.display = 'none';
+            captureBtn.style.display = 'none';
             try {
                 videoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-                video.srcObject = videoStream; captureBtn.style.display = 'block';
+                video.srcObject = videoStream;
+                statusText.innerText = "FİNCANI ODAKLAYIN";
+                captureBtn.style.display = 'block';
                 captureBtn.onclick = () => {
-                    captureBtn.style.display = 'none'; statusText.innerText = "AI ANALİZ EDİYOR...";
+                    captureBtn.style.display = 'none';
+                    statusText.innerText = "AI GELECEĞİ GÖRÜYOR...";
                     setTimeout(() => {
-                        document.getElementById('scan-container').style.display = 'none';
-                        document.getElementById('oracle-result').style.display = 'block';
-                        const f = ["Nazar var ama temiz bir kalbin var.", "Yolun açık, güzel haberler yolda.", "Fincanında kısmetin taşıyor!", "Beklediğin o telefon çalacak.", "Lale gibi açılacağın bir dönem başlıyor."];
+                        scanContainer.style.display = 'none';
+                        resultArea.style.display = 'block';
+                        const f = ["Nazar var ama dualarla geçecek. Temiz bir kalbin var.", "Yolun açık, bir kuş yakında çok güzel haberler getiriyor.", "Fincanında bir balık var, kısmetin taşıyor!", "Üç vakte kadar beklediğin o telefon çalacak.", "Hane içinde bir sevinç var, lale gibi açılacaksın."];
                         document.getElementById('fortune-text').innerText = f[Math.floor(Math.random()*f.length)];
-                        document.getElementById('laleSuccessSound').play(); stopCamera();
+                        document.getElementById('laleSuccessSound').play();
+                        stopCamera();
                     }, 4000);
                 };
             } catch (e) { statusText.innerText = "Kamera hatası!"; }
@@ -594,8 +571,6 @@
         function closeCoffeeModal() { stopCamera(); closeModal('ai-oracle-overlay'); }
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-        function closeMission() { stopCamera(); document.getElementById('mission-overlay').style.display = 'none'; }
-        
         function saveUserData() {
             const n = document.getElementById('nameIn').value;
             if(n) { localStorage.setItem('lale_name', n); document.getElementById('userNameDisplay').innerText = "Selam, " + n; }
@@ -603,29 +578,23 @@
             if(f) { const r = new FileReader(); r.onload = (e) => { localStorage.setItem('lale_pic', e.target.result); document.getElementById('avatarImg').src = e.target.result; }; r.readAsDataURL(f); }
             closeModal('profileModal');
         }
-
         function loadProfile() {
-            const n = localStorage.getItem('lale_name'), p = localStorage.getItem('lale_pic');
+            const n = localStorage.getItem('lale_name'); p = localStorage.getItem('lale_pic');
             if(n) document.getElementById('userNameDisplay').innerText = "Selam, " + n;
             if(p) document.getElementById('avatarImg').src = p;
         }
-
-        function updateScoreUI() {
-            document.getElementById('scoreDisplay').innerText = lalePoints + " LP";
-            document.getElementById('progressBar').style.width = (lalePoints % 1000) / 10 + "%";
-            document.getElementById('rankTitle').innerText = lalePoints > 1500 ? "BOSPHORUS LEGEND" : lalePoints > 500 ? "LALE ELITE" : "YENİ ÜYE";
-        }
-
+        function smartDeepLink(u, w) { window.location.href = u; setTimeout(() => { if (!document.hidden) window.open(w, '_blank'); }, 2000); }
         function startTickerLoop() {
-            const n = ["Lale Radar Aktif: Çevrendeki fırsatları keşfet.", "Yapay Zeka Kahve Falı her gün ücretsiz!", "Missions ile puan kazan, Mado'da harca."];
+            const n = ["Lale Missions: Yeni görevler eklendi!", "Trend: Vintage giyim Balat'ta.", "Lale Pay indirimleri aktif."];
             let i = 0; setInterval(() => {
                 const t = document.getElementById('liveTicker');
                 if(t) { t.style.opacity = '0'; setTimeout(() => { t.innerText = n[i]; t.style.opacity = '1'; i = (i + 1) % n.length; }, 500); }
             }, 8000);
         }
-
-        function smartDeepLink(u, w) { window.location.href = u; setTimeout(() => { if (!document.hidden) window.open(w, '_blank'); }, 2000); }
         function terminateSession() { document.getElementById('laleApp').classList.add('fade-exit'); setTimeout(() => { localStorage.clear(); window.location.reload(); }, 1500); }
+        function executeEmergencySearch(t) { window.open(`https://www.google.com/maps/search/${t}+açık`, '_blank'); closeModal('emergency-modal'); }
+        function triggerPharmacySearch() { window.open('https://www.google.com/maps/search/nöbetçi+eczane', '_blank'); }
+        function closeMission() { stopCamera(); document.getElementById('mission-overlay').style.display = 'none'; }
     </script>
 </body>
 </html>
