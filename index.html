@@ -33,6 +33,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
     <style>
         :root {
             --tr-red: #E30A17;
@@ -45,6 +48,7 @@
             --font-main: 'Plus Jakarta Sans', sans-serif;
             --coffee: #bc8f8f;
             --mission: #00f2ff;
+            --ferry-blue: #3498db;
         }
 
         /* --- BASE STYLES --- */
@@ -180,6 +184,21 @@
         .pharmacy-active { border: 1px solid var(--pharmacy) !important; box-shadow: 0 0 25px rgba(46, 204, 113, 0.15); }
         .pharmacy-btn { background: var(--pharmacy); color: #fff; }
 
+        /* --- FERRY SPECIFIC STYLES --- */
+        #ferryMapContainer {
+            display:none; position:fixed; inset:0; background:#000; z-index:999999;
+        }
+        #ferryMap { width:100%; height:100%; filter: grayscale(0.2) brightness(0.8); }
+        .ferry-header {
+            position:absolute; top:20px; left:20px; right:20px; display:flex; justify-content:space-between; align-items:center; z-index:10000;
+        }
+        .ferry-panel {
+            position:absolute; bottom:0; left:0; right:0; background:rgba(15,15,15,0.95); backdrop-filter:blur(20px); border-top:1px solid rgba(255,255,255,0.1); border-radius:30px 30px 0 0; padding:25px; z-index:10000; max-height:45%; overflow-y:auto; display:none;
+        }
+        .ferry-card {
+            background:rgba(255,255,255,0.05); padding:15px; border-radius:18px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; border:1px solid rgba(255,255,255,0.05);
+        }
+
         /* --- MISSIONS OVERLAY --- */
         #mission-overlay {
             position: fixed; inset: 0; background: #000; z-index: 2000001;
@@ -302,6 +321,15 @@
                 <button class="btn-confirm pharmacy-btn" onclick="triggerPharmacySearch()"><i class="fa-solid fa-location-dot"></i> NÖBETÇİ ECZANE BUL</button>
             </section>
 
+            <section class="section-box" style="border: 1px solid var(--ferry-blue); background: linear-gradient(135deg, rgba(52, 152, 219, 0.15), rgba(0,0,0,0.9));">
+                <div class="box-header">
+                    <h3 style="color: var(--ferry-blue);"><i class="fa-solid fa-ship"></i> Lale Vapur Radar</h3>
+                </div>
+                <button onclick="startFerryExperience()" class="btn-confirm" style="background: var(--ferry-blue); color: #fff;">
+                    EN YAKIN VAPUR İSKELESİ
+                </button>
+            </section>
+
             <section class="section-box">
                 <div class="box-header"><h3><i class="fa-solid fa-wallet"></i> Lale VIP Pay</h3></div>
                 <div class="action-grid">
@@ -327,6 +355,20 @@
             <button class="dock-item" onclick="openModal('profileModal')"><i class="fa-solid fa-circle-user"></i><span>PROFİL</span></button>
             <button class="dock-item" onclick="triggerPharmacySearch()"><i class="fa-solid fa-briefcase-medical"></i><span>ECZANE</span></button>
         </nav>
+    </div>
+
+    <div id="ferryMapContainer">
+        <div id="ferryMap"></div>
+        <div class="ferry-header">
+            <div style="background:rgba(0,0,0,0.7); backdrop-filter:blur(10px); padding:10px 20px; border-radius:20px; border:1px solid rgba(255,255,255,0.1);">
+                <span style="color:var(--gold); font-weight:800; font-size:12px; letter-spacing:1px;">LALE FERRY RADAR</span>
+            </div>
+            <button onclick="closeFerryMap()" style="background:var(--tr-red); color:#fff; border:none; width:40px; height:40px; border-radius:50%; font-weight:bold; cursor:pointer;">✕</button>
+        </div>
+        <div id="ferryInfoPanel" class="ferry-panel">
+            <h3 style="font-size:16px; color:var(--gold); margin-bottom:15px; font-weight:800;">YAKINDAKİ İSKELELER</h3>
+            <div id="ferryList"></div>
+        </div>
     </div>
 
     <div id="mission-overlay">
@@ -393,6 +435,8 @@
         let videoStream = null;
         let lalePoints = parseInt(localStorage.getItem('lale_score')) || 0;
         let currentMission = null;
+        let ferryMap;
+        let ferryMarkers = [];
         
         const missions = [
             { title: "Boğaz Havası", desc: "Ortaköy'de Boğaz'a karşı bir fotoğraf çek.", icon: "fa-solid fa-anchor", pts: 60, benefit: "Bosphorus Grill'de %10 İndirim" },
@@ -402,13 +446,69 @@
             { title: "Mado Keyfi", desc: "Mado'da dondurma veya tatlı yerken çekil.", icon: "fa-solid fa-ice-cream", pts: 45, benefit: "Mado'da %10 İndirim" }
         ];
 
-        // --- NEW GEOLOCATION RADAR SYSTEM ---
         const hotspots = [
             { name: "Ortaköy", lat: 41.0473, lng: 29.0270, radius: 0.5 }, 
             { name: "Galata", lat: 41.0256, lng: 28.9741, radius: 0.3 },
             { name: "Karaköy", lat: 41.0225, lng: 28.9750, radius: 0.4 }
         ];
 
+        // --- FERRY EXPERIENCE CORE ---
+        function startFerryExperience() {
+            if (!navigator.geolocation) return alert("Konum hatası");
+            const ticker = document.getElementById('liveTicker');
+            if(ticker) ticker.innerText = "🚢 En yakın vapur iskeleleri taranıyor...";
+            navigator.geolocation.getCurrentPosition(pos => {
+                openFerryMap(pos.coords.latitude, pos.coords.longitude);
+            }, () => alert("GPS kapalı"));
+        }
+
+        function openFerryMap(lat, lng) {
+            document.getElementById("ferryMapContainer").style.display = "block";
+            setTimeout(() => {
+                if (!ferryMap) {
+                    ferryMap = L.map('ferryMap', { zoomControl: false }).setView([lat, lng], 14);
+                    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(ferryMap);
+                } else { ferryMap.setView([lat, lng], 14); }
+
+                ferryMarkers.forEach(m => ferryMap.removeLayer(m));
+                ferryMarkers = [];
+
+                L.circleMarker([lat, lng], { radius: 10, color: "#fff", fillColor: "#3498db", fillOpacity: 1, weight: 3 }).addTo(ferryMap);
+                searchNearbyFerries(lat, lng);
+            }, 400);
+        }
+
+        function searchNearbyFerries(lat, lng) {
+            const query = `[out:json];node["amenity"="ferry_terminal"](around:5000, ${lat}, ${lng});out;`;
+            const listCont = document.getElementById("ferryList");
+            const panel = document.getElementById("ferryInfoPanel");
+            listCont.innerHTML = "<p style='opacity:0.5; font-size:12px;'>Radara yakalananlar listeleniyor...</p>";
+            panel.style.display = "block";
+
+            fetch("https://overpass-api.de/api/interpreter?data=" + encodeURIComponent(query))
+            .then(res => res.json())
+            .then(data => {
+                listCont.innerHTML = "";
+                if (!data.elements.length) {
+                    listCont.innerHTML = "<p style='color:var(--tr-red);'>Yakında iskele yok.</p>";
+                    return;
+                }
+                data.elements.forEach(f => {
+                    const name = f.tags.name || "Vapur İskelesi";
+                    const dist = (L.latLng(lat, lng).distanceTo(L.latLng(f.lat, f.lon)) / 1000).toFixed(1);
+                    const m = L.marker([f.lat, f.lon]).addTo(ferryMap);
+                    ferryMarkers.push(m);
+                    const card = document.createElement("div");
+                    card.className = "ferry-card";
+                    card.innerHTML = `<div><div style="font-weight:800; font-size:14px; color:#fff;">${name}</div><div style="font-size:11px; color:var(--gold); opacity:0.8;">${dist} km uzaklıkta</div></div><button onclick="window.open('https://www.google.com/maps/dir/?api=1&destination=${f.lat},${f.lon}')" style="background:var(--tr-red); color:#fff; border:none; padding:8px 15px; border-radius:10px; font-weight:800; font-size:12px;">GİT</button>`;
+                    listCont.appendChild(card);
+                });
+            });
+        }
+
+        function closeFerryMap() { document.getElementById("ferryMapContainer").style.display = "none"; }
+
+        // --- APP LIFE CYCLE ---
         function startGeoRadar() {
             if (navigator.geolocation) {
                 navigator.geolocation.watchPosition((position) => {
@@ -449,7 +549,6 @@
             }, 3000);
         });
 
-        // Core Functions (Missions, UI, etc)
         function updateScoreUI() {
             document.getElementById('scoreDisplay').innerText = lalePoints + " LP";
             let progress = (lalePoints % 1000) / 10;
@@ -500,11 +599,7 @@
             else {
                 if (navigator.share) {
                     try {
-                        await navigator.share({
-                            title: 'Lale Turkey',
-                            text: `Lale Turkey ile ${currentMission.title} görevini tamamladım! 🇹🇷 #LaleElite`,
-                            url: window.location.href
-                        });
+                        await navigator.share({ title: 'Lale Turkey', text: `Lale Turkey ile ${currentMission.title} görevini tamamladım! 🇹🇷 #LaleElite`, url: window.location.href });
                         unlockRewards();
                     } catch (e) { unlockRewards(); }
                 } else { unlockRewards(); }
@@ -518,17 +613,7 @@
             lalePoints += currentMission.pts;
             localStorage.setItem('lale_score', lalePoints);
             updateScoreUI();
-            document.getElementById('reward-content').innerHTML = `
-                <div style="font-size: 80px; color: var(--gold); margin-bottom: 20px;">🌟</div>
-                <h2 style="font-size: 28px; color: var(--gold); font-weight:900;">MÜKEMMEL!</h2>
-                <p style="margin-bottom: 25px; opacity: 0.8;">${currentMission.pts} LP Hesabına Eklendi.</p>
-                <div style="background:var(--gold); color:#000; padding:25px; border-radius:25px; margin-bottom:30px; border:2px dashed #000;">
-                    <p style="font-weight:900; font-size:10px; letter-spacing:1px; text-transform:uppercase;">Özel Avantajın:</p>
-                    <h3 style="font-size:20px; font-weight:900; margin:10px 0;">${currentMission.benefit}</h3>
-                    <p style="font-size:14px; font-weight:900; background:#000; color:#fff; padding:8px; border-radius:12px; display:inline-block;">KOD: LALE2026</p>
-                </div>
-                <button class="btn-confirm" style="background:#fff; color:#000;" onclick="closeMission()">ANA SAYFAYA DÖN</button>
-            `;
+            document.getElementById('reward-content').innerHTML = `<div style="font-size: 80px; color: var(--gold); margin-bottom: 20px;">🌟</div><h2 style="font-size: 28px; color: var(--gold); font-weight:900;">MÜKEMMEL!</h2><p style="margin-bottom: 25px; opacity: 0.8;">${currentMission.pts} LP Hesabına Eklendi.</p><div style="background:var(--gold); color:#000; padding:25px; border-radius:25px; margin-bottom:30px; border:2px dashed #000;"><p style="font-weight:900; font-size:10px; letter-spacing:1px; text-transform:uppercase;">Özel Avantajın:</p><h3 style="font-size:20px; font-weight:900; margin:10px 0;">${currentMission.benefit}</h3><p style="font-size:14px; font-weight:900; background:#000; color:#fff; padding:8px; border-radius:12px; display:inline-block;">KOD: LALE2026</p></div><button class="btn-confirm" style="background:#fff; color:#000;" onclick="closeMission()">ANA SAYFAYA DÖN</button>`;
         }
 
         function updateGreeting() {
