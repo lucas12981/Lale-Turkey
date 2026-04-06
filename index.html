@@ -8,7 +8,7 @@
     <link rel="canonical" href="https://lale-turkey.vercel.app/" />
     
     <meta property="og:title" content="Lale Turkey | Elite Lifestyle" />
-    <meta property="og:description" content="İstanbul'u keşfet, görevleri tamamla y elit bir deneyim yaşayın." />
+    <meta property="og:description" content="İstanbul'u keşfet, görevleri tamamla ve elit bir deneyim yaşayın." />
     <meta property="og:image" content="https://img.icons8.com/color/512/tulip.png" />
     <meta property="og:url" content="https://lale-turkey.vercel.app/" />
     <meta property="og:type" content="website" />
@@ -24,7 +24,7 @@
     <meta name="ICBM" content="41.0082, 28.9784" />
 
     <title>Lale Turkey | Gen Z Elite Lifestyle & İstanbul Rehberi</title>
-    <meta name="description" content="İstanbul'un en şık mekanlarını keşfedin, yapay zeka ile kahve falınıza baktırın y elit bir deneyim yaşayın. Neural Focus gururla sunar.">
+    <meta name="description" content="İstanbul'un en şık mekanlarını keşfedin, yapay zeka ile kahve falınıza baktırın ve elit bir deneyim yaşayın. Neural Focus gururla sunar.">
     
     <link rel="icon" type="image/png" href="https://img.icons8.com/color/48/tulip.png">
     <link rel="apple-touch-icon" href="https://img.icons8.com/color/144/tulip.png">
@@ -148,14 +148,13 @@
         .ticker-text-scroll { font-size: 11px; font-weight: 700; white-space: nowrap; transition: 0.5s ease-in-out; }
         @keyframes pulse { 0% { opacity: 1; box-shadow: 0 0 0 0 rgba(0,255,0,0.7); } 70% { opacity: 0.5; box-shadow: 0 0 0 10px rgba(0,255,0,0); } 100% { opacity: 1; } }
 
-        /* --- IMPROVED SECTION & BUTTON UX --- */
+        /* --- SECTIONS --- */
         .section-box {
             background: var(--card-bg); border: 1px solid var(--glass-border);
             border-radius: 32px; padding: 24px; margin-bottom: 20px;
             backdrop-filter: blur(25px); position: relative; overflow: hidden;
             transition: transform 0.3s ease;
         }
-
         .box-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
         .box-header h3 { font-size: 14px; font-weight: 800; color: var(--gold); letter-spacing: 1px; display: flex; align-items: center; gap: 10px; text-transform: uppercase; }
         
@@ -171,7 +170,6 @@
         .btn-premium i { font-size: 24px; color: var(--gold); filter: drop-shadow(0 0 8px var(--gold-glow)); }
         .btn-premium span { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #fff; }
 
-        /* --- MODERN ACTION BUTTONS --- */
         .btn-confirm {
             width: 100%; border: none; border-radius: 20px; padding: 18px;
             font-size: 13px; font-weight: 800; letter-spacing: 1px;
@@ -184,62 +182,30 @@
         .pharmacy-active { border: 1px solid var(--pharmacy) !important; box-shadow: 0 0 25px rgba(46, 204, 113, 0.15); }
         .pharmacy-btn { background: var(--pharmacy); color: #fff; }
 
-        /* --- FERRY SPECIFIC STYLES --- */
-        #ferryMapContainer {
-            display:none; position:fixed; inset:0; background:#000; z-index:999999;
-        }
+        /* --- FERRY RADAR --- */
+        #ferryMapContainer { display:none; position:fixed; inset:0; background:#000; z-index:999999; }
         #ferryMap { width:100%; height:100%; filter: grayscale(0.2) brightness(0.8); }
-        .ferry-header {
-            position:absolute; top:20px; left:20px; right:20px; display:flex; justify-content:space-between; align-items:center; z-index:10000;
-        }
-        .ferry-panel {
-            position:absolute; bottom:0; left:0; right:0; background:rgba(15,15,15,0.95); backdrop-filter:blur(20px); border-top:1px solid rgba(255,255,255,0.1); border-radius:30px 30px 0 0; padding:25px; z-index:10000; max-height:45%; overflow-y:auto; display:none;
-        }
-        .ferry-card {
-            background:rgba(255,255,255,0.05); padding:15px; border-radius:18px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; border:1px solid rgba(255,255,255,0.05);
-        }
+        .ferry-header { position:absolute; top:20px; left:20px; right:20px; display:flex; justify-content:space-between; align-items:center; z-index:10000; }
+        .ferry-panel { position:absolute; bottom:0; left:0; right:0; background:rgba(15,15,15,0.95); backdrop-filter:blur(20px); border-top:1px solid rgba(255,255,255,0.1); border-radius:30px 30px 0 0; padding:25px; z-index:10000; max-height:45%; overflow-y:auto; display:none; }
+        .ferry-card { background:rgba(255,255,255,0.05); padding:15px; border-radius:18px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; border:1px solid rgba(255,255,255,0.05); }
 
-        /* --- MISSIONS OVERLAY --- */
-        #mission-overlay {
-            position: fixed; inset: 0; background: #000; z-index: 2000001;
-            display: none; flex-direction: column; padding: 60px 25px;
-            backdrop-filter: blur(20px);
-        }
-        .mission-card {
-            background: rgba(15, 15, 15, 0.9); border: 1px solid var(--mission);
-            border-radius: 35px; padding: 40px 25px; text-align: center; margin-top: 20px;
-            box-shadow: 0 20px 50px rgba(0, 242, 255, 0.15);
-        }
+        /* --- MISSIONS --- */
+        #mission-overlay { position: fixed; inset: 0; background: #000; z-index: 2000001; display: none; flex-direction: column; padding: 60px 25px; backdrop-filter: blur(20px); }
+        .mission-card { background: rgba(15, 15, 15, 0.9); border: 1px solid var(--mission); border-radius: 35px; padding: 40px 25px; text-align: center; margin-top: 20px; box-shadow: 0 20px 50px rgba(0, 242, 255, 0.15); }
         .mission-icon { font-size: 55px; color: var(--mission); margin-bottom: 20px; text-shadow: 0 0 25px var(--mission); }
         .mission-points { background: var(--mission); color: #000; padding: 6px 16px; border-radius: 50px; font-weight: 900; font-size: 11px; margin-bottom: 20px; display: inline-block; }
+        .camera-full { width: 100%; height: 300px; background: #000; border-radius: 30px; margin: 20px 0; object-fit: cover; border: 2px solid var(--mission); }
 
-        /* --- CAMERA VIEW --- */
-        .camera-full {
-            width: 100%; height: 300px; background: #000; border-radius: 30px;
-            margin: 20px 0; object-fit: cover; border: 2px solid var(--mission);
-        }
-
-        .nav-dock {
-            position: fixed; bottom: 30px; left: 20px; right: 20px;
-            height: 85px; background: rgba(10, 10, 10, 0.95); border-radius: 35px;
-            border: 1px solid var(--glass-border); display: flex; justify-content: space-around;
-            align-items: center; backdrop-filter: blur(30px); z-index: 10000;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.6);
-        }
+        /* --- NAV --- */
+        .nav-dock { position: fixed; bottom: 30px; left: 20px; right: 20px; height: 85px; background: rgba(10, 10, 10, 0.95); border-radius: 35px; border: 1px solid var(--glass-border); display: flex; justify-content: space-around; align-items: center; backdrop-filter: blur(30px); z-index: 10000; box-shadow: 0 15px 40px rgba(0,0,0,0.6); }
         .dock-item { background: none; border: none; color: rgba(255,255,255,0.4); display: flex; flex-direction: column; align-items: center; gap: 6px; }
         .dock-item.active { color: var(--tr-red); }
         .dock-item i { font-size: 22px; }
         .dock-item span { font-size: 10px; font-weight: 800; }
 
-        .glass-modal {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.85);
-            display: none; justify-content: center; align-items: center; z-index: 999999;
-            backdrop-filter: blur(15px); padding: 25px;
-        }
-        .modal-body {
-            background: #111; border: 1px solid var(--glass-border);
-            width: 100%; border-radius: 35px; padding: 30px;
-        }
+        /* --- MODALS --- */
+        .glass-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; z-index: 999999; backdrop-filter: blur(15px); padding: 25px; }
+        .modal-body { background: #111; border: 1px solid var(--glass-border); width: 100%; border-radius: 35px; padding: 30px; }
 
         .fade-exit { opacity: 0 !important; transform: scale(1.15); filter: blur(20px); transition: all 1.8s cubic-bezier(0.19, 1, 0.22, 1) !important; pointer-events: none; }
     </style>
@@ -305,7 +271,7 @@
                 <div class="box-header">
                     <h3 style="color: var(--mission);"><i class="fa-solid fa-trophy"></i> Lale Missions</h3>
                 </div>
-                <p style="font-size: 12px; opacity: 0.7; margin-bottom: 20px; line-height: 1.4;">İstanbul'u keşfet, görevleri tamamla y özel ayrıcalıklar kazan.</p>
+                <p style="font-size: 12px; opacity: 0.7; margin-bottom: 20px; line-height: 1.4;">İstanbul'u keşfet, görevleri tamamla ve özel ayrıcalıklar kazan.</p>
                 <button class="btn-confirm" id="missionMainBtn" onclick="openMission()" style="background: linear-gradient(45deg, var(--mission), #fff); color: #000; box-shadow: 0 10px 25px rgba(0, 242, 255, 0.3);">GÖREVE BAŞLA</button>
             </section>
 
@@ -440,7 +406,7 @@
         
         const missions = [
             { title: "Boğaz Havası", desc: "Ortaköy'de Boğaz'a karşı bir fotoğraf çek.", icon: "fa-solid fa-anchor", pts: 60, benefit: "Bosphorus Grill'de %10 İndirim" },
-            { title: "Galata Ruhu", desc: "Galata Kulesi'ni arkana al y poz ver.", icon: "fa-solid fa-tower-observation", pts: 80, benefit: "Tower Cafe'de %10 İndirim" },
+            { title: "Galata Ruhu", desc: "Galata Kulesi'ni arkana al ve poz ver.", icon: "fa-solid fa-tower-observation", pts: 80, benefit: "Tower Cafe'de %10 İndirim" },
             { title: "Simit & Martı", desc: "Vapurda simit yerken bir kare yakala.", icon: "fa-solid fa-ship", pts: 40, benefit: "Vapur Büfe'de Bedava Çay" },
             { title: "Karaköy Art", desc: "Karaköy sokaklarındaki graffitilerle fotoğraf çek.", icon: "fa-solid fa-palette", pts: 50, benefit: "Artisan Karaköy'de %10 İndirim" },
             { title: "Mado Keyfi", desc: "Mado'da dondurma veya tatlı yerken çekil.", icon: "fa-solid fa-ice-cream", pts: 45, benefit: "Mado'da %10 İndirim" }
@@ -452,7 +418,7 @@
             { name: "Karaköy", lat: 41.0225, lng: 28.9750, radius: 0.4 }
         ];
 
-        // --- FERRY EXPERIENCE CORE ---
+        // --- FERRY RADAR LOGIC ---
         function startFerryExperience() {
             if (!navigator.geolocation) return alert("Konum hatası");
             const ticker = document.getElementById('liveTicker');
@@ -508,7 +474,7 @@
 
         function closeFerryMap() { document.getElementById("ferryMapContainer").style.display = "none"; }
 
-        // --- APP LIFE CYCLE ---
+        // --- GEOLOCATION RADAR ---
         function startGeoRadar() {
             if (navigator.geolocation) {
                 navigator.geolocation.watchPosition((position) => {
@@ -538,13 +504,22 @@
             document.getElementById('missionBox').style.borderColor = "#fff";
         }
 
+        // --- APP LIFE CYCLE ---
         document.addEventListener('DOMContentLoaded', () => {
-            updateGreeting(); loadProfile(); startTickerLoop(); updateScoreUI(); startGeoRadar();
+            updateGreeting(); 
+            loadProfile(); 
+            startTickerLoop(); 
+            updateScoreUI(); 
+            startGeoRadar();
+            
             setTimeout(() => {
                 const pre = document.getElementById('lale-preloader');
                 if(pre) {
                     pre.style.opacity = '0';
-                    setTimeout(() => { pre.style.display = 'none'; document.getElementById('laleApp').classList.add('visible'); }, 1000);
+                    setTimeout(() => { 
+                        pre.style.display = 'none'; 
+                        document.getElementById('laleApp').classList.add('visible'); 
+                    }, 1000);
                 }
             }, 3000);
         });
@@ -557,6 +532,7 @@
             document.getElementById('rankTitle').innerText = rank;
         }
 
+        // --- MISSIONS ENGINE ---
         function openMission() {
             document.getElementById('mission-overlay').style.display = 'flex';
             currentMission = missions[Math.floor(Math.random() * missions.length)];
@@ -613,9 +589,19 @@
             lalePoints += currentMission.pts;
             localStorage.setItem('lale_score', lalePoints);
             updateScoreUI();
-            document.getElementById('reward-content').innerHTML = `<div style="font-size: 80px; color: var(--gold); margin-bottom: 20px;">🌟</div><h2 style="font-size: 28px; color: var(--gold); font-weight:900;">MÜKEMMEL!</h2><p style="margin-bottom: 25px; opacity: 0.8;">${currentMission.pts} LP Hesabına Eklendi.</p><div style="background:var(--gold); color:#000; padding:25px; border-radius:25px; margin-bottom:30px; border:2px dashed #000;"><p style="font-weight:900; font-size:10px; letter-spacing:1px; text-transform:uppercase;">Özel Avantajın:</p><h3 style="font-size:20px; font-weight:900; margin:10px 0;">${currentMission.benefit}</h3><p style="font-size:14px; font-weight:900; background:#000; color:#fff; padding:8px; border-radius:12px; display:inline-block;">KOD: LALE2026</p></div><button class="btn-confirm" style="background:#fff; color:#000;" onclick="closeMission()">ANA SAYFAYA DÖN</button>`;
+            document.getElementById('reward-content').innerHTML = `
+                <div style="font-size: 80px; color: var(--gold); margin-bottom: 20px;">🌟</div>
+                <h2 style="font-size: 28px; color: var(--gold); font-weight:900;">MÜKEMMEL!</h2>
+                <p style="margin-bottom: 25px; opacity: 0.8;">${currentMission.pts} LP Hesabına Eklendi.</p>
+                <div style="background:var(--gold); color:#000; padding:25px; border-radius:25px; margin-bottom:30px; border:2px dashed #000;">
+                    <p style="font-weight:900; font-size:10px; letter-spacing:1px; text-transform:uppercase;">Özel Avantajın:</p>
+                    <h3 style="font-size:20px; font-weight:900; margin:10px 0;">${currentMission.benefit}</h3>
+                    <p style="font-size:14px; font-weight:900; background:#000; color:#fff; padding:8px; border-radius:12px; display:inline-block;">KOD: LALE2026</p>
+                </div>
+                <button class="btn-confirm" style="background:#fff; color:#000;" onclick="closeMission()">ANA SAYFAYA DÖN</button>`;
         }
 
+        // --- UTILS & CORE ---
         function updateGreeting() {
             const h = new Date().getHours();
             let g = h >= 5 && h < 12 ? "Günaydın" : h >= 12 && h < 18 ? "Tünaydın" : h >= 18 && h < 22 ? "İyi Akşamlar" : "İyi Geceler";
@@ -656,6 +642,7 @@
         function closeCoffeeModal() { stopCamera(); closeModal('ai-oracle-overlay'); }
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        
         function saveUserData() {
             const n = document.getElementById('nameIn').value;
             if(n) { localStorage.setItem('lale_name', n); document.getElementById('userNameDisplay').innerText = "Selam, " + n; }
@@ -663,23 +650,42 @@
             if(f) { const r = new FileReader(); r.onload = (e) => { localStorage.setItem('lale_pic', e.target.result); document.getElementById('avatarImg').src = e.target.result; }; r.readAsDataURL(f); }
             closeModal('profileModal');
         }
+
         function loadProfile() {
-            const n = localStorage.getItem('lale_name'); p = localStorage.getItem('lale_pic');
+            const n = localStorage.getItem('lale_name'); 
+            const p = localStorage.getItem('lale_pic');
             if(n) document.getElementById('userNameDisplay').innerText = "Selam, " + n;
             if(p) document.getElementById('avatarImg').src = p;
         }
+
         function smartDeepLink(u, w) { window.location.href = u; setTimeout(() => { if (!document.hidden) window.open(w, '_blank'); }, 2000); }
+        
         function startTickerLoop() {
-            const n = ["Lale Missions: Yeni görevler eklendi!", "Trend: Vintage giyim Balat'ta.", "Lale Pay indirimleri aktif."];
+            const n = ["Lale Missions: Yeni görevler eklendi!", "Trend: Vintage giyim Balat'ta.", "Lale Pay indirimleri aktif.", "Hava Durumu: Boğaz'da yürüyüş için harika bir gün!"];
             let i = 0; setInterval(() => {
                 const t = document.getElementById('liveTicker');
                 if(t) { t.style.opacity = '0'; setTimeout(() => { t.innerText = n[i]; t.style.opacity = '1'; i = (i + 1) % n.length; }, 500); }
             }, 8000);
         }
-        function terminateSession() { document.getElementById('laleApp').classList.add('fade-exit'); setTimeout(() => { localStorage.clear(); window.location.reload(); }, 1500); }
-        function executeEmergencySearch(t) { window.open(`https://www.google.com/maps/search/${t}+açık`, '_blank'); closeModal('emergency-modal'); }
-        function triggerPharmacySearch() { window.open('https://www.google.com/maps/search/nöbetçi+eczane', '_blank'); }
-        function closeMission() { stopCamera(); document.getElementById('mission-overlay').style.display = 'none'; }
+
+        function terminateSession() { 
+            document.getElementById('laleApp').classList.add('fade-exit'); 
+            setTimeout(() => { localStorage.clear(); window.location.reload(); }, 1500); 
+        }
+
+        function executeEmergencySearch(t) { 
+            window.open(`https://www.google.com/maps/search/${t}+açık`, '_blank'); 
+            closeModal('emergency-modal'); 
+        }
+
+        function triggerPharmacySearch() { 
+            window.open('https://www.google.com/maps/search/nöbetçi+eczane', '_blank'); 
+        }
+
+        function closeMission() { 
+            stopCamera(); 
+            document.getElementById('mission-overlay').style.display = 'none'; 
+        }
     </script>
 </body>
 </html>
