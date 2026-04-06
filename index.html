@@ -49,6 +49,7 @@
             --coffee: #bc8f8f;
             --mission: #00f2ff;
             --ferry-blue: #3498db;
+            --royal-purple: #8e44ad;
         }
 
         /* --- BASE STYLES --- */
@@ -125,6 +126,21 @@
             scrollbar-width: none;
         }
         .content-area::-webkit-scrollbar { display: none; }
+
+        /* --- NOTIFICATION CENTER --- */
+        #notification-center {
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+            width: 90%; max-width: 400px; z-index: 100001; pointer-events: none;
+        }
+        .lale-push {
+            background: rgba(20,20,20,0.9); border: 1px solid var(--glass-border);
+            padding: 15px 20px; border-radius: 20px; margin-bottom: 10px;
+            backdrop-filter: blur(20px); display: flex; align-items: center; gap: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); transform: translateY(-100px);
+            transition: 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); opacity: 0;
+        }
+        .lale-push.active { transform: translateY(0); opacity: 1; pointer-events: auto; }
+        .push-icon { width: 35px; height: 35px; background: var(--tr-red); border-radius: 10px; display: grid; place-items: center; font-size: 14px; }
 
         .welcome-block { margin-bottom: 25px; padding-left: 5px; }
         .welcome-block h2 { font-size: 28px; font-weight: 800; color: var(--gold); }
@@ -209,6 +225,12 @@
         .ferry-card:active { background: rgba(52, 152, 219, 0.15); transform: translateY(-3px); }
         .sea-status { font-size: 9px; padding: 4px 10px; border-radius: 20px; background: rgba(0, 255, 0, 0.1); color: #00ff00; font-weight: 900; }
 
+        /* --- DISCOVERY SCROLL --- */
+        .discovery-scroll { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; }
+        .discovery-scroll::-webkit-scrollbar { display: none; }
+        .disco-item { flex: 0 0 160px; background: rgba(255,255,255,0.05); border-radius: 24px; padding: 15px; border: 1px solid var(--glass-border); }
+        .disco-tag { font-size: 9px; background: var(--tr-red); padding: 3px 8px; border-radius: 5px; font-weight: 900; margin-bottom: 10px; display: inline-block; }
+
         /* --- MISSIONS --- */
         #mission-overlay { position: fixed; inset: 0; background: #000; z-index: 2000001; display: none; flex-direction: column; padding: 60px 25px; backdrop-filter: blur(20px); }
         .mission-card { background: rgba(15, 15, 15, 0.9); border: 1px solid var(--mission); border-radius: 35px; padding: 40px 25px; text-align: center; margin-top: 20px; box-shadow: 0 20px 50px rgba(0, 242, 255, 0.15); }
@@ -218,7 +240,7 @@
 
         /* --- NAV --- */
         .nav-dock { position: fixed; bottom: 30px; left: 20px; right: 20px; height: 85px; background: rgba(10, 10, 10, 0.95); border-radius: 35px; border: 1px solid var(--glass-border); display: flex; justify-content: space-around; align-items: center; backdrop-filter: blur(30px); z-index: 10000; box-shadow: 0 15px 40px rgba(0,0,0,0.6); }
-        .dock-item { background: none; border: none; color: rgba(255,255,255,0.4); display: flex; flex-direction: column; align-items: center; gap: 6px; }
+        .dock-item { background: none; border: none; color: rgba(255,255,255,0.4); display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; }
         .dock-item.active { color: var(--tr-red); }
         .dock-item i { font-size: 22px; }
         .dock-item span { font-size: 10px; font-weight: 800; }
@@ -231,6 +253,8 @@
     </style>
 </head>
 <body>
+
+    <div id="notification-center"></div>
 
     <div id="lale-preloader">
         <div class="tulip-3d">
@@ -302,6 +326,27 @@
                 <button class="btn-confirm" id="coffeeBtn" onclick="startCoffeeReading()" style="background: var(--coffee); color: #fff;">FALIMA BAK</button>
             </section>
 
+            <section class="section-box" style="border-color: var(--royal-purple);">
+                <div class="box-header"><h3><i class="fa-solid fa-compass"></i> Elite Discovery</h3></div>
+                <div class="discovery-scroll">
+                    <div class="disco-item" onclick="window.open('https://turkey.mado.com.tr')">
+                        <span class="disco-tag">TREND</span>
+                        <h4 style="font-size: 13px; margin-bottom: 5px;">Mado Kadıköy</h4>
+                        <p style="font-size: 10px; opacity: 0.6;">Dondurma ve keyif.</p>
+                    </div>
+                    <div class="disco-item" onclick="window.open('https://www.galatatower.net')">
+                        <span class="disco-tag">ELITE</span>
+                        <h4 style="font-size: 13px; margin-bottom: 5px;">Galata Tower</h4>
+                        <p style="font-size: 10px; opacity: 0.6;">Eşsiz manzara.</p>
+                    </div>
+                    <div class="disco-item">
+                        <span class="disco-tag">NEW</span>
+                        <h4 style="font-size: 13px; margin-bottom: 5px;">Bosphorus Grill</h4>
+                        <p style="font-size: 10px; opacity: 0.6;">Akşam yemeği.</p>
+                    </div>
+                </div>
+            </section>
+
             <section class="section-box" style="border-color: var(--pharmacy); background: linear-gradient(135deg, rgba(46, 204, 113, 0.15), rgba(0,0,0,0.9));">
                 <div class="box-header">
                     <h3 style="color: var(--pharmacy);"><i class="fa-solid fa-house-medical"></i> Akıllı Nöbetçi Radar</h3>
@@ -340,7 +385,7 @@
                 </div>
             </section>
 
-            <p style="text-align: center; font-size: 10px; opacity: 0.3; padding-bottom: 20px; letter-spacing: 1px;">LALE TURKEY V5.6 - VAPUR RADAR ELITE</p>
+            <p style="text-align: center; font-size: 10px; opacity: 0.3; padding-bottom: 20px; letter-spacing: 1px;">LALE TURKEY V6.0 - ULTIMATE EDITION 2026</p>
         </main>
 
         <nav class="nav-dock">
@@ -365,24 +410,6 @@
         </div>
     </div>
 
-    <div id="ferryMapContainer">
-        <div id="ferryMap"></div>
-        <div class="radar-scanner"></div>
-        <div class="ferry-header">
-            <div style="background:rgba(5, 10, 20, 0.85); backdrop-filter:blur(15px); padding:12px 24px; border-radius:25px; border:1px solid var(--ferry-blue);">
-                <span style="color:var(--ferry-blue); font-weight:900; font-size:13px; letter-spacing:2px;">VAPUR RADAR ACTIVE</span>
-            </div>
-            <button onclick="closeFerryMap()" style="background:var(--tr-red); color:#fff; border:none; width:44px; height:44px; border-radius:50%; font-weight:bold; cursor:pointer; box-shadow: 0 0 15px rgba(227, 10, 23, 0.4);">✕</button>
-        </div>
-        <div id="ferryInfoPanel" class="ferry-panel">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                <h3 style="font-size:18px; color:#fff; font-weight:900;">YAKIN İSKELELER</h3>
-                <span style="font-size:10px; color:var(--ferry-blue); font-weight:800; border:1px solid var(--ferry-blue); padding:4px 10px; border-radius:10px;">BOSPHORUS ZONE</span>
-            </div>
-            <div id="ferryList"></div>
-        </div>
-    </div>
-
     <div id="pharmacy-detail-modal">
         <div class="detail-glass-card">
             <div style="color: var(--pharmacy); font-size: 40px; margin-bottom: 15px;"><i class="fa-solid fa-hospital-user"></i></div>
@@ -400,6 +427,24 @@
                 <button id="det-nav-btn" class="btn-confirm" style="background: var(--pharmacy); color: #fff; flex: 1.5;"><i class="fa-solid fa-map-location-dot"></i> GİT</button>
             </div>
             <p onclick="document.getElementById('pharmacy-detail-modal').style.display='none'" style="margin-top: 25px; cursor: pointer; opacity: 0.5; font-size: 12px; font-weight: 700;">GERİ DÖN</p>
+        </div>
+    </div>
+
+    <div id="ferryMapContainer">
+        <div id="ferryMap"></div>
+        <div class="radar-scanner"></div>
+        <div class="ferry-header">
+            <div style="background:rgba(5, 10, 20, 0.85); backdrop-filter:blur(15px); padding:12px 24px; border-radius:25px; border:1px solid var(--ferry-blue);">
+                <span style="color:var(--ferry-blue); font-weight:900; font-size:13px; letter-spacing:2px;">VAPUR RADAR ACTIVE</span>
+            </div>
+            <button onclick="closeFerryMap()" style="background:var(--tr-red); color:#fff; border:none; width:44px; height:44px; border-radius:50%; font-weight:bold; cursor:pointer; box-shadow: 0 0 15px rgba(227, 10, 23, 0.4);">✕</button>
+        </div>
+        <div id="ferryInfoPanel" class="ferry-panel">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h3 style="font-size:18px; color:#fff; font-weight:900;">YAKIN İSKELELER</h3>
+                <span style="font-size:10px; color:var(--ferry-blue); font-weight:800; border:1px solid var(--ferry-blue); padding:4px 10px; border-radius:10px;">BOSPHORUS ZONE</span>
+            </div>
+            <div id="ferryList"></div>
         </div>
     </div>
 
@@ -421,18 +466,6 @@
         <div id="mission-success" style="display:none; text-align:center; padding-top:40px;"><div id="reward-content"></div></div>
     </div>
 
-    <div id="emergency-modal" class="glass-modal">
-        <div class="modal-body" style="border-top: 4px solid var(--tr-red);">
-            <h2 style="font-size: 20px; margin-bottom: 25px; font-weight: 900;">Acil Durum Tipi</h2>
-            <div style="display: flex; flex-direction: column; gap: 12px;">
-                <button onclick="executeEmergencySearch('hastane')" class="btn-confirm" style="background: #222; color: #fff; border: 1px solid var(--glass-border);">Genel Acil</button>
-                <button onclick="executeEmergencySearch('çocuk hastanesi')" class="btn-confirm" style="background: #222; color: #fff; border: 1px solid var(--glass-border);">Çocuk Acil</button>
-                <button onclick="executeEmergencySearch('diş hastanesi')" class="btn-confirm" style="background: #222; color: #fff; border: 1px solid var(--glass-border);">Diş Acil</button>
-            </div>
-            <p onclick="closeModal('emergency-modal')" style="margin-top: 25px; cursor: pointer; opacity: 0.5; font-size: 13px; font-weight: 700;">Vazgeç</p>
-        </div>
-    </div>
-
     <div id="ai-oracle-overlay" class="glass-modal">
         <div class="modal-body" style="border-color: var(--coffee);">
             <video id="coffee-camera-view" autoplay playsinline muted style="width: 100%; height: 250px; border-radius: 25px; object-fit: cover; margin-bottom: 20px;"></video>
@@ -447,6 +480,18 @@
                 <button class="btn-confirm" onclick="closeCoffeeModal()" style="margin-top: 25px; background: var(--coffee); color: #fff;">TEŞEKKÜRLER</button>
             </div>
             <p id="cancel-camera" onclick="closeCoffeeModal()" style="margin-top: 20px; cursor: pointer; opacity: 0.4; font-size: 13px;">İptal</p>
+        </div>
+    </div>
+
+    <div id="emergency-modal" class="glass-modal">
+        <div class="modal-body" style="border-top: 4px solid var(--tr-red);">
+            <h2 style="font-size: 20px; margin-bottom: 25px; font-weight: 900;">Acil Durum Tipi</h2>
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+                <button onclick="executeEmergencySearch('hastane')" class="btn-confirm" style="background: #222; color: #fff; border: 1px solid var(--glass-border);">Genel Acil</button>
+                <button onclick="executeEmergencySearch('çocuk hastanesi')" class="btn-confirm" style="background: #222; color: #fff; border: 1px solid var(--glass-border);">Çocuk Acil</button>
+                <button onclick="executeEmergencySearch('diş hastanesi')" class="btn-confirm" style="background: #222; color: #fff; border: 1px solid var(--glass-border);">Diş Acil</button>
+            </div>
+            <p onclick="closeModal('emergency-modal')" style="margin-top: 25px; cursor: pointer; opacity: 0.5; font-size: 13px; font-weight: 700;">Vazgeç</p>
         </div>
     </div>
 
@@ -484,11 +529,27 @@
             { name: "Karaköy", lat: 41.0225, lng: 28.9750, radius: 0.4 }
         ];
 
+        // --- PUSH SYSTEM ---
+        function showPush(title, msg, icon = 'fa-bell') {
+            const center = document.getElementById('notification-center');
+            const push = document.createElement('div');
+            push.className = 'lale-push';
+            push.innerHTML = `
+                <div class="push-icon"><i class="fa-solid ${icon}"></i></div>
+                <div style="flex:1">
+                    <div style="font-size:12px; font-weight:900; color:var(--gold)">${title}</div>
+                    <div style="font-size:10px; opacity:0.7">${msg}</div>
+                </div>
+            `;
+            center.appendChild(push);
+            setTimeout(() => push.classList.add('active'), 100);
+            setTimeout(() => { push.classList.remove('active'); setTimeout(() => push.remove(), 600); }, 5000);
+        }
+
         // --- PHARMACY RADAR LOGIC ---
         function startPharmacyExperience() {
             if (!navigator.geolocation) return alert("Konum hatası");
-            const ticker = document.getElementById('liveTicker');
-            if(ticker) ticker.innerText = "💊 En yakın nöbetçi eczaneler taranıyor...";
+            showPush("RADAR", "Eczaneler taranıyor...", "fa-crosshairs");
             navigator.geolocation.getCurrentPosition(pos => {
                 openPharmacyMap(pos.coords.latitude, pos.coords.longitude);
             }, () => alert("GPS izni gerekli."));
@@ -549,11 +610,10 @@
 
         function closePharmacyMap() { document.getElementById("pharmacyMapContainer").style.display = "none"; }
 
-        // --- FERRY RADAR LOGIC ELITE ---
+        // --- FERRY RADAR LOGIC ---
         function startFerryExperience() {
             if (!navigator.geolocation) return alert("Konum hatası");
-            const ticker = document.getElementById('liveTicker');
-            if(ticker) ticker.innerText = "⚓ Vapur iskeleleri radarla aranıyor...";
+            showPush("VAPUR", "Boğaz trafiği izleniyor...", "fa-ship");
             navigator.geolocation.getCurrentPosition(pos => {
                 openFerryMap(pos.coords.latitude, pos.coords.longitude);
             }, () => alert("GPS kapalı"));
@@ -612,39 +672,18 @@
 
         function closeFerryMap() { document.getElementById("ferryMapContainer").style.display = "none"; }
 
-        // --- GEOLOCATION RADAR ---
-        function startGeoRadar() {
-            if (navigator.geolocation) {
-                navigator.geolocation.watchPosition((position) => {
-                    const userLat = position.coords.latitude;
-                    const userLng = position.coords.longitude;
-                    hotspots.forEach(spot => {
-                        const distance = calculateDistance(userLat, userLng, spot.lat, spot.lng);
-                        if (distance <= spot.radius) notifyHotspot(spot.name);
-                    });
-                }, (err) => console.log("Radar GPS Passive"), { enableHighAccuracy: true });
-            }
-        }
-
-        function calculateDistance(lat1, lon1, lat2, lon2) {
-            const R = 6371; 
-            const dLat = (lat2 - lat1) * Math.PI / 180;
-            const dLon = (lon2 - lon1) * Math.PI / 180;
-            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
-            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-            return R * c;
-        }
-
-        function notifyHotspot(name) {
-            const ticker = document.getElementById('liveTicker');
-            ticker.innerHTML = `<span style="color:var(--mission); font-weight:900;">📍 ${name} YAKININDASINIZ! GÖREVİ BAŞLATIN.</span>`;
-            document.getElementById('missionMainBtn').style.boxShadow = "0 0 30px var(--mission)";
-            document.getElementById('missionBox').style.borderColor = "#fff";
-        }
-
         // --- APP LIFE CYCLE ---
         document.addEventListener('DOMContentLoaded', () => {
-            updateGreeting(); loadProfile(); startTickerLoop(); updateScoreUI(); startGeoRadar();
+            updateGreeting(); loadProfile(); startTickerLoop(); updateScoreUI();
+            if (navigator.geolocation) {
+                navigator.geolocation.watchPosition((p) => {
+                    hotspots.forEach(s => {
+                        if (calculateDistance(p.coords.latitude, p.coords.longitude, s.lat, s.lng) <= s.radius) {
+                            showPush("GÖREV YAKINDA", `${s.name} bölgesindesin, görevi başlat!`, "fa-location-dot");
+                        }
+                    });
+                });
+            }
             setTimeout(() => {
                 const pre = document.getElementById('lale-preloader');
                 if(pre) {
@@ -653,6 +692,12 @@
                 }
             }, 3000);
         });
+
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; const dLat = (lat2-lat1)*Math.PI/180; const dLon = (lon2-lon1)*Math.PI/180;
+            const a = Math.sin(dLat/2)*Math.sin(dLat/2) + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)*Math.sin(dLon/2);
+            return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        }
 
         function updateScoreUI() {
             document.getElementById('scoreDisplay').innerText = lalePoints + " LP";
@@ -685,27 +730,20 @@
                     videoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
                     video.srcObject = videoStream; video.style.display = 'block';
                     btn.innerText = "FOTOĞRAF ÇEK"; btn.style.background = "#fff";
-                } catch (e) { alert("Lütfen kamera izni verin."); }
+                } catch (e) { alert("Kamera izni gerekli."); }
             } 
             else if(btn.innerText === "FOTOĞRAF ÇEK") {
                 document.getElementById('mission-overlay').style.backgroundColor = "white";
                 setTimeout(() => { 
                     document.getElementById('mission-overlay').style.backgroundColor = "#000"; 
                     stopCamera(); video.style.display = 'none';
-                    document.getElementById('m-desc').innerText = "Harika! Şimdi ödülünü aktif etmek için bu anı paylaş.";
-                    btn.innerHTML = '<i class="fa-brands fa-instagram"></i> PAYLAŞ VE KAZAN';
+                    document.getElementById('m-desc').innerText = "Harika! Paylaş ve ödülünü al.";
+                    btn.innerHTML = '<i class="fa-brands fa-instagram"></i> PAYLAŞ';
                     btn.style.background = "linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)";
                     btn.style.color = "#fff";
                 }, 100);
             }
-            else {
-                if (navigator.share) {
-                    try {
-                        await navigator.share({ title: 'Lale Turkey', text: `Lale Turkey ile ${currentMission.title} görevini tamamladım! 🇹🇷 #LaleElite`, url: window.location.href });
-                        unlockRewards();
-                    } catch (e) { unlockRewards(); }
-                } else { unlockRewards(); }
-            }
+            else { unlockRewards(); }
         }
 
         function unlockRewards() {
@@ -717,17 +755,16 @@
             updateScoreUI();
             document.getElementById('reward-content').innerHTML = `
                 <div style="font-size: 80px; color: var(--gold); margin-bottom: 20px;">🌟</div>
-                <h2 style="font-size: 28px; color: var(--gold); font-weight:900;">MÜKEMMEL!</h2>
-                <p style="margin-bottom: 25px; opacity: 0.8;">${currentMission.pts} LP Hesabına Eklendi.</p>
+                <h2 style="font-size: 28px; color: var(--gold); font-weight:900;">TEBRİKLER!</h2>
+                <p style="margin-bottom: 25px; opacity: 0.8;">${currentMission.pts} LP kazandın.</p>
                 <div style="background:var(--gold); color:#000; padding:25px; border-radius:25px; margin-bottom:30px; border:2px dashed #000;">
-                    <p style="font-weight:900; font-size:10px; letter-spacing:1px; text-transform:uppercase;">Özel Avantajın:</p>
-                    <h3 style="font-size:20px; font-weight:900; margin:10px 0;">${currentMission.benefit}</h3>
-                    <p style="font-size:14px; font-weight:900; background:#000; color:#fff; padding:8px; border-radius:12px; display:inline-block;">KOD: LALE2026</p>
+                    <h3 style="font-size:20px; font-weight:900;">${currentMission.benefit}</h3>
+                    <p style="font-size:14px; font-weight:900; background:#000; color:#fff; padding:8px; border-radius:12px; display:inline-block; margin-top:10px;">KOD: LALE2026</p>
                 </div>
-                <button class="btn-confirm" style="background:#fff; color:#000;" onclick="closeMission()">ANA SAYFAYA DÖN</button>`;
+                <button class="btn-confirm" style="background:#fff; color:#000;" onclick="closeMission()">ANA SAYFA</button>`;
         }
 
-        // --- UTILS & CORE ---
+        // --- CORE UTILS ---
         function updateGreeting() {
             const h = new Date().getHours();
             let g = h >= 5 && h < 12 ? "Günaydın" : h >= 12 && h < 18 ? "Tünaydın" : h >= 18 && h < 22 ? "İyi Akşamlar" : "İyi Geceler";
@@ -746,12 +783,12 @@
                 videoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
                 video.srcObject = videoStream; statusText.innerText = "FİNCANI ODAKLAYIN"; captureBtn.style.display = 'block';
                 captureBtn.onclick = () => {
-                    captureBtn.style.display = 'none'; statusText.innerText = "AI GELECEĞİ GÖRÜYOR...";
+                    captureBtn.style.display = 'none'; statusText.innerText = "AI ANALİZ EDİYOR...";
                     setTimeout(() => {
                         scanContainer.style.display = 'none'; resultArea.style.display = 'block';
-                        const f = ["Nazar var ama dualarla geçecek.", "Yolun açık, güzel haberler yolda.", "Fincanında bir balık var, kısmetin taşıyor!", "Üç vakte kadar beklediğin telefon çalacak."];
+                        const f = ["Nazar var ama geçecek.", "Yolun açık, kısmetin taşıyor!", "Güzel haberler yolda."];
                         document.getElementById('fortune-text').innerText = f[Math.floor(Math.random()*f.length)];
-                        document.getElementById('laleSuccessSound').play(); stopCamera();
+                        stopCamera();
                     }, 4000);
                 };
             } catch (e) { statusText.innerText = "Kamera hatası!"; }
@@ -779,7 +816,7 @@
         function smartDeepLink(u, w) { window.location.href = u; setTimeout(() => { if (!document.hidden) window.open(w, '_blank'); }, 2000); }
         
         function startTickerLoop() {
-            const n = ["Vapur Radar: Boğaz hattı canlı izleniyor.", "Lale Missions: Yeni görevler eklendi!", "Trend: Vintage giyim Balat'ta.", "Lale Pay indirimleri aktif."];
+            const n = ["Vapur Radar Aktif.", "Lale Missions: Yeni görevler!", "Mado'da %10 indirim fırsatı.", "Lale Pay ile kolay öde."];
             let i = 0; setInterval(() => {
                 const t = document.getElementById('liveTicker');
                 if(t) { t.style.opacity = '0'; setTimeout(() => { t.innerText = n[i]; t.style.opacity = '1'; i = (i + 1) % n.length; }, 500); }
