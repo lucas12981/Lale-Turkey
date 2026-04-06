@@ -179,8 +179,12 @@
         }
         .btn-confirm:active { transform: translateY(2px); filter: brightness(1.1); }
 
-        .pharmacy-active { border: 1px solid var(--pharmacy) !important; box-shadow: 0 0 25px rgba(46, 204, 113, 0.15); }
-        .pharmacy-btn { background: var(--pharmacy); color: #fff; }
+        /* --- PHARMACY RADAR STYLES --- */
+        #pharmacyMapContainer { display:none; position:fixed; inset:0; background:#000; z-index:999999; }
+        #pharmacyMap { width:100%; height:100%; filter: hue-rotate(90deg) brightness(0.7) contrast(1.2); }
+        .pharmacy-header { position:absolute; top:20px; left:20px; right:20px; display:flex; justify-content:space-between; align-items:center; z-index:10000; }
+        .pharmacy-panel { position:absolute; bottom:0; left:0; right:0; background:rgba(15,15,15,0.95); backdrop-filter:blur(25px); border-top:1px solid var(--pharmacy); border-radius:30px 30px 0 0; padding:25px; z-index:10000; max-height:50%; overflow-y:auto; display:none; box-shadow: 0 -15px 35px rgba(46, 204, 113, 0.2); }
+        .pharmacy-card { background:rgba(255,255,255,0.05); padding:18px; border-radius:20px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center; border:1px solid rgba(46, 204, 113, 0.2); }
 
         /* --- FERRY RADAR --- */
         #ferryMapContainer { display:none; position:fixed; inset:0; background:#000; z-index:999999; }
@@ -282,9 +286,15 @@
                 <button class="btn-confirm" id="coffeeBtn" onclick="startCoffeeReading()" style="background: var(--coffee); color: #fff;">FALIMA BAK</button>
             </section>
 
-            <section class="section-box pharmacy-active">
-                <div class="box-header"><h3><i class="fa-solid fa-house-medical"></i> Akıllı Eczane</h3></div>
-                <button class="btn-confirm pharmacy-btn" onclick="triggerPharmacySearch()"><i class="fa-solid fa-location-dot"></i> NÖBETÇİ ECZANE BUL</button>
+            <section class="section-box" style="border-color: var(--pharmacy); background: linear-gradient(135deg, rgba(46, 204, 113, 0.15), rgba(0,0,0,0.9));">
+                <div class="box-header">
+                    <h3 style="color: var(--pharmacy);"><i class="fa-solid fa-house-medical"></i> Akıllı Nöbetçi Radar</h3>
+                    <div class="live-dot" style="background: var(--pharmacy); width: 6px; height: 6px;"></div>
+                </div>
+                <p style="font-size: 11px; opacity: 0.6; margin-bottom: 15px;">En yakın nöbetçi eczaneyi anında haritada görüntüleyin.</p>
+                <button class="btn-confirm" onclick="startPharmacyExperience()" style="background: var(--pharmacy); color: #fff;">
+                    <i class="fa-solid fa-crosshairs"></i> ECZANE RADARINI AÇ
+                </button>
             </section>
 
             <section class="section-box" style="border: 1px solid var(--ferry-blue); background: linear-gradient(135deg, rgba(52, 152, 219, 0.15), rgba(0,0,0,0.9));">
@@ -319,8 +329,22 @@
             <button class="dock-item active"><i class="fa-solid fa-house-user"></i><span>ANA SAYFA</span></button>
             <button class="dock-item" onclick="openMission()"><i class="fa-solid fa-bolt"></i><span>GÖREV</span></button>
             <button class="dock-item" onclick="openModal('profileModal')"><i class="fa-solid fa-circle-user"></i><span>PROFİL</span></button>
-            <button class="dock-item" onclick="triggerPharmacySearch()"><i class="fa-solid fa-briefcase-medical"></i><span>ECZANE</span></button>
+            <button class="dock-item" onclick="startPharmacyExperience()"><i class="fa-solid fa-briefcase-medical"></i><span>ECZANE</span></button>
         </nav>
+    </div>
+
+    <div id="pharmacyMapContainer">
+        <div id="pharmacyMap"></div>
+        <div class="pharmacy-header">
+            <div style="background:rgba(0,0,0,0.8); backdrop-filter:blur(10px); padding:10px 20px; border-radius:20px; border:1px solid var(--pharmacy);">
+                <span style="color:var(--pharmacy); font-weight:800; font-size:12px; letter-spacing:1px;">NÖBETÇİ RADAR LIVE</span>
+            </div>
+            <button onclick="closePharmacyMap()" style="background:var(--tr-red); color:#fff; border:none; width:40px; height:40px; border-radius:50%; font-weight:bold; cursor:pointer;">✕</button>
+        </div>
+        <div id="pharmacyInfoPanel" class="pharmacy-panel">
+            <h3 style="font-size:16px; color:var(--pharmacy); margin-bottom:15px; font-weight:800;">YAKININIZDAKİ ECZANELER</h3>
+            <div id="pharmacyList"></div>
+        </div>
     </div>
 
     <div id="ferryMapContainer">
@@ -401,8 +425,8 @@
         let videoStream = null;
         let lalePoints = parseInt(localStorage.getItem('lale_score')) || 0;
         let currentMission = null;
-        let ferryMap;
-        let ferryMarkers = [];
+        let ferryMap, pharmacyMap;
+        let ferryMarkers = [], pharmacyMarkers = [];
         
         const missions = [
             { title: "Boğaz Havası", desc: "Ortaköy'de Boğaz'a karşı bir fotoğraf çek.", icon: "fa-solid fa-anchor", pts: 60, benefit: "Bosphorus Grill'de %10 İndirim" },
@@ -418,11 +442,70 @@
             { name: "Karaköy", lat: 41.0225, lng: 28.9750, radius: 0.4 }
         ];
 
+        // --- NEW PHARMACY RADAR LOGIC ---
+        function startPharmacyExperience() {
+            if (!navigator.geolocation) return alert("Konum hatası");
+            const ticker = document.getElementById('liveTicker');
+            if(ticker) ticker.innerText = "💊 En yakın nöbetçi eczaneler taranıyor...";
+            navigator.geolocation.getCurrentPosition(pos => {
+                openPharmacyMap(pos.coords.latitude, pos.coords.longitude);
+            }, () => alert("GPS izni gerekli."));
+        }
+
+        function openPharmacyMap(lat, lng) {
+            document.getElementById("pharmacyMapContainer").style.display = "block";
+            setTimeout(() => {
+                if (!pharmacyMap) {
+                    pharmacyMap = L.map('pharmacyMap', { zoomControl: false }).setView([lat, lng], 14);
+                    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(pharmacyMap);
+                } else { pharmacyMap.setView([lat, lng], 14); }
+
+                pharmacyMarkers.forEach(m => pharmacyMap.removeLayer(m));
+                pharmacyMarkers = [];
+
+                L.circleMarker([lat, lng], { radius: 10, color: "#fff", fillColor: "#2ecc71", fillOpacity: 1, weight: 3 }).addTo(pharmacyMap);
+                searchNearbyPharmacies(lat, lng);
+            }, 400);
+        }
+
+        function searchNearbyPharmacies(lat, lng) {
+            const query = `[out:json];node["amenity"="pharmacy"](around:3000, ${lat}, ${lng});out;`;
+            const listCont = document.getElementById("pharmacyList");
+            const panel = document.getElementById("pharmacyInfoPanel");
+            listCont.innerHTML = "<p style='opacity:0.5; font-size:12px;'>Eczaneler taranıyor...</p>";
+            panel.style.display = "block";
+
+            fetch("https://overpass-api.de/api/interpreter?data=" + encodeURIComponent(query))
+            .then(res => res.json())
+            .then(data => {
+                listCont.innerHTML = "";
+                if (!data.elements.length) {
+                    listCont.innerHTML = "<p style='color:var(--tr-red);'>Yakınlarda eczane bulunamadı.</p>";
+                    return;
+                }
+                data.elements.forEach(f => {
+                    const name = f.tags.name || "Eczane";
+                    const dist = (L.latLng(lat, lng).distanceTo(L.latLng(f.lat, f.lon)) / 1000).toFixed(1);
+                    const m = L.marker([f.lat, f.lon]).addTo(pharmacyMap);
+                    pharmacyMarkers.push(m);
+                    const card = document.createElement("div");
+                    card.className = "pharmacy-card";
+                    card.innerHTML = `
+                        <div>
+                            <div style="font-weight:800; font-size:14px; color:#fff;">${name}</div>
+                            <div style="font-size:11px; color:var(--pharmacy); opacity:0.8;">${dist} km mesafede</div>
+                        </div>
+                        <button onclick="window.open('https://www.google.com/maps/dir/?api=1&destination=${f.lat},${f.lon}')" style="background:var(--pharmacy); color:#fff; border:none; padding:10px 18px; border-radius:12px; font-weight:800; font-size:11px;">YOL TARİFİ</button>`;
+                    listCont.appendChild(card);
+                });
+            });
+        }
+
+        function closePharmacyMap() { document.getElementById("pharmacyMapContainer").style.display = "none"; }
+
         // --- FERRY RADAR LOGIC ---
         function startFerryExperience() {
             if (!navigator.geolocation) return alert("Konum hatası");
-            const ticker = document.getElementById('liveTicker');
-            if(ticker) ticker.innerText = "🚢 En yakın vapur iskeleleri taranıyor...";
             navigator.geolocation.getCurrentPosition(pos => {
                 openFerryMap(pos.coords.latitude, pos.coords.longitude);
             }, () => alert("GPS kapalı"));
@@ -676,10 +759,6 @@
         function executeEmergencySearch(t) { 
             window.open(`https://www.google.com/maps/search/${t}+açık`, '_blank'); 
             closeModal('emergency-modal'); 
-        }
-
-        function triggerPharmacySearch() { 
-            window.open('https://www.google.com/maps/search/nöbetçi+eczane', '_blank'); 
         }
 
         function closeMission() { 
