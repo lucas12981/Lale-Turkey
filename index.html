@@ -184,7 +184,12 @@
         #pharmacyMap { width:100%; height:100%; filter: hue-rotate(90deg) brightness(0.7) contrast(1.2); }
         .pharmacy-header { position:absolute; top:20px; left:20px; right:20px; display:flex; justify-content:space-between; align-items:center; z-index:10000; }
         .pharmacy-panel { position:absolute; bottom:0; left:0; right:0; background:rgba(15,15,15,0.95); backdrop-filter:blur(25px); border-top:1px solid var(--pharmacy); border-radius:30px 30px 0 0; padding:25px; z-index:10000; max-height:50%; overflow-y:auto; display:none; box-shadow: 0 -15px 35px rgba(46, 204, 113, 0.2); }
-        .pharmacy-card { background:rgba(255,255,255,0.05); padding:18px; border-radius:20px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center; border:1px solid rgba(46, 204, 113, 0.2); }
+        .pharmacy-card { background:rgba(255,255,255,0.05); padding:18px; border-radius:20px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center; border:1px solid rgba(46, 204, 113, 0.2); cursor: pointer; transition: 0.3s; }
+        .pharmacy-card:active { background: rgba(46, 204, 113, 0.1); transform: scale(0.98); }
+
+        /* PHARMACY DETAIL MODAL */
+        #pharmacy-detail-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000002; display: none; flex-direction: column; justify-content: center; align-items: center; padding: 30px; backdrop-filter: blur(15px); }
+        .detail-glass-card { background: rgba(20,20,20,0.8); border: 1px solid var(--pharmacy); border-radius: 35px; padding: 35px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 10px 40px rgba(46, 204, 113, 0.2); }
 
         /* --- FERRY RADAR --- */
         #ferryMapContainer { display:none; position:fixed; inset:0; background:#000; z-index:999999; }
@@ -347,6 +352,31 @@
         </div>
     </div>
 
+    <div id="pharmacy-detail-modal">
+        <div class="detail-glass-card">
+            <div style="color: var(--pharmacy); font-size: 40px; margin-bottom: 15px;"><i class="fa-solid fa-hospital-user"></i></div>
+            <h2 id="det-pharmacy-name" style="font-weight: 800; font-size: 22px; margin-bottom: 10px;">Eczane İsmi</h2>
+            <p id="det-pharmacy-status" style="font-size: 11px; font-weight: 900; color: #2ecc71; background: rgba(46, 204, 113, 0.1); display: inline-block; padding: 5px 12px; border-radius: 10px; margin-bottom: 20px;">AÇIK (NÖBETÇİ)</p>
+            
+            <div style="text-align: left; margin-bottom: 25px;">
+                <p style="font-size: 13px; opacity: 0.7; margin-bottom: 5px;"><i class="fa-solid fa-location-dot"></i> Adres:</p>
+                <p id="det-pharmacy-address" style="font-size: 14px; font-weight: 600; line-height: 1.4;">Yükleniyor...</p>
+                
+                <hr style="border: none; border-top: 1px solid rgba(255,255,255,0.05); margin: 15px 0;">
+                
+                <p style="font-size: 13px; opacity: 0.7; margin-bottom: 5px;"><i class="fa-solid fa-phone"></i> İletişim:</p>
+                <p id="det-pharmacy-phone" style="font-size: 14px; font-weight: 600;">Bilgi yok</p>
+            </div>
+
+            <div style="display: flex; gap: 10px;">
+                <button id="det-call-btn" class="btn-confirm" style="background: #222; color: #fff; flex: 1;"><i class="fa-solid fa-phone"></i> ARA</button>
+                <button id="det-nav-btn" class="btn-confirm" style="background: var(--pharmacy); color: #fff; flex: 1.5;"><i class="fa-solid fa-map-location-dot"></i> GİT</button>
+            </div>
+            
+            <p onclick="document.getElementById('pharmacy-detail-modal').style.display='none'" style="margin-top: 25px; cursor: pointer; opacity: 0.5; font-size: 12px; font-weight: 700;">GERİ DÖN</p>
+        </div>
+    </div>
+
     <div id="ferryMapContainer">
         <div id="ferryMap"></div>
         <div class="ferry-header">
@@ -485,20 +515,36 @@
                 }
                 data.elements.forEach(f => {
                     const name = f.tags.name || "Eczane";
+                    const addr = f.tags["addr:full"] || f.tags["addr:street"] || "Adres bilgisi mevcut değil";
+                    const phone = f.tags["phone"] || f.tags["contact:phone"] || "Telefon yok";
                     const dist = (L.latLng(lat, lng).distanceTo(L.latLng(f.lat, f.lon)) / 1000).toFixed(1);
+                    
                     const m = L.marker([f.lat, f.lon]).addTo(pharmacyMap);
                     pharmacyMarkers.push(m);
+                    
                     const card = document.createElement("div");
                     card.className = "pharmacy-card";
+                    card.onclick = () => showPharmacyDetails(name, addr, phone, f.lat, f.lon);
                     card.innerHTML = `
                         <div>
                             <div style="font-weight:800; font-size:14px; color:#fff;">${name}</div>
                             <div style="font-size:11px; color:var(--pharmacy); opacity:0.8;">${dist} km mesafede</div>
                         </div>
-                        <button onclick="window.open('https://www.google.com/maps/dir/?api=1&destination=${f.lat},${f.lon}')" style="background:var(--pharmacy); color:#fff; border:none; padding:10px 18px; border-radius:12px; font-weight:800; font-size:11px;">YOL TARİFİ</button>`;
+                        <i class="fa-solid fa-chevron-right" style="opacity: 0.3;"></i>`;
                     listCont.appendChild(card);
                 });
             });
+        }
+
+        function showPharmacyDetails(name, addr, phone, lat, lon) {
+            document.getElementById('det-pharmacy-name').innerText = name;
+            document.getElementById('det-pharmacy-address').innerText = addr;
+            document.getElementById('det-pharmacy-phone').innerText = phone;
+            
+            document.getElementById('det-call-btn').onclick = () => { if(phone !== "Telefon yok") window.location.href = `tel:${phone}`; else alert("Numara yok"); };
+            document.getElementById('det-nav-btn').onclick = () => window.open(`https://www.google.com/maps/dir/?api=1&destination=$${lat},${lon}`);
+            
+            document.getElementById('pharmacy-detail-modal').style.display = 'flex';
         }
 
         function closePharmacyMap() { document.getElementById("pharmacyMapContainer").style.display = "none"; }
@@ -549,7 +595,7 @@
                     ferryMarkers.push(m);
                     const card = document.createElement("div");
                     card.className = "ferry-card";
-                    card.innerHTML = `<div><div style="font-weight:800; font-size:14px; color:#fff;">${name}</div><div style="font-size:11px; color:var(--gold); opacity:0.8;">${dist} km uzaklıkta</div></div><button onclick="window.open('https://www.google.com/maps/dir/?api=1&destination=${f.lat},${f.lon}')" style="background:var(--tr-red); color:#fff; border:none; padding:8px 15px; border-radius:10px; font-weight:800; font-size:12px;">GİT</button>`;
+                    card.innerHTML = `<div><div style="font-weight:800; font-size:14px; color:#fff;">${name}</div><div style="font-size:11px; color:var(--gold); opacity:0.8;">${dist} km uzaklıkta</div></div><button onclick="window.open('https://www.google.com/maps/dir/?api=1&destination=$${f.lat},${f.lon}')" style="background:var(--tr-red); color:#fff; border:none; padding:8px 15px; border-radius:10px; font-weight:800; font-size:12px;">GİT</button>`;
                     listCont.appendChild(card);
                 });
             });
