@@ -251,7 +251,6 @@
 
         .fade-exit { opacity: 0 !important; transform: scale(1.15); filter: blur(20px); transition: all 1.8s cubic-bezier(0.19, 1, 0.22, 1) !important; pointer-events: none; }
 
-        /* CUSTOM FILE INPUT FOR TURKISH BUTTON */
         .custom-file-upload {
             border: 1px solid #333; display: inline-block; padding: 18px; cursor: pointer;
             background: #222; color: #fff; border-radius: 15px; width: 100%;
@@ -540,7 +539,6 @@
             { name: "Karaköy", lat: 41.0225, lng: 28.9750, radius: 0.4 }
         ];
 
-        // --- PUSH SYSTEM ---
         function showPush(title, msg, icon = 'fa-bell') {
             const center = document.getElementById('notification-center');
             const push = document.createElement('div');
@@ -557,7 +555,6 @@
             setTimeout(() => { push.classList.remove('active'); setTimeout(() => push.remove(), 600); }, 5000);
         }
 
-        // --- PHARMACY RADAR LOGIC ---
         function startPharmacyExperience() {
             if (!navigator.geolocation) return alert("Konum hatası");
             showPush("RADAR", "Eczaneler taranıyor...", "fa-crosshairs");
@@ -615,13 +612,12 @@
             document.getElementById('det-pharmacy-address').innerText = addr;
             document.getElementById('det-pharmacy-phone').innerText = phone;
             document.getElementById('det-call-btn').onclick = () => { if(phone !== "Telefon yok") window.location.href = `tel:${phone}`; else alert("Numara yok"); };
-            document.getElementById('det-nav-btn').onclick = () => window.open(`https://www.google.com/maps/dir/?api=1&destination=$${lat},${lon}`);
+            document.getElementById('det-nav-btn').onclick = () => window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lon}`);
             document.getElementById('pharmacy-detail-modal').style.display = 'flex';
         }
 
         function closePharmacyMap() { document.getElementById("pharmacyMapContainer").style.display = "none"; }
 
-        // --- FERRY RADAR LOGIC ---
         function startFerryExperience() {
             if (!navigator.geolocation) return alert("Konum hatası");
             showPush("VAPUR", "Boğaz trafiği izleniyor...", "fa-ship");
@@ -672,7 +668,7 @@
                                 <i class="fa-solid fa-water"></i> ${dist} KM • SEFERLER AKTİF
                             </div>
                         </div>
-                        <button onclick="window.open('https://www.google.com/maps/dir/?api=1&destination=$${f.lat},${f.lon}')" 
+                        <button onclick="window.open('https://www.google.com/maps/dir/?api=1&destination=${f.lat},${f.lon}')" 
                                 style="background:var(--ferry-blue); color:#fff; border:none; width:45px; height:45px; border-radius:15px; font-size:18px; display:flex; align-items:center; justify-content:center; box-shadow:0 5px 15px rgba(52, 152, 219, 0.3);">
                             <i class="fa-solid fa-diamond-turn-right"></i>
                         </button>`;
@@ -683,7 +679,6 @@
 
         function closeFerryMap() { document.getElementById("ferryMapContainer").style.display = "none"; }
 
-        // --- APP LIFE CYCLE ---
         document.addEventListener('DOMContentLoaded', () => {
             updateGreeting(); loadProfile(); startTickerLoop(); updateScoreUI();
             if (navigator.geolocation) {
@@ -718,7 +713,6 @@
             document.getElementById('rankTitle').innerText = rank;
         }
 
-        // --- MISSIONS ENGINE ---
         function openMission() {
             document.getElementById('mission-overlay').style.display = 'flex';
             currentMission = missions[Math.floor(Math.random() * missions.length)];
@@ -775,7 +769,6 @@
                 <button class="btn-confirm" style="background:#fff; color:#000;" onclick="closeMission()">ANA SAYFA</button>`;
         }
 
-        // --- CORE UTILS ---
         function updateGreeting() {
             const h = new Date().getHours();
             let g = h >= 5 && h < 12 ? "Günaydın" : h >= 12 && h < 18 ? "Tünaydın" : h >= 18 && h < 22 ? "İyi Akşamlar" : "İyi Geceler";
@@ -836,7 +829,12 @@
 
         function terminateSession() { 
             document.getElementById('laleApp').classList.add('fade-exit'); 
-            setTimeout(() => { localStorage.clear(); window.location.reload(); }, 1500); 
+            showPush("GÜLE GÜLE", "Oturum başarıyla kapatıldı.", "fa-door-open");
+            
+            setTimeout(() => { 
+                localStorage.clear(); 
+                window.location.reload(); 
+            }, 1800); 
         }
 
         function executeEmergencySearch(t) { 
