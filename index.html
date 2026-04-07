@@ -751,49 +751,73 @@
     const btn = document.getElementById('m-action-btn');
     const video = document.getElementById('mission-camera');
     
-    // ESTADO 1: Iniciar Cámara
-    if (btn.innerText === "GÖREVE BAŞLA") {
+    // ESTADO 1: Iniciar Cámara Trasera
+    if (btn.innerText.includes("GÖREVE BAŞLA")) {
         try {
-            const constraints = { video: { facingMode: { ideal: "environment" } } };
+            const constraints = { 
+                video: { facingMode: { ideal: "environment" } } 
+            };
             videoStream = await navigator.mediaDevices.getUserMedia(constraints);
             video.srcObject = videoStream;
             video.style.display = 'block';
             await video.play();
+            
             btn.innerText = "FOTOĞRAF ÇEK";
-            btn.style.background = "#fff"; btn.style.color = "#000";
+            btn.style.background = "#ffffff";
+            btn.style.color = "#000000";
         } catch (e) {
+            console.error(e);
             alert("Kamera izni gerekli.");
         }
     } 
-    // ESTADO 2: Capturar Foto
+    // ESTADO 2: Captura y Preparar para Compartir
     else if (btn.innerText === "FOTOĞRAF ÇEK") {
+        // Efecto visual de flash
         document.getElementById('mission-overlay').style.backgroundColor = "white";
+        
         setTimeout(() => { 
             document.getElementById('mission-overlay').style.backgroundColor = "#000"; 
-            if (videoStream) videoStream.getTracks().forEach(t => t.stop());
+            stopCamera(); 
             video.style.display = 'none';
-            document.getElementById('m-desc').innerText = "Harika! Şimdi Instagram'da paylaş ve puanlarını topla.";
-            // Cambiamos el texto exacto para que el siguiente 'else if' lo reconozca
+            
+            document.getElementById('m-desc').innerText = "Mükemmel! Şimdi Instagram'da paylaş ve ödülünü topla.";
+            
+            // Cambiamos a botón de Red Social
             btn.innerHTML = '<i class="fa-brands fa-instagram"></i> PAYLAŞ VE KAZAN';
             btn.style.background = "linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)";
             btn.style.color = "#fff";
+            btn.style.border = "none";
         }, 150);
     }
-    // ESTADO 3: Abrir Instagram y LUEGO dar el premio
+    // ESTADO 3: Abrir Instagram y otorgar puntos al "volver"
     else {
-        // 1. Intentamos abrir Instagram (puedes cambiar el link por tu perfil o un hashtag)
-        window.open('instagram://camera', '_blank'); 
+        // Intentamos abrir la cámara de Instagram Stories
+        window.open('instagram://camera', '_blank');
         
-        // 2. Pequeño delay para que el usuario sienta que "volvió" de la red social
-        btn.innerText = "YÜKLENİYOR...";
-        btn.style.opacity = "0.5";
-        
+        // Cambiamos el botón temporalmente para feedback visual
+        const originalContent = btn.innerHTML;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> ONAYLANMA BEKLENİYOR...';
+        btn.style.opacity = "0.7";
+        btn.style.pointerEvents = "none";
+
+        // Simulamos el tiempo de regreso a la app para otorgar el premio
         setTimeout(() => {
-            unlockRewards(); // Esta función es la que muestra el premio y suma los puntos
-        }, 1500);
+            btn.style.opacity = "1";
+            btn.style.pointerEvents = "auto";
+            unlockRewards(); 
+        }, 2000);
     }
 }
-HTML = `
+
+
+        function unlockRewards() {
+            document.getElementById('mission-content').style.display = 'none';
+            document.getElementById('mission-success').style.display = 'block';
+            document.getElementById('laleSuccessSound').play();
+            lalePoints += currentMission.pts;
+            localStorage.setItem('lale_score', lalePoints);
+            updateScoreUI();
+            document.getElementById('reward-content').innerHTML = `
                 <div style="font-size: 80px; color: var(--gold); margin-bottom: 20px;">🌟</div>
                 <h2 style="font-size: 28px; color: var(--gold); font-weight:900;">TEBRİKLER!</h2>
                 <p style="margin-bottom: 25px; opacity: 0.8;">${currentMission.pts} LP kazandın.</p>
