@@ -8,7 +8,7 @@
     <link rel="canonical" href="https://lale-turkey.vercel.app/" />
     
     <meta property="og:title" content="Lale Turkey | Elite Lifestyle" />
-    <meta property="og:description" content="İstanbul'u keşfet, görevleri tamamla ve elit bir deneyim yaşayın." />
+    <meta property="og:description" content="İstanbul'u keşfet, görevleri tamamla ve elit bir experiencia yaşayın." />
     <meta property="og:image" content="https://img.icons8.com/color/512/tulip.png" />
     <meta property="og:url" content="https://lale-turkey.vercel.app/" />
     <meta property="og:type" content="website" />
@@ -250,6 +250,14 @@
         .modal-body { background: #111; border: 1px solid var(--glass-border); width: 100%; border-radius: 35px; padding: 30px; }
 
         .fade-exit { opacity: 0 !important; transform: scale(1.15); filter: blur(20px); transition: all 1.8s cubic-bezier(0.19, 1, 0.22, 1) !important; pointer-events: none; }
+
+        /* CUSTOM FILE INPUT FOR TURKISH BUTTON */
+        .custom-file-upload {
+            border: 1px solid #333; display: inline-block; padding: 18px; cursor: pointer;
+            background: #222; color: #fff; border-radius: 15px; width: 100%;
+            text-align: center; font-size: 12px; font-weight: 700; margin-bottom: 20px;
+        }
+        #photoIn { display: none; }
     </style>
 </head>
 <body>
@@ -263,7 +271,7 @@
             <div class="petal-3d p-3"></div>
         </div>
         <h2 style="margin-top: 40px; letter-spacing: 5px; font-size: 18px; font-weight: 900;">LALE TURKEY</h2>
-        <p id="preloader-text" style="font-size: 10px; opacity: 0.5; margin-top: 10px;">GEN Z ELITE EXPERIENCE</p>
+        <p id="preloader-text" style="font-size: 10px; opacity: 0.5; margin-top: 10px;">GENÇ Z KUŞAĞI ELİT DENEYİMİ</p>
     </div>
 
     <div class="hero-bg">
@@ -499,7 +507,10 @@
         <div class="modal-body">
             <h2 style="color: var(--gold); margin-bottom: 25px; font-weight: 900;">Profil Ayarları</h2>
             <input type="text" id="nameIn" placeholder="Adınız" style="width: 100%; padding: 18px; border-radius: 15px; background: #222; border: 1px solid #333; color: #fff; margin-bottom: 15px;">
-            <input type="file" id="photoIn" accept="image/*" style="margin-bottom: 20px; font-size: 12px;">
+            
+            <label for="photoIn" class="custom-file-upload">FOTOĞRAF SEÇ</label>
+            <input type="file" id="photoIn" accept="image/*">
+            
             <button class="btn-confirm" style="background: var(--gold); color: #000;" onclick="saveUserData()">KAYDET</button>
             <button onclick="terminateSession()" style="margin-top: 15px; background: none; border: 1px solid var(--tr-red); color: var(--tr-red); padding: 15px; width: 100%; border-radius: 20px; font-weight: 800; font-size: 12px;">OTURUMU KAPAT</button>
             <p onclick="closeModal('profileModal')" style="margin-top: 20px; cursor: pointer; opacity: 0.6; font-weight: 700;">Kapat</p>
