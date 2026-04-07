@@ -748,28 +748,64 @@
         }
 
         async function handleMissionClick() {
-            const btn = document.getElementById('m-action-btn');
-            const video = document.getElementById('mission-camera');
-            if(btn.innerText === "GÖREVE BAŞLA") {
-                try {
-                    videoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-                    video.srcObject = videoStream; video.style.display = 'block';
-                    btn.innerText = "FOTOĞRAF ÇEK"; btn.style.background = "#fff";
-                } catch (e) { alert("Kamera izni gerekli."); }
-            } 
-            else if(btn.innerText === "FOTOĞRAF ÇEK") {
-                document.getElementById('mission-overlay').style.backgroundColor = "white";
-                setTimeout(() => { 
-                    document.getElementById('mission-overlay').style.backgroundColor = "#000"; 
-                    stopCamera(); video.style.display = 'none';
-                    document.getElementById('m-desc').innerText = "Harika! Paylaş ve ödülünü al.";
-                    btn.innerHTML = '<i class="fa-brands fa-instagram"></i> PAYLAŞ';
-                    btn.style.background = "linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)";
-                    btn.style.color = "#fff";
-                }, 100);
-            }
-            else { unlockRewards(); }
+    const btn = document.getElementById('m-action-btn');
+    const video = document.getElementById('mission-camera');
+    
+    // ESTADO 1: Iniciar Cámara
+    if (btn.innerText === "GÖREVE BAŞLA") {
+        try {
+            // Intentamos obtener la cámara trasera específicamente para la misión
+            const constraints = { 
+                video: { 
+                    facingMode: { ideal: "environment" },
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 }
+                } 
+            };
+            
+            videoStream = await navigator.mediaDevices.getUserMedia(constraints);
+            video.srcObject = videoStream;
+            video.style.display = 'block';
+            
+            // Forzamos el play por si el autoplay falla en algunos navegadores
+            await video.play();
+            
+            btn.innerText = "FOTOĞRAF ÇEK";
+            btn.style.background = "#ffffff";
+            btn.style.color = "#000000";
+        } catch (e) {
+            console.error("Kamera hatası:", e);
+            alert("Kamera başlatılamadı. Lütfen izin verdiğinizden emin olun.");
         }
+    } 
+    // ESTADO 2: Capturar Foto (Simulación de flash y detener cámara)
+    else if (btn.innerText === "FOTOĞRAF ÇEK") {
+        // Efecto visual de obturador (Flash)
+        document.getElementById('mission-overlay').style.backgroundColor = "white";
+        
+        setTimeout(() => { 
+            document.getElementById('mission-overlay').style.backgroundColor = "#000"; 
+            
+            // Detenemos los tracks de la cámara para liberar el hardware
+            if (videoStream) {
+                videoStream.getTracks().forEach(track => track.stop());
+            }
+            
+            video.style.display = 'none';
+            document.getElementById('m-desc').innerText = "Harika bir kare! Ödülünü almak için paylaş.";
+            
+            // Cambio a botón de compartir (Instagram Style)
+            btn.innerHTML = '<i class="fa-brands fa-instagram"></i> INSTAGRAM\'DA PAYLAŞ';
+            btn.style.background = "linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)";
+            btn.style.color = "#fff";
+        }, 150);
+    }
+    // ESTADO 3: Reclamar puntos
+    else {
+        unlockRewards();
+    }
+}
+
 
         function unlockRewards() {
             document.getElementById('mission-content').style.display = 'none';
