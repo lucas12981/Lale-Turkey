@@ -257,6 +257,26 @@
             text-align: center; font-size: 12px; font-weight: 700; margin-bottom: 20px;
         }
         #photoIn { display: none; }
+        @keyframes zoomLandscape {
+    from { transform: scale(1.1) translateX(-5%); }
+    to { transform: scale(1.3) translateX(5%); }
+}
+
+@keyframes floatText {
+    0% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(2deg); }
+    100% { transform: translateY(0px) rotate(0deg); }
+}
+
+.floating-text {
+    animation: floatText 4s ease-in-out infinite;
+}
+
+#logout-screen.active {
+    display: block !important;
+    animation: fadeIn 0.8s ease-out;
+}
+
     </style>
 </head>
 <body>
@@ -827,15 +847,29 @@
             }, 8000);
         }
 
-        function terminateSession() { 
-            document.getElementById('laleApp').classList.add('fade-exit'); 
-            showPush("GÜLE GÜLE", "Oturum başarıyla kapatıldı.", "fa-door-open");
-            
-            setTimeout(() => { 
-                localStorage.clear(); 
-                window.location.reload(); 
-            }, 1800); 
-        }
+        function terminateSession() {
+    // 1. Limpiamos datos
+    localStorage.clear();
+
+    // 2. Cerramos cualquier modal abierto
+    const modals = document.querySelectorAll('.modal');
+    modals.forEach(m => m.style.display = 'none');
+
+    // 3. Ocultamos la app principal
+    document.getElementById('laleApp').style.opacity = '0';
+    document.getElementById('laleApp').style.pointerEvents = 'none';
+
+    // 4. Activamos la pantalla de Estambul
+    const logoutScreen = document.getElementById('logout-screen');
+    logoutScreen.classList.add('active');
+}
+
+function restartApp() {
+    // Recarga la página para volver al inicio limpio
+    window.location.reload();
+}
+
+
 
         function executeEmergencySearch(t) { 
             window.open(`https://www.google.com/maps/search/${t}+açık`, '_blank'); closeModal('emergency-modal'); 
@@ -843,5 +877,22 @@
 
         function closeMission() { stopCamera(); document.getElementById('mission-overlay').style.display = 'none'; }
     </script>
+    <div id="logout-screen" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; overflow: hidden; background: #000;">
+    <img src="https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?auto=format&fit=crop&q=80&w=2000" 
+         style="width: 100%; height: 100%; object-fit: cover; animation: zoomLandscape 20s infinite alternate;" alt="Istanbul">
+    
+    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
+        
+        <h1 class="floating-text" style="color: white; font-size: 3rem; font-weight: 800; text-shadow: 2px 2px 15px rgba(0,0,0,0.5); margin-bottom: 20px;">
+            Güle Güle!<br>
+            <span style="font-size: 1.5rem; font-weight: 300;">İstanbul sizi bekliyor será...</span>
+        </h1>
+
+        <button onclick="restartApp()" style="padding: 15px 40px; border-radius: 50px; border: none; background: #c0392b; color: white; font-weight: bold; cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.3); transition: transform 0.3s;">
+            ANA SAYFAYA DÖN
+        </button>
+    </div>
+</div>
+
 </body>
 </html>
