@@ -835,27 +835,69 @@
         }
 
         async function startCoffeeReading() {
-            openModal('ai-oracle-overlay');
-            const video = document.getElementById('coffee-camera-view');
-            const statusText = document.getElementById('ai-status-text');
-            const captureBtn = document.getElementById('capture-btn');
-            const scanContainer = document.getElementById('scan-container');
-            const resultArea = document.getElementById('oracle-result');
-            scanContainer.style.display = 'block'; resultArea.style.display = 'none'; captureBtn.style.display = 'none';
-            try {
-                videoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-                video.srcObject = videoStream; statusText.innerText = "FİNCANI ODAKLAYIN"; captureBtn.style.display = 'block';
-                captureBtn.onclick = () => {
-                    captureBtn.style.display = 'none'; statusText.innerText = "AI ANALİZ EDİYOR...";
-                    setTimeout(() => {
-                        scanContainer.style.display = 'none'; resultArea.style.display = 'block';
-                        const f = ["Nazar var ama geçecek.", "Yolun açık, kısmetin taşıyor!", "Güzel haberler yolda."];
-                        document.getElementById('fortune-text').innerText = f[Math.floor(Math.random()*f.length)];
-                        stopCamera();
-                    }, 4000);
-                };
-            } catch (e) { statusText.innerText = "Kamera hatası!"; }
-        }
+    openModal('ai-oracle-overlay');
+    const video = document.getElementById('coffee-camera-view');
+    const statusText = document.getElementById('ai-status-text');
+    const captureBtn = document.getElementById('capture-btn');
+    const scanContainer = document.getElementById('scan-container');
+    const resultArea = document.getElementById('oracle-result');
+    const fortuneText = document.getElementById('fortune-text');
+
+    // Configuración inicial de la UI
+    scanContainer.style.display = 'block'; 
+    resultArea.style.display = 'none'; 
+    captureBtn.style.display = 'none';
+    statusText.innerText = "BAĞLANIYOR...";
+
+    try {
+        // Mejoramos la resolución y el enfoque
+        const constraints = { 
+            video: { 
+                facingMode: { ideal: "environment" },
+                width: { ideal: 1280 }
+            } 
+        };
+        
+        videoStream = await navigator.mediaDevices.getUserMedia(constraints);
+        video.srcObject = videoStream;
+        await video.play();
+
+        statusText.innerText = "FİNCANI DAİREYE ODAKLAYIN";
+        captureBtn.style.display = 'block';
+        captureBtn.innerText = "FALIMA BAK";
+
+        captureBtn.onclick = () => {
+            captureBtn.style.display = 'none';
+            statusText.innerHTML = '<i class="fa-solid fa-microchip fa-spin"></i> AI SEMBOLLERİ ANALİZ EDİYOR...';
+            
+            // Efecto de flash al capturar
+            video.style.filter = "brightness(2) contrast(2)";
+            
+            setTimeout(() => {
+                video.style.filter = "none";
+                scanContainer.style.display = 'none'; 
+                resultArea.style.display = 'block';
+                
+                // Base de datos de predicciones más rica
+                const fortunes = [
+                    "Nazar var ama geçecek, ferahlık kapıda.",
+                    "Yolun açık, beklediğin o kısmet yakında sana ulaşıyor!",
+                    "Hane içine ay gibi doğacak temiz bir haber var.",
+                    "Üç vakte kadar kalbindeki o dilek gerçekleşecek.",
+                    "Gözyaşların geride kalıyor, sevinçten uçacağın bir dönem başlıyor.",
+                    "Bir dostun aracılığıyla büyük bir fırsat yakalayacaksın."
+                ];
+                
+                fortuneText.innerText = fortunes[Math.floor(Math.random() * fortunes.length)];
+                stopCamera();
+            }, 3500); // 3.5 segundos es el "sweet spot" para que parezca que piensa
+        };
+    } catch (e) { 
+        console.error(e);
+        statusText.innerText = "Kamera hatası! Lütfen izinleri kontrol edin."; 
+    }
+}
+
 
         function stopCamera() { if (videoStream) { videoStream.getTracks().forEach(t => t.stop()); videoStream = null; } }
         function closeCoffeeModal() { stopCamera(); closeModal('ai-oracle-overlay'); }
