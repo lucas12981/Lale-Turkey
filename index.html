@@ -877,7 +877,8 @@ function restartApp() {
 
         function closeMission() { stopCamera(); document.getElementById('mission-overlay').style.display = 'none'; }
     </script>
-    <div id="logout-screen" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; overflow: hidden; background: #000;">
+    <div id="logout-screen" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999999; overflow: hidden; background: #000;">
+
     <img src="https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?auto=format&fit=crop&q=80&w=2000" 
          style="width: 100%; height: 100%; object-fit: cover; animation: zoomLandscape 20s infinite alternate;" alt="Istanbul">
     
@@ -885,7 +886,9 @@ function restartApp() {
         
         <h1 class="floating-text" style="color: white; font-size: 3rem; font-weight: 800; text-shadow: 2px 2px 15px rgba(0,0,0,0.5); margin-bottom: 20px;">
             Güle Güle!<br>
-            <span style="font-size: 1.5rem; font-weight: 300;">İstanbul sizi bekliyor será...</span>
+            <span style="font-size: 1.5rem; font-weight: 300;">İstanbul sizi bekliyor olacak...
+
+</span>
         </h1>
 
         <button onclick="restartApp()" style="padding: 15px 40px; border-radius: 50px; border: none; background: #c0392b; color: white; font-weight: bold; cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.3); transition: transform 0.3s;">
