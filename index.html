@@ -991,11 +991,53 @@ async function syncWithCloud(username, avatar) {
 }
 
 
-        function loadProfile() {
-            const n = localStorage.getItem('lale_name'); const p = localStorage.getItem('lale_pic');
-            if(n) document.getElementById('userNameDisplay').innerText = "Selam, " + n;
-            if(p) document.getElementById('avatarImg').src = p;
+        async function loadProfile() {
+    // 1. Carga rápida desde el teléfono (para que no se vea vacío)
+    const localName = localStorage.getItem('lale_name');
+    const localPic = localStorage.getItem('lale_pic');
+    const localScore = localStorage.getItem('lale_score');
+
+    if (localName) {
+        document.getElementById('userNameDisplay').innerText = "Selam, " + localName;
+        document.getElementById('nameIn').value = localName;
+    }
+    if (localPic) document.getElementById('avatarImg').src = localPic;
+    if (localScore) {
+        lalePoints = parseInt(localScore);
+        updateScoreUI();
+    }
+
+    // 2. SINCRONIZACIÓN NEURAL (Traer datos frescos de Supabase)
+    if (localName) {
+        try {
+            const { data, error } = await _supabase
+                .from('profiles')
+                .select('*')
+                .eq('username', localName)
+                .single();
+
+            if (data && !error) {
+                console.log("Lale Cloud: Profil yüklendi.");
+                
+                // Actualizar puntos si los de la nube son diferentes
+                lalePoints = data.lale_points;
+                localStorage.setItem('lale_score', lalePoints);
+                
+                // Actualizar foto si cambió
+                if (data.avatar_url) {
+                    document.getElementById('avatarImg').src = data.avatar_url;
+                    localStorage.setItem('lale_pic', data.avatar_url);
+                }
+                
+                updateScoreUI();
+                showPush("LALE SYNC", "Profiliniz güncellendi", "fa-rotate");
+            }
+        } catch (err) {
+            console.log("Cloud link focus lost, using local data.");
         }
+    }
+}
+
 
         function smartDeepLink(u, w) { window.location.href = u; setTimeout(() => { if (!document.hidden) window.open(w, '_blank'); }, 2000); }
         
