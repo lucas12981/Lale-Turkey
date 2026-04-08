@@ -815,23 +815,53 @@ const _supabase = supabase.createClient(SUB_URL, SUB_KEY);
 }
 
 
-        function unlockRewards() {
-            document.getElementById('mission-content').style.display = 'none';
-            document.getElementById('mission-success').style.display = 'block';
-            document.getElementById('laleSuccessSound').play();
-            lalePoints += currentMission.pts;
-            localStorage.setItem('lale_score', lalePoints);
-            updateScoreUI();
-            document.getElementById('reward-content').innerHTML = `
-                <div style="font-size: 80px; color: var(--gold); margin-bottom: 20px;">🌟</div>
-                <h2 style="font-size: 28px; color: var(--gold); font-weight:900;">TEBRİKLER!</h2>
-                <p style="margin-bottom: 25px; opacity: 0.8;">${currentMission.pts} LP kazandın.</p>
-                <div style="background:var(--gold); color:#000; padding:25px; border-radius:25px; margin-bottom:30px; border:2px dashed #000;">
-                    <h3 style="font-size:20px; font-weight:900;">${currentMission.benefit}</h3>
-                    <p style="font-size:14px; font-weight:900; background:#000; color:#fff; padding:8px; border-radius:12px; display:inline-block; margin-top:10px;">KOD: LALE2026</p>
-                </div>
-                <button class="btn-confirm" style="background:#fff; color:#000;" onclick="closeMission()">ANA SAYFA</button>`;
+        async function unlockRewards() {
+    // 1. UI Feedback inmediato
+    document.getElementById('mission-content').style.display = 'none';
+    document.getElementById('mission-success').style.display = 'block';
+    
+    try {
+        document.getElementById('laleSuccessSound').play();
+    } catch(e) { console.log("Ses çalınamadı"); }
+
+    // 2. Actualización Local
+    lalePoints += currentMission.pts;
+    localStorage.setItem('lale_score', lalePoints);
+    updateScoreUI();
+
+    // 3. SINCRONIZACIÓN CON LA NUBE (SUPABASE)
+    const userName = localStorage.getItem('lale_name');
+    if (userName) {
+        try {
+            const { error } = await _supabase
+                .from('profiles')
+                .update({ lale_points: lalePoints })
+                .eq('username', userName);
+
+            if (error) throw error;
+            console.log("Lale Cloud: Puanlar senkronize edildi.");
+        } catch (err) {
+            console.error("Cloud Sync Error:", err.message);
+            // Si falla el internet, el usuario ya tiene sus puntos localmente,
+            // se sincronizarán la próxima vez que guarde su perfil.
         }
+    }
+
+    // 4. Renderizado del Contenido de Recompensa
+    document.getElementById('reward-content').innerHTML = `
+        <div style="font-size: 80px; color: var(--gold); margin-bottom: 20px;">🌟</div>
+        <h2 style="font-size: 28px; color: var(--gold); font-weight:900;">TEBRİKLER!</h2>
+        <p style="margin-bottom: 10px; opacity: 0.8;">${currentMission.pts} LP kazandın.</p>
+        <p style="font-size: 12px; color: var(--mission); margin-bottom: 25px; font-weight: 700;">
+            <i class="fa-solid fa-cloud-check"></i> BULUT HESABINIZA İŞLENDİ
+        </p>
+        <div style="background:var(--gold); color:#000; padding:25px; border-radius:25px; margin-bottom:30px; border:2px dashed #000;">
+            <h3 style="font-size:20px; font-weight:900;">${currentMission.benefit}</h3>
+            <p style="font-size:14px; font-weight:900; background:#000; color:#fff; padding:8px; border-radius:12px; display:inline-block; margin-top:10px;">KOD: LALE2026</p>
+        </div>
+        <button class="btn-confirm" style="background:#fff; color:#000;" onclick="closeMission()">ANA SAYFA</button>`;
+}
+
 
         function updateGreeting() {
             const h = new Date().getHours();
