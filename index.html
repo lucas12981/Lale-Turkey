@@ -545,6 +545,11 @@
         let ferryMap, pharmacyMap;
         let ferryMarkers = [], pharmacyMarkers = [];
         
+        // --- CONFIGURACIÓN DE SUPABASE (INICIALIZACIÓN) ---
+const SUB_URL = "https://ropsrvzdyhyfftdfzvmk.supabase.co";
+const SUB_KEY = "sb_publishable_POAxFOlFHeIbESXJZscnYg_djrqV8Je"; // <--- PEGA AQUÍ LA CLAVE DE TU CAPTURA
+const _supabase = supabase.createClient(SUB_URL, SUB_KEY);
+
         const missions = [
             { title: "Boğaz Havası", desc: "Ortaköy'de Boğaz'a karşı bir fotoğraf çek.", icon: "fa-solid fa-anchor", pts: 60, benefit: "Bosphorus Grill'de %10 İndirim" },
             { title: "Galata Ruhu", desc: "Galata Kulesi'ni arkana al ve poz ver.", icon: "fa-solid fa-tower-observation", pts: 80, benefit: "Tower Cafe'de %10 İndirim" },
