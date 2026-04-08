@@ -1076,6 +1076,80 @@ function restartApp() {
         function executeEmergencySearch(t) { 
             window.open(`https://www.google.com/maps/search/${t}+açık`, '_blank'); closeModal('emergency-modal'); 
         }
+        // ==========================================
+//   LALE CLOUD - AUTHENTICATION MODULE
+// ==========================================
+
+async function handleSignUp() {
+    const email = document.getElementById('emailIn').value;
+    const password = document.getElementById('passIn').value;
+    const username = document.getElementById('nameIn').value;
+
+    if(!email || !password || !username) {
+        showPush("UYARI", "Lütfen tüm alanları doldurun.", "fa-pen-to-square");
+        return;
+    }
+
+    const { data, error } = await _supabase.auth.signUp({
+        email: email,
+        password: password,
+        options: {
+            data: { display_name: username }
+        }
+    });
+
+    if (error) {
+        showPush("HATA", "Kayıt hatası: " + error.message, "fa-triangle-exclamation");
+    } else {
+        showPush("TEBRİKLER", "Hesabınız başarıyla oluşturuldu!", "fa-user-check");
+        saveUserData(); 
+    }
+}
+
+async function handleSignIn() {
+    const email = document.getElementById('emailIn').value;
+    const password = document.getElementById('passIn').value;
+
+    if(!email || !password) {
+        showPush("UYARI", "E-posta ve şifre gereklidir.", "fa-key");
+        return;
+    }
+
+    const { data, error } = await _supabase.auth.signInWithPassword({
+        email: email,
+        password: password
+    });
+
+    if (error) {
+        showPush("HATA", "Giriş başarısız: " + error.message, "fa-lock");
+    } else {
+        showPush("BAŞARILI", "Hoş geldiniz!", "fa-unlock-keyhole");
+        loadProfile(); 
+        closeModal('profileModal');
+    }
+}
+
+// ==========================================
+//   LALE STARTUP - INICIO AUTOMÁTICO
+// ==========================================
+
+document.addEventListener('DOMContentLoaded', async () => {
+    console.log("Lale Turkey: Uygulama başlatılıyor...");
+
+    // Cargamos el perfil automáticamente al abrir
+    try {
+        await loadProfile();
+    } catch (err) {
+        console.error("Profil yükleme hatası:", err);
+    }
+
+    // Persistencia de sesión de Supabase
+    const { data: { session } } = await _supabase.auth.getSession();
+    if (session && session.user.user_metadata.display_name) {
+        localStorage.setItem('lale_name', session.user.user_metadata.display_name);
+    }
+});
+
 
         function closeMission() { stopCamera(); document.getElementById('mission-overlay').style.display = 'none'; }
     </script>
