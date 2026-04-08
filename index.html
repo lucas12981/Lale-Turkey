@@ -909,13 +909,57 @@ const _supabase = supabase.createClient(SUB_URL, SUB_KEY);
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
         
-        function saveUserData() {
-            const n = document.getElementById('nameIn').value;
-            if(n) { localStorage.setItem('lale_name', n); document.getElementById('userNameDisplay').innerText = "Selam, " + n; }
-            const f = document.getElementById('photoIn').files[0];
-            if(f) { const r = new FileReader(); r.onload = (e) => { localStorage.setItem('lale_pic', e.target.result); document.getElementById('avatarImg').src = e.target.result; }; r.readAsDataURL(f); }
-            closeModal('profileModal');
-        }
+        async function saveUserData() {
+    const n = document.getElementById('nameIn').value;
+    const f = document.getElementById('photoIn').files[0];
+    let avatarData = localStorage.getItem('lale_pic');
+
+    // 1. Manejo del Nombre
+    if(n) { 
+        localStorage.setItem('lale_name', n); 
+        document.getElementById('userNameDisplay').innerText = "Selam, " + n; 
+    }
+
+    // 2. Manejo de la Foto y Sincronización
+    if(f) { 
+        const r = new FileReader(); 
+        r.onload = async (e) => { 
+            avatarData = e.target.result;
+            localStorage.setItem('lale_pic', avatarData); 
+            document.getElementById('avatarImg').src = avatarData; 
+            
+            // Sincronización con la nube cuando la imagen termina de cargar
+            await syncWithCloud(n, avatarData);
+        }; 
+        r.readAsDataURL(f); 
+    } else if(n) {
+        // Si el usuario solo cambió el nombre pero no la foto
+        await syncWithCloud(n, avatarData);
+    }
+    
+    closeModal('profileModal');
+    showPush("PROFIL", "Veriler bulut ile senkronize edildi.", "fa-cloud-arrow-up");
+}
+
+// Función auxiliar para mantener el código limpio y profesional
+async function syncWithCloud(username, avatar) {
+    try {
+        const { error } = await _supabase
+            .from('profiles')
+            .upsert({ 
+                username: username || "Anonim", 
+                avatar_url: avatar, 
+                lale_points: lalePoints,
+                updated_at: new Date() 
+            }, { onConflict: 'username' });
+
+        if (error) throw error;
+        console.log("Lale Cloud: Veriler güncellendi.");
+    } catch (err) {
+        console.error("Cloud Sync Error:", err.message);
+    }
+}
+
 
         function loadProfile() {
             const n = localStorage.getItem('lale_name'); const p = localStorage.getItem('lale_pic');
