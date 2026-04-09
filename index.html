@@ -51,61 +51,6 @@
             --ferry-blue: #3498db;
             --royal-purple: #8e44ad;
         }
-/* --- ACTUALIZACIÓN FUTURISTA KAHVE FALI --- */
-
-#ai-oracle-overlay .modal-body {
-    background: rgba(15, 15, 15, 0.85) !important;
-    backdrop-filter: blur(25px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(25px) saturate(180%) !important;
-    border: 1px solid rgba(188, 143, 143, 0.3) !important;
-    border-radius: 35px !important;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.6), 0 0 20px rgba(188, 143, 143, 0.2) !important;
-    padding: 35px !important;
-    transition: all 0.4s ease;
-}
-
-#coffee-camera-view {
-    border: 2px solid rgba(188, 143, 143, 0.5);
-    border-radius: 25px;
-    box-shadow: 0 0 15px rgba(188, 143, 143, 0.3);
-    transition: 0.3s;
-}
-
-#coffee-camera-view.scanning {
-    border-color: #ff4b2b;
-    box-shadow: 0 0 25px rgba(255, 75, 43, 0.6);
-    animation: pulseScan 1.5s infinite;
-}
-
-@keyframes pulseScan {
-    0% { box-shadow: 0 0 15px rgba(255, 75, 43, 0.4); }
-    50% { box-shadow: 0 0 30px rgba(255, 75, 43, 0.8); }
-    100% { box-shadow: 0 0 15px rgba(255, 75, 43, 0.4); }
-}
-
-#fortune-text {
-    font-family: var(--font-main);
-    font-weight: 400;
-    font-size: 16px;
-    line-height: 1.7;
-    color: rgba(255, 255, 255, 0.9);
-    background: rgba(255,255,255,0.03);
-    padding: 20px;
-    border-radius: 20px;
-    border: 1px solid rgba(255,255,255,0.05);
-    margin-top: 15px;
-}
-
-#share-fortune-btn {
-    background: transparent !important;
-    color: var(--coffee) !important;
-    border: 2px solid var(--coffee) !important;
-    margin-top: 15px !important;
-    font-weight: 700 !important;
-    border-radius: 50px;
-    padding: 10px 20px;
-    cursor: pointer;
-}
 
         /* --- BASE STYLES --- */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--font-main); -webkit-tap-highlight-color: transparent; }
@@ -556,22 +501,12 @@
                 <h3 id="ai-status-text" style="margin-top: 20px; color: var(--coffee); font-weight: 800; font-size: 15px;">ANALİZ EDİLİYOR...</h3>
                 <button id="capture-btn" class="btn-confirm" style="display:none; background: var(--coffee); color:white; margin-top:20px;">FOTOĞRAF ÇEK</button>
             </div>
-                        <div id="oracle-result" style="display: none; text-align: center; animation: fadeIn 0.8s ease;">
-                <h4 style="color: var(--coffee); margin-bottom: 15px; font-weight: 900; letter-spacing: 2px; text-shadow: 0 0 10px rgba(188, 143, 143, 0.3);">LALE AI DİYOR Kİ:</h4>
-                
-                <div style="position: relative; padding: 5px;">
-                    <p id="fortune-text" style="font-style: italic; line-height: 1.8; font-size: 16px; color: rgba(255,255,255,0.95); background: rgba(255,255,255,0.03); border-radius: 20px; padding: 20px; border: 1px solid rgba(188, 143, 143, 0.2);"></p>
-                </div>
-
-                <button id="share-fortune-btn" onclick="shareFortune()" style="margin-top: 20px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px;">
-                    <i class="fa-brands fa-instagram" style="font-size: 1.2rem;"></i> FALINI PAYLAŞ
-                </button>
-
-                <button class="btn-confirm" onclick="closeCoffeeModal()" style="margin-top: 15px; background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.1); width: 100%; font-size: 12px; letter-spacing: 1px;">TEŞEKKÜRLER</button>
+            <div id="oracle-result" style="display: none;">
+                <h4 style="color: var(--coffee); margin-bottom: 12px; font-weight: 900;">LALE AI DİYOR Kİ:</h4>
+                <p id="fortune-text" style="font-style: italic; line-height: 1.6; font-size: 15px;"></p>
+                <button class="btn-confirm" onclick="closeCoffeeModal()" style="margin-top: 25px; background: var(--coffee); color: #fff;">TEŞEKKÜRLER</button>
             </div>
-
-            <p id="cancel-camera" onclick="closeCoffeeModal()" style="margin-top: 25px; cursor: pointer; opacity: 0.3; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; transition: 0.3s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='0.3'">Vazgeç</p>
-
+            <p id="cancel-camera" onclick="closeCoffeeModal()" style="margin-top: 20px; cursor: pointer; opacity: 0.4; font-size: 13px;">İptal</p>
         </div>
     </div>
 
@@ -934,9 +869,7 @@ const _supabase = supabase.createClient(SUB_URL, SUB_KEY);
             document.getElementById('helloTitle').innerText = g;
         }
 
-        // --- LÓGICA DE CAFÉ AI FUTURISTA ---
-
-async function startCoffeeReading() {
+        async function startCoffeeReading() {
     openModal('ai-oracle-overlay');
     const video = document.getElementById('coffee-camera-view');
     const statusText = document.getElementById('ai-status-text');
@@ -945,82 +878,20 @@ async function startCoffeeReading() {
     const resultArea = document.getElementById('oracle-result');
     const fortuneText = document.getElementById('fortune-text');
 
-    // Reset de Interfaz
+    // Configuración inicial de la UI
     scanContainer.style.display = 'block'; 
     resultArea.style.display = 'none'; 
     captureBtn.style.display = 'none';
-    statusText.innerText = "NÖRAL AĞ BAŞLATILIYOR...";
-    video.classList.remove('scanning');
+    statusText.innerText = "BAĞLANIYOR...";
 
     try {
+        // Mejoramos la resolución y el enfoque
         const constraints = { 
-            video: { facingMode: "environment" } 
+            video: { 
+                facingMode: { ideal: "environment" },
+                width: { ideal: 1280 }
+            } 
         };
-        
-        videoStream = await navigator.mediaDevices.getUserMedia(constraints);
-        video.srcObject = videoStream;
-        await video.play();
-
-        statusText.innerText = "FİNCANI DAİREYE HİZALAYIN";
-        captureBtn.style.display = 'block';
-        captureBtn.innerText = "ANALİZİ BAŞLAT";
-
-        captureBtn.onclick = () => {
-            captureBtn.style.display = 'none';
-            statusText.innerHTML = '<i class="fa-solid fa-atom fa-spin"></i> SEMBOLLER TARANIYOR...';
-            
-            // Activa el efecto de escaneo neón
-            video.classList.add('scanning');
-            
-            setTimeout(() => {
-                video.classList.remove('scanning');
-                scanContainer.style.display = 'none'; 
-                resultArea.style.display = 'block';
-                
-                const fortunes = [
-                    "Yolun açık, beklediğin o temiz haber çok yakında sana ulaşıyor!",
-                    "Nazar var ama ferahlık kapıda, kalbini bozma.",
-                    "Hane içine ay gibi doğacak büyük bir sevinç var.",
-                    "Üç vakte kadar bir dileğin gerçekleşecek, sabırlı ol.",
-                    "Bir dostun aracılığıyla beklemediğin bir kapı açılacak.",
-                    "Kısmetin taşıyor! Bereketli bir döneme giriyorsun."
-                ];
-                
-                fortuneText.innerText = fortunes[Math.floor(Math.random() * fortunes.length)];
-                
-                if (navigator.vibrate) navigator.vibrate(50);
-                
-                stopCamera();
-            }, 3500); 
-        };
-    } catch (e) { 
-        console.error(e);
-        statusText.innerText = "Kamera erişim hatası!"; 
-    }
-}
-
-// FUNCIÓN PARA COMPARTIR EN REDES SOCIALES
-function shareFortune() {
-    const fortuneDesc = document.getElementById('fortune-text').innerText;
-    const shareText = `🔮 Lale AI Kahve Falım Diyor Ki:\n"${fortuneDesc}"\n\nSenin falında ne var? Keşfet: lale-turkey.vercel.app`;
-
-    if (navigator.share) {
-        navigator.share({
-            title: 'Lale AI Kahve Falı',
-            text: shareText,
-            url: 'https://lale-turkey.vercel.app/'
-        })
-        .then(() => {
-            showPush("BAŞARILI", "Falın paylaşıldı!", "fa-share-nodes");
-        })
-        .catch((err) => console.log('Error sharing:', err));
-    } else {
-        navigator.clipboard.writeText(shareText).then(() => {
-            showPush("KOPYALANDI", "Fal metni panoya kopyalandı.", "fa-copy");
-        });
-    }
-}
-
         
         videoStream = await navigator.mediaDevices.getUserMedia(constraints);
         video.srcObject = videoStream;
