@@ -51,6 +51,61 @@
             --ferry-blue: #3498db;
             --royal-purple: #8e44ad;
         }
+/* --- ACTUALIZACIÓN FUTURISTA KAHVE FALI --- */
+
+#ai-oracle-overlay .modal-body {
+    background: rgba(15, 15, 15, 0.85) !important;
+    backdrop-filter: blur(25px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(25px) saturate(180%) !important;
+    border: 1px solid rgba(188, 143, 143, 0.3) !important;
+    border-radius: 35px !important;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.6), 0 0 20px rgba(188, 143, 143, 0.2) !important;
+    padding: 35px !important;
+    transition: all 0.4s ease;
+}
+
+#coffee-camera-view {
+    border: 2px solid rgba(188, 143, 143, 0.5);
+    border-radius: 25px;
+    box-shadow: 0 0 15px rgba(188, 143, 143, 0.3);
+    transition: 0.3s;
+}
+
+#coffee-camera-view.scanning {
+    border-color: #ff4b2b;
+    box-shadow: 0 0 25px rgba(255, 75, 43, 0.6);
+    animation: pulseScan 1.5s infinite;
+}
+
+@keyframes pulseScan {
+    0% { box-shadow: 0 0 15px rgba(255, 75, 43, 0.4); }
+    50% { box-shadow: 0 0 30px rgba(255, 75, 43, 0.8); }
+    100% { box-shadow: 0 0 15px rgba(255, 75, 43, 0.4); }
+}
+
+#fortune-text {
+    font-family: var(--font-main);
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.9);
+    background: rgba(255,255,255,0.03);
+    padding: 20px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.05);
+    margin-top: 15px;
+}
+
+#share-fortune-btn {
+    background: transparent !important;
+    color: var(--coffee) !important;
+    border: 2px solid var(--coffee) !important;
+    margin-top: 15px !important;
+    font-weight: 700 !important;
+    border-radius: 50px;
+    padding: 10px 20px;
+    cursor: pointer;
+}
 
         /* --- BASE STYLES --- */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--font-main); -webkit-tap-highlight-color: transparent; }
