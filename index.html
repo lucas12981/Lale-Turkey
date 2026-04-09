@@ -934,7 +934,9 @@ const _supabase = supabase.createClient(SUB_URL, SUB_KEY);
             document.getElementById('helloTitle').innerText = g;
         }
 
-        async function startCoffeeReading() {
+        // --- LÓGICA DE CAFÉ AI FUTURISTA ---
+
+async function startCoffeeReading() {
     openModal('ai-oracle-overlay');
     const video = document.getElementById('coffee-camera-view');
     const statusText = document.getElementById('ai-status-text');
@@ -943,20 +945,82 @@ const _supabase = supabase.createClient(SUB_URL, SUB_KEY);
     const resultArea = document.getElementById('oracle-result');
     const fortuneText = document.getElementById('fortune-text');
 
-    // Configuración inicial de la UI
+    // Reset de Interfaz
     scanContainer.style.display = 'block'; 
     resultArea.style.display = 'none'; 
     captureBtn.style.display = 'none';
-    statusText.innerText = "BAĞLANIYOR...";
+    statusText.innerText = "NÖRAL AĞ BAŞLATILIYOR...";
+    video.classList.remove('scanning');
 
     try {
-        // Mejoramos la resolución y el enfoque
         const constraints = { 
-            video: { 
-                facingMode: { ideal: "environment" },
-                width: { ideal: 1280 }
-            } 
+            video: { facingMode: "environment" } 
         };
+        
+        videoStream = await navigator.mediaDevices.getUserMedia(constraints);
+        video.srcObject = videoStream;
+        await video.play();
+
+        statusText.innerText = "FİNCANI DAİREYE HİZALAYIN";
+        captureBtn.style.display = 'block';
+        captureBtn.innerText = "ANALİZİ BAŞLAT";
+
+        captureBtn.onclick = () => {
+            captureBtn.style.display = 'none';
+            statusText.innerHTML = '<i class="fa-solid fa-atom fa-spin"></i> SEMBOLLER TARANIYOR...';
+            
+            // Activa el efecto de escaneo neón
+            video.classList.add('scanning');
+            
+            setTimeout(() => {
+                video.classList.remove('scanning');
+                scanContainer.style.display = 'none'; 
+                resultArea.style.display = 'block';
+                
+                const fortunes = [
+                    "Yolun açık, beklediğin o temiz haber çok yakında sana ulaşıyor!",
+                    "Nazar var ama ferahlık kapıda, kalbini bozma.",
+                    "Hane içine ay gibi doğacak büyük bir sevinç var.",
+                    "Üç vakte kadar bir dileğin gerçekleşecek, sabırlı ol.",
+                    "Bir dostun aracılığıyla beklemediğin bir kapı açılacak.",
+                    "Kısmetin taşıyor! Bereketli bir döneme giriyorsun."
+                ];
+                
+                fortuneText.innerText = fortunes[Math.floor(Math.random() * fortunes.length)];
+                
+                if (navigator.vibrate) navigator.vibrate(50);
+                
+                stopCamera();
+            }, 3500); 
+        };
+    } catch (e) { 
+        console.error(e);
+        statusText.innerText = "Kamera erişim hatası!"; 
+    }
+}
+
+// FUNCIÓN PARA COMPARTIR EN REDES SOCIALES
+function shareFortune() {
+    const fortuneDesc = document.getElementById('fortune-text').innerText;
+    const shareText = `🔮 Lale AI Kahve Falım Diyor Ki:\n"${fortuneDesc}"\n\nSenin falında ne var? Keşfet: lale-turkey.vercel.app`;
+
+    if (navigator.share) {
+        navigator.share({
+            title: 'Lale AI Kahve Falı',
+            text: shareText,
+            url: 'https://lale-turkey.vercel.app/'
+        })
+        .then(() => {
+            showPush("BAŞARILI", "Falın paylaşıldı!", "fa-share-nodes");
+        })
+        .catch((err) => console.log('Error sharing:', err));
+    } else {
+        navigator.clipboard.writeText(shareText).then(() => {
+            showPush("KOPYALANDI", "Fal metni panoya kopyalandı.", "fa-copy");
+        });
+    }
+}
+
         
         videoStream = await navigator.mediaDevices.getUserMedia(constraints);
         video.srcObject = videoStream;
