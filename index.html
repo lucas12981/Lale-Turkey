@@ -556,12 +556,22 @@
                 <h3 id="ai-status-text" style="margin-top: 20px; color: var(--coffee); font-weight: 800; font-size: 15px;">ANALİZ EDİLİYOR...</h3>
                 <button id="capture-btn" class="btn-confirm" style="display:none; background: var(--coffee); color:white; margin-top:20px;">FOTOĞRAF ÇEK</button>
             </div>
-            <div id="oracle-result" style="display: none;">
-                <h4 style="color: var(--coffee); margin-bottom: 12px; font-weight: 900;">LALE AI DİYOR Kİ:</h4>
-                <p id="fortune-text" style="font-style: italic; line-height: 1.6; font-size: 15px;"></p>
-                <button class="btn-confirm" onclick="closeCoffeeModal()" style="margin-top: 25px; background: var(--coffee); color: #fff;">TEŞEKKÜRLER</button>
+                        <div id="oracle-result" style="display: none; text-align: center; animation: fadeIn 0.8s ease;">
+                <h4 style="color: var(--coffee); margin-bottom: 15px; font-weight: 900; letter-spacing: 2px; text-shadow: 0 0 10px rgba(188, 143, 143, 0.3);">LALE AI DİYOR Kİ:</h4>
+                
+                <div style="position: relative; padding: 5px;">
+                    <p id="fortune-text" style="font-style: italic; line-height: 1.8; font-size: 16px; color: rgba(255,255,255,0.95); background: rgba(255,255,255,0.03); border-radius: 20px; padding: 20px; border: 1px solid rgba(188, 143, 143, 0.2);"></p>
+                </div>
+
+                <button id="share-fortune-btn" onclick="shareFortune()" style="margin-top: 20px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                    <i class="fa-brands fa-instagram" style="font-size: 1.2rem;"></i> FALINI PAYLAŞ
+                </button>
+
+                <button class="btn-confirm" onclick="closeCoffeeModal()" style="margin-top: 15px; background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.1); width: 100%; font-size: 12px; letter-spacing: 1px;">TEŞEKKÜRLER</button>
             </div>
-            <p id="cancel-camera" onclick="closeCoffeeModal()" style="margin-top: 20px; cursor: pointer; opacity: 0.4; font-size: 13px;">İptal</p>
+
+            <p id="cancel-camera" onclick="closeCoffeeModal()" style="margin-top: 25px; cursor: pointer; opacity: 0.3; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; transition: 0.3s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='0.3'">Vazgeç</p>
+
         </div>
     </div>
 
