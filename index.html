@@ -206,7 +206,7 @@
 
         /* --- PHARMACY RADAR STYLES --- */
         #pharmacyMapContainer { display:none; position:fixed; inset:0; background:#000; z-index:999999; }
-        #pharmacyMap { width:100%; height:100%; filter: hue-rotate(90deg) brightness(0.7) contrast(1.2); }
+        #pharmacyMap { width:100%; height:100%; background: #fff; }
         .pharmacy-header { position:absolute; top:20px; left:20px; right:20px; display:flex; justify-content:space-between; align-items:center; z-index:10000; }
         .pharmacy-panel { position:absolute; bottom:0; left:0; right:0; background:rgba(15,15,15,0.95); backdrop-filter:blur(25px); border-top:1px solid var(--pharmacy); border-radius:30px 30px 0 0; padding:25px; z-index:10000; max-height:50%; overflow-y:auto; display:none; box-shadow: 0 -15px 35px rgba(46, 204, 113, 0.2); }
         .pharmacy-card { background:rgba(255,255,255,0.05); padding:18px; border-radius:20px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center; border:1px solid rgba(46, 204, 113, 0.2); cursor: pointer; transition: 0.3s; }
@@ -611,7 +611,7 @@ const _supabase = supabase.createClient(SUB_URL, SUB_KEY);
             setTimeout(() => {
                 if (!pharmacyMap) {
                     pharmacyMap = L.map('pharmacyMap', { zoomControl: false }).setView([lat, lng], 14);
-                    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(pharmacyMap);
+                    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png').addTo(pharmacyMap);
                 } else { pharmacyMap.setView([lat, lng], 14); }
                 pharmacyMarkers.forEach(m => pharmacyMap.removeLayer(m));
                 pharmacyMarkers = [];
