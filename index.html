@@ -887,70 +887,125 @@ const _supabase = supabase.createClient(SUB_URL, SUB_KEY);
             document.getElementById('helloTitle').innerText = g;
         }
 
-        async function startCoffeeReading() {
-    openModal('ai-oracle-overlay');
-    const video = document.getElementById('coffee-camera-view');
-    const statusText = document.getElementById('ai-status-text');
-    const captureBtn = document.getElementById('capture-btn');
-    const scanContainer = document.getElementById('scan-container');
-    const resultArea = document.getElementById('oracle-result');
-    const fortuneText = document.getElementById('fortune-text');
+                async function startCoffeeReading() {
+            openModal('ai-oracle-overlay');
+            const video = document.getElementById('coffee-camera-view');
+            const statusText = document.getElementById('ai-status-text');
+            const captureBtn = document.getElementById('capture-btn');
+            const scanContainer = document.getElementById('scan-container');
+            const resultArea = document.getElementById('oracle-result');
+            const fortuneText = document.getElementById('fortune-text');
+            const fortuneGreeting = document.getElementById('fortune-greeting');
+            const fortuneAvatar = document.getElementById('fortune-avatar');
+            const shareBtn = document.getElementById('share-fortune-btn');
 
-    // Configuración inicial de la UI
-    scanContainer.style.display = 'block'; 
-    resultArea.style.display = 'none'; 
-    captureBtn.style.display = 'none';
-    statusText.innerText = "BAĞLANIYOR...";
+            // 1. Personalización: Obtener datos del usuario
+            const userName = localStorage.getItem('lale_name') || "Güzel İnsan";
+            const userPic = localStorage.getItem('lale_pic');
 
-    try {
-        // Mejoramos la resolución y el enfoque
-        const constraints = { 
-            video: { 
-                facingMode: { ideal: "environment" },
-                width: { ideal: 1280 }
-            } 
-        };
-        
-        videoStream = await navigator.mediaDevices.getUserMedia(constraints);
-        video.srcObject = videoStream;
-        await video.play();
-
-        statusText.innerText = "FİNCANI DAİREYE ODAKLAYIN";
-        captureBtn.style.display = 'block';
-        captureBtn.innerText = "FALIMA BAK";
-
-        captureBtn.onclick = () => {
+            // Configuración inicial de la UI
+            scanContainer.style.display = 'block'; 
+            resultArea.style.display = 'none'; 
             captureBtn.style.display = 'none';
-            statusText.innerHTML = '<i class="fa-solid fa-microchip fa-spin"></i> AI SEMBOLLERİ ANALİZ EDİYOR...';
-            
-            // Efecto de flash al capturar
-            video.style.filter = "brightness(2) contrast(2)";
-            
-            setTimeout(() => {
-                video.style.filter = "none";
-                scanContainer.style.display = 'none'; 
-                resultArea.style.display = 'block';
-                
-                // Base de datos de predicciones más rica
-                const fortunes = [
-                    "Nazar var ama geçecek, ferahlık kapıda.",
-                    "Yolun açık, beklediğin o kısmet yakında sana ulaşıyor!",
-                    "Hane içine ay gibi doğacak temiz bir haber var.",
-                    "Üç vakte kadar kalbindeki o dilek gerçekleşecek.",
-                    "Gözyaşların geride kalıyor, sevinçten uçacağın bir dönem başlıyor.",
-                    "Bir dostun aracılığıyla büyük bir fırsat yakalayacaksın."
-                ];
-                
-                fortuneText.innerText = fortunes[Math.floor(Math.random() * fortunes.length)];
-                stopCamera();
-            }, 3500); // 3.5 segundos es el "sweet spot" para que parezca que piensa
-        };
-    } catch (e) { 
-        console.error(e);
-        statusText.innerText = "Kamera hatası! Lütfen izinleri kontrol edin."; 
-    }
-}
+            statusText.innerText = "BAĞLANIYOR...";
 
+            try {
+                const constraints = { 
+                    video: { 
+                        facingMode: { ideal: "environment" },
+                        width: { ideal: 1280 }
+                    } 
+                };
+                
+                videoStream = await navigator.mediaDevices.getUserMedia(constraints);
+                video.srcObject = videoStream;
+                await video.play();
+
+                statusText.innerText = "FİNCANI DAİREYE ODAKLAYIN";
+                captureBtn.style.display = 'block';
+                captureBtn.innerText = "FALIMA BAK";
+
+                captureBtn.onclick = () => {
+                    captureBtn.style.display = 'none';
+                    statusText.innerHTML = '<i class="fa-solid fa-microchip fa-spin"></i> LALE TELVEYİ OKUYOR...';
+                    
+                    // Efecto de flash al capturar
+                    video.style.filter = "brightness(2.5) contrast(1.5)";
+                    
+                    setTimeout(() => {
+                        video.style.filter = "none";
+                        scanContainer.style.display = 'none'; 
+                        resultArea.style.display = 'block';
+                        
+                        // 2. Aplicar Personalización en UI
+                        if (userPic) {
+                            fortuneAvatar.src = userPic;
+                            fortuneAvatar.style.display = "block";
+                        } else {
+                            fortuneAvatar.style.display = "none";
+                        }
+                        fortuneGreeting.innerHTML = `LALE SANA SESLENİYOR,<br><span style="color:#fff;">${userName.toUpperCase()}</span>:`;
+                        
+                        // 3. Motor Dinámico de Adivinación Turca
+                        const intros = [
+                            "Fincanının dibinde büyük bir ferahlama görüyorum.",
+                            "Telveler o kadar yoğun birikmiş ki, kafandaki düşünceler çok belirgin.",
+                            "Tabağına doğru süzülen ince bir yol var, bu yeni ve güzel bir başlangıç demek.",
+                            "İçinde biraz sıkıntı birikmiş ama merak etme, fincanın kenarından aydınlığa çıkıyor."
+                        ];
+                        const shapes = [
+                            "Şurada kanatlarını açmış bir kuş var; sana çok temiz, aydınlık bir haber geliyor.",
+                            "Fincanın kenarında bir at figürü belirmiş, muradına çok az kalmış, hızla yaklaşıyor.",
+                            "Büyük bir 'A' ve 'M' harfi çıkmış, isminde bu harfler olan biriyle önemli bir konuşman olacak.",
+                            "Bir anahtar sembolü görüyorum, kapalı olan bir kapın yakında sonuna kadar açılacak."
+                        ];
+                        const futures = [
+                            "Önümüzdeki üç vakte kadar eline beklemediğin bir yerden bereketli bir para geçecek.",
+                            "Kalbinin etrafındaki karanlıklar dağılıyor, aşktan yana yüzün gülecek.",
+                            "İş veya eğitim hayatında önüne çıkacak o büyük fırsatı çok iyi değerlendirmen gerekecek.",
+                            "Yakın zamanda kalabalık bir ortama gireceksin ve orada çok dikkat çekeceksin."
+                        ];
+                        const closings = [
+                            "Nazarın çok, üzerinde göz var. Yüreğini ferah tut, geçecek.",
+                            "Yolun açık, dileklerin tez zamanda kabul olacak inşallah.",
+                            "Her şey gönlünce olsun, fincanın gerçekten tahmininden çok daha aydınlık.",
+                            "Gözyaşların geride kalıyor, sevinçten uçacağın bir dönem başlıyor."
+                        ];
+
+                        const randomPick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+                        const finalFortune = `${randomPick(intros)} ${randomPick(shapes)} ${randomPick(futures)} ${randomPick(closings)}`;
+                        
+                        fortuneText.innerText = finalFortune;
+
+                        // 4. Integración del Botón de Compartir (Web Share API)
+                        shareBtn.onclick = async () => {
+                            const shareData = {
+                                title: 'Lale Turkey - Kahve Falım',
+                                text: `☕ Lale AI benim kahve falıma baktı!\n\n"${finalFortune}"\n\nSen de İstanbul'un elit deneyimi Lale'yi keşfet ve falına baktır! ✨`,
+                                url: window.location.href // Comparte la URL actual de tu app
+                            };
+                            
+                            try {
+                                if (navigator.share) {
+                                    await navigator.share(shareData);
+                                } else {
+                                    // Fallback por si el navegador no soporta API nativa
+                                    alert("Panoya kopyalandı! (Tarayıcınız direkt paylaşımı desteklemiyor)");
+                                    navigator.clipboard.writeText(shareData.text);
+                                }
+                            } catch (err) {
+                                console.log('Paylaşım iptal edildi veya hata oluştu:', err);
+                            }
+                        };
+
+                        stopCamera();
+                    }, 3500); // 3.5s genera la expectativa perfecta
+                };
+            } catch (e) { 
+                console.error(e);
+                statusText.innerText = "Kamera hatası! Lütfen izinleri kontrol edin."; 
+            }
+        }
 
         function stopCamera() { if (videoStream) { videoStream.getTracks().forEach(t => t.stop()); videoStream = null; } }
         function closeCoffeeModal() { stopCamera(); closeModal('ai-oracle-overlay'); }
