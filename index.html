@@ -493,22 +493,40 @@
         <div id="mission-success" style="display:none; text-align:center; padding-top:40px;"><div id="reward-content"></div></div>
     </div>
 
-    <div id="ai-oracle-overlay" class="glass-modal">
+        <div id="ai-oracle-overlay" class="glass-modal">
         <div class="modal-body" style="border-color: var(--coffee);">
             <video id="coffee-camera-view" autoplay playsinline muted style="width: 100%; height: 250px; border-radius: 25px; object-fit: cover; margin-bottom: 20px;"></video>
+            
             <div id="scan-container">
-                <div class="tulip-3d" id="ai-loading-icon" style="animation-duration: 1s; margin: 0 auto;"><div class="petal-3d p-1" style="background: var(--coffee);"></div></div>
-                <h3 id="ai-status-text" style="margin-top: 20px; color: var(--coffee); font-weight: 800; font-size: 15px;">ANALİZ EDİLİYOR...</h3>
+                <div class="tulip-3d" id="ai-loading-icon" style="animation-duration: 1s; margin: 0 auto;">
+                    <div class="petal-3d p-1" style="background: var(--coffee);"></div>
+                </div>
+                <h3 id="ai-status-text" style="margin-top: 20px; color: var(--coffee); font-weight: 800; font-size: 15px; text-align: center;">ANALİZ EDİLİYOR...</h3>
                 <button id="capture-btn" class="btn-confirm" style="display:none; background: var(--coffee); color:white; margin-top:20px;">FOTOĞRAF ÇEK</button>
             </div>
+            
             <div id="oracle-result" style="display: none;">
-                <h4 style="color: var(--coffee); margin-bottom: 12px; font-weight: 900;">LALE AI DİYOR Kİ:</h4>
-                <p id="fortune-text" style="font-style: italic; line-height: 1.6; font-size: 15px;"></p>
-                <button class="btn-confirm" onclick="closeCoffeeModal()" style="margin-top: 25px; background: var(--coffee); color: #fff;">TEŞEKKÜRLER</button>
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 15px;">
+                    <img id="fortune-avatar" src="" style="width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--coffee); object-fit: cover; display: none;">
+                    <h4 id="fortune-greeting" style="color: var(--coffee); font-weight: 900; margin: 0; font-size: 14px; line-height: 1.2;">LALE AI DİYOR Kİ:</h4>
+                </div>
+                
+                <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 15px; border-left: 3px solid var(--coffee); margin-bottom: 20px;">
+                    <p id="fortune-text" style="font-style: italic; line-height: 1.6; font-size: 14px; color: #eee;"></p>
+                </div>
+                
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn-confirm" id="share-fortune-btn" style="flex: 1.5; background: linear-gradient(45deg, #8e44ad, #3498db); color: #fff; box-shadow: 0 5px 15px rgba(142, 68, 173, 0.4);">
+                        <i class="fa-solid fa-share-nodes"></i> PAYLAŞ
+                    </button>
+                    <button class="btn-confirm" onclick="closeCoffeeModal()" style="flex: 1; background: #222; color: #fff; border: 1px solid var(--coffee);">BİTİR</button>
+                </div>
             </div>
-            <p id="cancel-camera" onclick="closeCoffeeModal()" style="margin-top: 20px; cursor: pointer; opacity: 0.4; font-size: 13px;">İptal</p>
+            
+            <p id="cancel-camera" onclick="closeCoffeeModal()" style="margin-top: 20px; text-align: center; cursor: pointer; opacity: 0.4; font-size: 13px;">İptal</p>
         </div>
     </div>
+
 
     <div id="emergency-modal" class="glass-modal">
         <div class="modal-body" style="border-top: 4px solid var(--tr-red);">
